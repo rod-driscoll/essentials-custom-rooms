@@ -32,7 +32,7 @@ Using NuGet package manager install the following:
 
 1. "PepperDashEssentials"
    1. Delete "NewtonSoft.Json.Compact" from the references folder to remove the duplicate library issue.
-2. "Crestron.SimplSharp.SDK.ProgramLibrary"
+2. "Crestron.SimplSharp.SDK.ProgramLibrary" to "minimal-tp" project only.
 
 ### Information
 
