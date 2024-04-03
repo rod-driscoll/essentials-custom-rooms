@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-minimal-room-epi", "Essentials-minimal-room-epi\essentials-minimal-room-epi.csproj", "{1EF24729-6B03-4019-8ACB-19202F0CF9C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-minimal-tp", "essentials-minimal-tp\essentials-minimal-tp.csproj", "{D47AD0AF-2C9E-43B4-BE13-75260E1E2921}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-minimal-tp-epi", "essentials-minimal-tp-epi\essentials-minimal-tp-epi.csproj", "{D47AD0AF-2C9E-43B4-BE13-75260E1E2921}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,7 +3,7 @@ using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 
-namespace essentials_minimal_tp.Drivers
+namespace essentials_minimal_tp_epi.Drivers
 {
     public class ToggleButtonDriver : PanelDriverBase
     {

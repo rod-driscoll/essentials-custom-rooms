@@ -7,7 +7,7 @@ using PepperDash.Essentials.Core.Config;
 using System;
 using System.Collections.Generic;
 
-namespace essentials_minimal_tp
+namespace essentials_minimal_tp_epi
 {
     /// <summary>
     /// Plugin device factory for devices that use IBasicCommunication

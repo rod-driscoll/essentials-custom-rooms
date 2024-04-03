@@ -1,6 +1,6 @@
 ﻿using PepperDash.Essentials.Core;
 
-namespace essentials_minimal_tp
+namespace essentials_minimal_tp_epi
 {
     public class Config : CrestronTouchpanelPropertiesConfig
     {

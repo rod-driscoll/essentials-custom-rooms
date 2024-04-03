@@ -1,13 +1,13 @@
 ﻿using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DeviceSupport;
 using essentials_minimal_room_epi;
-using essentials_minimal_tp.Drivers;
+using essentials_minimal_tp_epi.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.UI;
 
-namespace essentials_minimal_tp
+namespace essentials_minimal_tp_epi
 {
     public class Device : TouchpanelBase
     {
