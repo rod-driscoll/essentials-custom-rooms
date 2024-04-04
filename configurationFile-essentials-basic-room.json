@@ -15,7 +15,7 @@
             {
                 "key": "touchpanel-1",
                 "name": "touchpanel",
-                "type": "custom-tp",
+                "type": "basic-tp",
                 "group": "touchpanel",
                 "uid": 1,
                 "properties": {
@@ -30,10 +30,18 @@
             {
                 "key": "room-1",
                 "name": "Room 1",
-                "type": "custom-room",
+                "type": "basic-room",
                 "group": "room",
                 "uid": 11,
-                "properties": {}
+                "properties": {
+                    "help": {
+                        "message":"Contact reception for help"
+                    },
+                    "addresses": {
+                        "phoneNumber":"Room number not configured",
+                        "sipAddress":"Room address not configured"
+                    }
+                }
             }
         ],
         "info": {

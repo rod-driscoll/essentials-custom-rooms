@@ -1,4 +1,5 @@
 ﻿using essentials_custom_rooms_epi;
+using Newtonsoft.Json;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Config;
@@ -18,7 +19,7 @@ namespace essentials_basic_room_epi
             try
             {
                 Debug.Console(2, this, "{0} constructor starting", ClassName);
-                //PropertiesConfig = JsonConvert.DeserializeObject<Config> (config.Properties.ToString());
+                PropertiesConfig = JsonConvert.DeserializeObject<Config> (config.Properties.ToString());
                 InitializeRoom();
                 Debug.Console(2, this, "{0} constructor complete", ClassName);
             }

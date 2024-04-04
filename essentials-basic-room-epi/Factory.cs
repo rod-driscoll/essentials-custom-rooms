@@ -9,7 +9,7 @@ namespace essentials_basic_room_epi
         public Factory()
         {
             MinimumEssentialsFrameworkVersion = "1.6.4";
-            TypeNames = new List<string>() { "minimal-room" };
+            TypeNames = new List<string>() { "basic-room" };
         }
         public override EssentialsDevice BuildDevice(PepperDash.Essentials.Core.Config.DeviceConfig dc)
         {

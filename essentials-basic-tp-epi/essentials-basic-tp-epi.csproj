@@ -153,10 +153,13 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Device.cs" />
-    <Compile Include="Drivers\ToggleButtonDriver.cs" />
+    <Compile Include="Drivers\BasicPanelMainInterfaceDriver.cs" />
+    <Compile Include="Drivers\HelpButtonDriver.cs" />
+    <Compile Include="Drivers\InfoButtonDriver.cs" />
+    <Compile Include="Joins\UIStringJoin.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UiJoins.cs" />
+    <Compile Include="Joins\UiBoolJoin.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

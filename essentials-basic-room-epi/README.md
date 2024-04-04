@@ -1,9 +1,16 @@
-# essentials-basic-room-epi
+# essentials-basic-room
 
 An example of a room plugin for PepperDash Essentials that loads at runtime without the need to modify the Essentials core code.
 Use this in conjunction with essentials-basic-tp-epi.
 
 This plugin starts as "minimal-room" and "minimal-tp" and is being modified to add features from "EssentialsHuddleSpaceRoom" in an effort to understand the various features built into Essentials.
+
+The final result is a user interface that:
+
+* reads the room name from config and displays it
+* has interlocked sub pages, each in their own driver file.
+* a help button displaying text from a config file
+* an info button displaying text from a config file
 
 ## Tutorial stage 1 - re-create miimal room
 
@@ -19,7 +26,7 @@ In stage 1 we are going to duplicate and rename the minimal plugins.
         * Delete "NewtonSoft.Json.Compact" from the references folder to remove the duplicate library issue.
     2. "Crestron.SimplSharp.SDK.ProgramLibrary" to "minimal-tp" project only.
 
-### essentials-minimal-room-epi
+### essentials-basic-room-epi
 
 * copy all the classes from "essentials-minimal-room-epi" into the project
 * rename the namespace to replace "minimal" with "basic"
@@ -41,7 +48,7 @@ In stage 1 we are going to duplicate and rename the minimal plugins.
   * rename class interface inheritance from "IMinimalRoom" to "IBasicRoom"
   * un-comment the declaration of PropertiesConfig to meet interface requirement.
 
-### essentials-minimal-tp-epi
+### essentials-basic-tp-epi
 
 * copy all the classes from "essentials-minimal-tp-epi" into the project
 * rename the namespace to replace "minimal" with "basic"
@@ -60,6 +67,45 @@ In stage 1 we are going to duplicate and rename the minimal plugins.
 
 Compile, load and test the code. If you can't compile it's probably because a few usings are not included, easily fixed by right clicking on the errors and selecting auto fix.
 
-### Tutorial stage 2
+## Tutorial stage 2 - implementing a PanelMainInterfaceDriver
 
 The project now works the same as the minimum plugins, we can now start adding functionality.
+
+The existing room types use interface drivers, with "EssentialsPanelMainInterfaceDriver" being the parent driver and several children drivers. We will re-create our own version called "BasicPanelMainInterfaceDriver".
+
+BasicPanelMainInterfaceDriver can manage all drivers so that sub pages can be interlocked and managed by buttons on header and footer drivers.
+
+### BasicPanelMainInterfaceDriver
+
+Use "EssentialsPanelMainInterfaceDriver" from PepperDash Essentials as a reference when creating this class, we want to understand it all so don't just copy everything in at once, make sure you understand it as you copy it in. You'll get an idea of dependencies as you go.
+
+* create the class "BasicPanelMainInterfaceDriver", extend PanelDriverBase and implement IDisposable
+* we'll handle reserved sigs in here, for now just initialize them and nothing else.
+* add PanelDriverBase CurrentChildDriver to hold the sub drivers
+* add a "List<PanelDriverBase> ChildDrivers" property to store child drivers, this is not how it was done in EssentialsHeaderDriver
+* add the required disposable interface implementations. In the method Dispose iterate through ChildDrivers and if any item implements IDisposeable then call dispose on it.
+* create BasicPanelMainInterfaceDriver in Device.SetupPanelDrivers before room is defined.
+
+Now the driver is running it isn't actually doing anything noticeable yet, so lets add an interlocked set of popup pages.
+
+* add the property
+  * public JoinedSigInterlock PopupInterlock { get; private set; }
+* in the constructor add the following
+  * PopupInterlock = new JoinedSigInterlock(TriList);
+
+We'll add child drivers to PopupInterlock.
+
+#### Help message subpage
+
+TODO - fix these instructions.
+
+* add the SetUpHelpButton method to "BasicHeaderDriver", this is going to pop up an interlocked page that shows a message from the config file.
+* on the touchpanel add the following:
+  * A help Dynamic Icon button with join 15086 (UIBoolJoin.HelpPress), visibility join 15084 (UIBoolJoin.HelpPageShowCallButtonVisible) and Dynamic Icon serial join 3954 (UIStringJoin.HeaderButtonIcon4)
+  * a help subpage with visibility join 15085 (UIBoolJoin.HelpPageVisible) and help text serial join 3922 (UIStringJoin.HelpMessage).
+* in the config file within the room device add the following under "properties"
+  * "help": { "message":"Contact reception for help" }
+
+#### Info message subpage
+ Similar to the help message page. we have added text from the config file and put a toggling button on the page.
+ The toggling button is being registered when the page appears and de-registered when it disappears.

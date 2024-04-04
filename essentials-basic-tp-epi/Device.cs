@@ -9,6 +9,7 @@ using PepperDash.Essentials.Core.UI;
 
 namespace essentials_basic_tp_epi
 {
+    // This would be EssentialsTouchpanelController in default Essentials
     public class Device : TouchpanelBase
     {
         public string ClassName = "Device";
@@ -34,6 +35,8 @@ namespace essentials_basic_tp_epi
             Panel.ClearAllSigActions();
             Debug.Console(0, this, "Linking TP '{0}' to Room '{1}'", Key, roomKey);
 
+            var mainDriver = new BasicPanelMainInterfaceDriver(Panel, config);
+
             // spin up different room drivers depending on room type
             var room = DeviceManager.GetDeviceForKey(roomKey);
             if (room == null)
@@ -41,13 +44,30 @@ namespace essentials_basic_tp_epi
 
             Debug.Console(0, this, "Room '{0}' type '{1}'", roomKey, room.GetType());
             if (room is EssentialsRoomBase)
+            {
                 Debug.Console(0, this, "Room '{0}' is EssentialsRoomBase", roomKey);
+                Panel.SetString(UIStringJoin.CurrentRoomName, (room as EssentialsRoomBase).Name);
+            }
 
             if (room is IBasicRoom)
             {
-                Debug.Console(0, this, "Room '{0}' is IMinimalRoom", roomKey);
+                Debug.Console(0, this, "Room '{0}' is IBasicRoom", roomKey);
+                var room_ = (room as IBasicRoom);
 
-                var toggleButtonDriver = new ToggleButtonDriver(Panel); 
+                if (room_.PropertiesConfig == null)
+                    Debug.Console(2, "{0} PropertiesConfig == null", ClassName);
+                else
+                    Debug.Console(2, "{0} PropertiesConfig != null", ClassName);
+
+                if (room_.Config.Properties == null)
+                    Debug.Console(2, "{0} Properties == null", ClassName);
+                else
+                {
+                    Debug.Console(2, "{0} Properties != null", ClassName);
+
+                }
+
+                mainDriver.SetupChildDrivers(room_);
                 Debug.Console(0, this, "Room '{0}' UI Controllers loaded", roomKey);
 
             }
