@@ -1,0 +1,59 @@
+{
+    "system": {},
+    "system_url": "",
+    "template_url": "",
+    "template": {
+        "rooms": [],
+        "devices": [
+            {
+                "key": "processor",
+                "name": "CP4",
+                "type": "cp4",
+                "group": "processor",
+                "uid": 0
+            },
+            {
+                "key": "touchpanel-1",
+                "name": "touchpanel",
+                "type": "basic-tp",
+                "group": "touchpanel",
+                "uid": 1,
+                "properties": {
+                    "type": "tsw1070",
+                    "control": {
+                        "method": "ipid",
+                        "ipid": "03"
+                    },
+                    "defaultRoomKey": "room-1",
+                    "password": "1988",
+                    "sgdFile": "essentials-basic-tp-with-pin.sgd"
+                }
+            },
+            {
+                "key": "room-1",
+                "name": "Room 1",
+                "type": "basic-room",
+                "group": "room",
+                "uid": 11,
+                "properties": {
+                    "help": {
+                        "message":"Contact reception for help"
+                    },
+                    "addresses": {
+                        "phoneNumber":"Room number not configured",
+                        "sipAddress":"Room address not configured"
+                    },
+                    "password": "1234"
+                }
+            }
+        ],
+        "info": {
+            "processorType": "cp4",
+            "lastUid": 11,
+            "lastModifiedDate": "2024-03-16T17:54:41.315Z",
+            "systemType": "minimal",
+            "comment": "Demo minimal system",
+            "requiredControlSofwareVersion": ""
+        }
+    }
+}

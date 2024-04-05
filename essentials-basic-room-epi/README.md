@@ -67,7 +67,7 @@ In stage 1 we are going to duplicate and rename the minimal plugins.
 
 Compile, load and test the code. If you can't compile it's probably because a few usings are not included, easily fixed by right clicking on the errors and selecting auto fix.
 
-## Tutorial stage 2 - implementing a PanelMainInterfaceDriver
+## Tutorial stage 2 - implementing PanelMainInterfaceDriver and interlocked subpages
 
 The project now works the same as the minimum plugins, we can now start adding functionality.
 
@@ -109,3 +109,55 @@ TODO - fix these instructions.
 #### Info message subpage
  Similar to the help message page. we have added text from the config file and put a toggling button on the page.
  The toggling button is being registered when the page appears and de-registered when it disappears.
+
+## Tutorial stage 3 - Implementing a PIN page
+
+Starting with "basic-tp" make a new project and call it "basc-tp-with-pin". We aren't going to change the factory definition though, this will be our tp plugin project moving forward and the old project is left as-is for reference.
+
+There will be minimal changes to the main project.
+
+### touch panel file
+
+* tp file: "essentials-basic-tp-with-pin.vtp"
+* smart graphics file: "essentials-basic-tp-with-pin.sgd"
+
+* Copy the PIN page from the Essentials demo onto your touch panel.
+  * The PIN page must have a z-order above all sub pages we want to block, we aren't closing anything when the pin is visible, just covering everything else to make it inaccessable on the touch panel.
+* Compile the touch panel and copy the smart graphics file onto the processor ("\\user\\programX\\sgd\\essentials-basic-tp-with-pin.sgd")
+
+### config file
+
+* config file: "configurationFile-essentials-basic-room-with-pin.json"
+
+* add a password and sgd file to the config file touchpanel device "properties" section (e.g. "password": "1988", "sgdFile": "essentials-basic-tp-with-pin.sgd" )
+  * the password will be touch panel specific, so you can have a different password per touch panel.
+* add a password to the config file room "properties" section (e.g. "password": "1234" )
+  * the password is specific to the room.
+* You can either choose to make passwords at a room level or at a touchpanel level or both at once. You can use one password as a back door if you like, for example tell the clients the room password and keep the touchpanel password as an admin password.
+
+### room plugin
+
+* room project: "essentials-basic-room-epi.csproj"
+* room plugin: "essentials-basic-room-epi.dll"
+
+* Define and add an interface for a password in the config.cs
+  * public interface IHasPassword
+
+# tp plugin
+
+* tp project: "essentials-basic-tp-epi-with-pin.csproj"
+* tp plugin: "essentials-basic-tp-epi.dll"
+* PIN driver class: "PinDriver.cs"
+  
+This is just an updated version of "basic-tp" so the namespace and assemnbly name will stay "basic-tp" but in a different project so we can still refer to our previous "basic-tp" project before we added the PIN.
+
+* unload the basic-tp project.
+* copy basic-tp and rename the project to "basic-tp-with-pin" but do not change the assembly name or factory reference.
+
+* in BasicPanelMainInterfaceDriver constructor add:
+  * ChildDrivers.Add(new PinDriver(this, config));
+* in BasicPanelMainInterfaceDriver remove any reference to "IsAuthorized", we're going to do that in the new driver class.
+* create a new class "PinDriver", it will be similar to the other drivers we have created.
+* copy and modify code related to the pin page from EssentialsMainInterfaceDriver.cs
+
+Now we have a working PIN page.

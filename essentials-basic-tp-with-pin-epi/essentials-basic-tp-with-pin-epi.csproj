@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93BABD28-EC75-41C9-9E69-EB3477340E1A}</ProjectGuid>
+    <ProjectGuid>{A29EB9DA-C65B-4B0D-B162-4761C6F65AC2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>essentials_basic_tp_epi</RootNamespace>
@@ -156,6 +156,7 @@
     <Compile Include="Drivers\BasicPanelMainInterfaceDriver.cs" />
     <Compile Include="Drivers\HelpButtonDriver.cs" />
     <Compile Include="Drivers\InfoButtonDriver.cs" />
+    <Compile Include="Drivers\PinDriver.cs" />
     <Compile Include="Joins\UIStringJoin.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
