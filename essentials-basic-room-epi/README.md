@@ -82,7 +82,7 @@ Use "EssentialsPanelMainInterfaceDriver" from PepperDash Essentials as a referen
 * create the class "BasicPanelMainInterfaceDriver", extend PanelDriverBase and implement IDisposable
 * we'll handle reserved sigs in here, for now just initialize them and nothing else.
 * add PanelDriverBase CurrentChildDriver to hold the sub drivers
-* add a "List<PanelDriverBase> ChildDrivers" property to store child drivers, this is not how it was done in EssentialsHeaderDriver
+* add a "List\<PanelDriverBase> ChildDrivers" property to store child drivers, this is not how it was done in EssentialsHeaderDriver
 * add the required disposable interface implementations. In the method Dispose iterate through ChildDrivers and if any item implements IDisposeable then call dispose on it.
 * create BasicPanelMainInterfaceDriver in Device.SetupPanelDrivers before room is defined.
 
@@ -107,6 +107,7 @@ TODO - fix these instructions.
   * "help": { "message":"Contact reception for help" }
 
 #### Info message subpage
+
  Similar to the help message page. we have added text from the config file and put a toggling button on the page.
  The toggling button is being registered when the page appears and de-registered when it disappears.
 
@@ -143,7 +144,7 @@ There will be minimal changes to the main project.
 * Define and add an interface for a password in the config.cs
   * public interface IHasPassword
 
-# tp plugin
+### tp plugin
 
 * tp project: "essentials-basic-tp-epi-with-pin.csproj"
 * tp plugin: "essentials-basic-tp-epi.dll"
@@ -161,3 +162,65 @@ This is just an updated version of "basic-tp" so the namespace and assemnbly nam
 * copy and modify code related to the pin page from EssentialsMainInterfaceDriver.cs
 
 Now we have a working PIN page.
+
+## Tutorial stage 4 - Adding an audio DSP
+
+We want to implement a third party audio DSP to use as the main room volume control, something I could not figure out using any of the built in Essentials room types, hence why this project was started.
+
+We are going to create room and tp audio drivers to minimise the clutter in the room and and tp plugins.
+
+Here are the main files:
+
+* essentials-basic-audio-room.csproj
+* essentials-basic-audio-tp.csproj
+* configurationFile-essentials-basic-audio-room.json
+
+Delete the loaded dlls from the processor before starting, we are going to use the same namespace so we don't want the code loading the wrong plugin.
+ "essentials-basic-room-epi.dll"
+ "essentials-basic-tp-epi.dll"
+
+### epi-qsc-qsysdsp plugin
+
+* download and load the latest QSYS plugin dll <[epi-qsc-qsysdsp](https://github.com/PepperDash/epi-qsc-qsysdsp/releases)> ("\\user\\programX\\plugins\\").
+  
+### basic-audio-room plugin
+
+The room plugin is "essentials-basic-audio-room.csproj"
+
+* add "RoomAudio.cs" and copy the code from the repo.
+  * trying to put as much audio code in here as possible.
+* add "IHasAudioDevice" to the Device definition
+  * Create IHasAudioDevice interace and add RoomAudio to it.
+* add the following property
+  * public RoomAudio Audio { get; set; }
+* add the following to the Device constructor
+  * Audio = new RoomAudio(PropertiesConfig);
+* add SetDefaultLevels() to Device to meet interface requirement and have it call Audio.SetDefaultLevels()
+* add "defaultAudioKey" to Config.cs
+
+### basic-audio-tp plugin
+
+* Device.cs, Factory.cs and Config.cs don't change
+* Create "BasicAudioDriver.cs" and copy the code from the repo. Most of the code has come from EssentialsPanelAvFunctionsDriver.
+* Add the follwoing to the "BasicPanelMainInterfaceDriver" contructor
+  * ChildDrivers.Add(new BasicAudioDriver(this, config));
+* In SetupChildDrivers() we need to change the input parameter type to IBasicRoom then pass the room to all drivers instead of just the propertiesconfig, the driver needs to access the room to get the current device for the driver.
+* Modify Setup() in each existing driver to accept IBasicRoom as an input parameter, and add code to get properties from that room in each Setup().
+  * var roomConf = room.PropertiesConfig;
+
+### basic-audio-tp touchpanel
+
+* add volume and mic buttons to the footer, and the Volume-Dual-Mute popup from the Essentials demo tp.
+
+### basic-audio-room config file
+
+* add a dsp as per "configurationFile-essentials-basic-audio-room.json"
+  * remember that the rooms must be below all other devices in the config file.
+* here is an example of a single level control block definition in the config dsp device "properties":
+  * "levelControlBlocks": { "fader-room-1": {  "label": "Room 1", "levelInstanceTag": "Room1.Master.Vol" } }
+* add "defaultAudioKey" to the room properties
+
+### qsys file
+
+* create and emulate a qsys file with Named controls for the gains, such as
+  * "Room1.Master.Vol"
