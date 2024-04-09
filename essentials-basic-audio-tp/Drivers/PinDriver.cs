@@ -70,7 +70,7 @@ namespace essentials_basic_tp_epi.Drivers
             Tswx52ButtonVoiceControl tswx52ButtonVoiceControl = TriList as Tswx52ButtonVoiceControl;
             if (tswx52ButtonVoiceControl != null)
             {
-                //Debug.Console(2, "~DefaultPanelMainInterfaceDriver is Tswx52ButtonVoiceControl. ExtenderTouchDetectionReservedSigs {1}= null", ClassName, tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs == null ? "=" : "!");
+                //Debug.Console(2, "DefaultPanelMainInterfaceDriver is Tswx52ButtonVoiceControl. ExtenderTouchDetectionReservedSigs {1}= null", ClassName, tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs == null ? "=" : "!");
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.Use();
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.DeviceExtenderSigChange += ExtenderTouchDetectionReservedSigs_DeviceExtenderSigChange;
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.Time.UShortValue = 1;

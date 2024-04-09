@@ -1,5 +1,6 @@
 ﻿using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharpPro.UI;
+using essentials_basic_room.Functions;
 using essentials_basic_room_epi;
 using essentials_basic_tp.Drivers;
 using PepperDash.Core;
@@ -25,8 +26,8 @@ namespace essentials_basic_tp_epi.Drivers
             Config config)
             : base(trilist)
         {
-            Debug.Console(0, "{0} config {1}= null", ClassName, config == null ? "=" : "!");
-            //Debug.Console(0, "{0} trilist {1}= null", ClassName, trilist == null ? "=" : "!");
+            Debug.Console(0, "{0} config {1}", ClassName, config == null ? "== null" : "exists");
+            //Debug.Console(0, "{0} trilist {1}", ClassName, trilist == null ? "== null" : "exists");
             this.Config = config;
             AddReservedSigs(trilist);
             PopupInterlock = new JoinedSigInterlock(TriList);
@@ -34,10 +35,22 @@ namespace essentials_basic_tp_epi.Drivers
             ChildDrivers.Add(new PinDriver(this, config));
             PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));
             PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
-
-
-            Debug.Console(2, "{0} **** constructor adding BasicAudioDriver ****", ClassName);
-            ChildDrivers.Add(new BasicAudioDriver(this, config));
+            ChildDrivers.Add(new BasicAudioDriver(this, config, 
+                new BasicAudioDriverControls(eVolumeKey.Volume.ToString(), 
+                    new BasicAudioDriverJoins
+                    {
+                        VolumeGaugeVisible = UIBoolJoin.VolumeGaugePopupVisible,
+                        VolumeUpPress = UIBoolJoin.VolumeUpPress,
+                        VolumeDownPress = UIBoolJoin.VolumeDownPress,
+                        VolumeMutePressAndFb = UIBoolJoin.Volume1ProgramMutePressAndFB,
+                        VolumeButtonPopupPress = UIBoolJoin.VolumeButtonPopupPress,
+                        VolumeSlider1 = UIUshortJoin.VolumeSlider1Value
+                    })
+            )); // main volume driver
+            ChildDrivers.Add(new BasicAudioDriver(this, config,
+                new BasicAudioDriverControls(eVolumeKey.MicLevel.ToString(),
+                    new BasicAudioDriverJoins { VolumeMutePressAndFb = UIBoolJoin.Volume1SpeechMutePressAndFB })
+            )); // mic level driver
 
             Debug.Console(2, "{0} constructor done", ClassName);
         }

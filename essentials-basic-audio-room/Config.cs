@@ -1,6 +1,7 @@
 ﻿using essentials_basic_room.Interfaces;
 using Newtonsoft.Json;
 using PepperDash.Essentials.Room.Config;
+using System.Collections.Generic;
 
 namespace essentials_custom_rooms_epi
 {
@@ -15,5 +16,27 @@ namespace essentials_custom_rooms_epi
         /// </summary>
         [JsonProperty("defaultAudioKey")]
         public string DefaultAudioKey { get; set; }
+
+        [JsonProperty("defaultMicKey")]
+        public string DefaultMicKey { get; set; }
+
+        [JsonProperty("faders")]
+        public Dictionary<string, BasicVolumeLevelConfig> Faders { get; set; }
+    }
+
+    /// <summary>
+    /// an array of devices
+    /// </summary>
+    public class BasicVolumeLevelConfig
+    {
+        [JsonProperty("deviceKey")]
+        public string DeviceKey { get; set; }
+
+        [JsonProperty("label")]
+        public string Label { get; set; }
+
+        [JsonProperty("level")]
+        public int Level { get; set; }
+
     }
 }

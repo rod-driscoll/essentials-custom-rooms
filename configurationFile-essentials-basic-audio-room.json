@@ -44,6 +44,17 @@
                             "useAbsoluteValue": false,
                             "unmuteOnVolChange": true
                         },
+                        "mics-room-1": {
+                            "label": "Reception mics",
+                            "levelInstanceTag": "HHeld.Mic.Vol",
+                            "muteInstanceTag": "HHeld.Mic.Mute",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "isMic": false,
+                            "useAbsoluteValue": false,
+                            "unmuteOnVolChange": true
+                        },
                         "fader-room-2": {
                             "label": "Assembly",
                             "levelInstanceTag": "House.Master.Vol",
@@ -159,16 +170,22 @@
                     },
                     "password": "1234",
                     "defaultAudioKey": "dsp-1-fader-room-1",
-                    "volumes": {
-                        "master": {
+                    "defaultMicKey": "dsp-1-mics-room-1",
+                    "faders": {
+                        "1" : {
                             "level": 40,
-                            "deviceKey": "dsp-1-fader-room-1",
+                            "deviceKey": "dsp-1-mics-room-1",
                             "label": "Volume"
                         },
-                        "program": {
+                        "2" : {
                             "level": 40,
                             "deviceKey": "dsp-1-fader-room-1",
-                            "label": "Program"
+                            "label": "Microphones"
+                        },
+                        "3" : {
+                            "level": 40,
+                            "deviceKey": "dsp-1-fader-room-2",
+                            "label": "Room 2"
                         }
                     }
                 }

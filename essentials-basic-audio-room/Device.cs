@@ -22,13 +22,11 @@ namespace essentials_basic_room_epi
             try
             {
                 Debug.Console(2, this, "{0} constructor starting", ClassName);
-                //Debug.Console(2, this, "{0} config {1}= null", ClassName, config == null ? "=" : "!");
-                //Debug.Console(2, this, "{0} config.Properties {1}= null", ClassName, config.Properties == null ? "=" : "!");
                 PropertiesConfig = JsonConvert.DeserializeObject<Config> (config.Properties.ToString());
-                //Debug.Console(2, this, "{0} PropertiesConfig {1}= null", ClassName, PropertiesConfig == null ? "=" : "!");
+                //Debug.Console(2, this, "{0} PropertiesConfig {1}", ClassName, PropertiesConfig == null ? "==null" : "exists");
                 Audio = new RoomAudio(PropertiesConfig);
                 Debug.Console(2, this, "{0} RoomAudio created", ClassName);
-                Debug.Console(2, this, "{0} Room as IBasicRoom {1}= null", ClassName, (this as IBasicRoom) == null ? "=" : "!");
+                Debug.Console(2, this, "{0} Room as IBasicRoom {1}", ClassName, (this as IBasicRoom) == null ? "==null" : "exists");
 
                 InitializeRoom();
                 Debug.Console(2, this, "{0} constructor complete", ClassName);

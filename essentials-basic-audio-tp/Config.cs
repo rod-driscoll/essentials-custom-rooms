@@ -1,5 +1,4 @@
 ﻿using essentials_basic_room.Interfaces;
-using essentials_custom_rooms_epi;
 using Newtonsoft.Json;
 using PepperDash.Essentials.Core;
 

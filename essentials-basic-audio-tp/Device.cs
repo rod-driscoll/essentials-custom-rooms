@@ -50,25 +50,15 @@ namespace essentials_basic_tp_epi
             }
 
             Debug.Console(0, this, "Room '{0}' checking for IBasicRoom", roomKey);
-            Debug.Console(0, this, "{0} Room as IBasicRoom {1}= null", ClassName, (room as IBasicRoom) == null ? "=" : "!");
+            Debug.Console(0, this, "{0} Room as IBasicRoom {1}", ClassName, (room as IBasicRoom) == null ? "==null" : "exists");
 
             if (room is IBasicRoom)
             {
                 Debug.Console(0, this, "Room '{0}' is IBasicRoom", roomKey);
                 var room_ = (room as IBasicRoom);
 
-                if (room_.PropertiesConfig == null)
-                    Debug.Console(2, "{0} PropertiesConfig == null", ClassName);
-                else
-                    Debug.Console(2, "{0} PropertiesConfig != null", ClassName);
-
-                if (room_.Config.Properties == null)
-                    Debug.Console(2, "{0} Properties == null", ClassName);
-                else
-                {
-                    Debug.Console(2, "{0} Properties != null", ClassName);
-
-                }
+                Debug.Console(2, "{0} PropertiesConfig {1}", ClassName, room_.PropertiesConfig == null ? "==null" : "exists");
+                Debug.Console(2, "{0} Properties {1}", ClassName, room_.Config.Properties == null ? "==null" : "exists");
 
                 mainDriver.SetupChildDrivers(room_);
                 Debug.Console(0, this, "Room '{0}' UI Controllers loaded", roomKey);

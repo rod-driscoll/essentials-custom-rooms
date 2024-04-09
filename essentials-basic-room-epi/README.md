@@ -224,3 +224,27 @@ The room plugin is "essentials-basic-audio-room.csproj"
 
 * create and emulate a qsys file with Named controls for the gains, such as
   * "Room1.Master.Vol"
+
+## Tutorial stage 4.1 - Adding a mic level to the audio DSP
+
+We currently have 1 volume control but that is all, we are now going to add a second volume control for mic mute.
+
+### RoomAudio and RoomVolume
+
+RoomAudio implementing IHasCurrentVolumeControls doesn't cater for multiple levels such as a mic, so we are going to create RoomVolume and move most of the implementation of RoomAudio into RoomVolume, then create multiple instances of RoomVolume and store them in a dictionary within RoomAudio.
+
+Using an enum eVolumeKey to use for keys of the dictionary to avoid typos later.
+
+### Room Config
+
+Add a new property "DefaultMicKey" to Config and the file, it'll be used like DefaultAudioKey in code.
+
+### BasicAudioDriver
+
+BasicAudioDriver needs to be modified so we can call an instance of it for each volume node. When BasicAudioDriver is created it needs to know the key for the instance to find the device in the current room, and the joins to control it, "BasicAudioDriverControls" will be a new class used to hold the key for the volume device and the joins to control it, the joins will be in another new class called "BasicAudioDriverJoins".
+
+### BasicPanelMainInterfaceDriver update for mic
+
+We are now going to define an instance of BasicAudioDriver for the program volume and another for the mic level.
+
+Now we have volume and mic control working.
