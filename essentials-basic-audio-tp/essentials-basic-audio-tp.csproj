@@ -151,13 +151,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioListDriver.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="Drivers\Audio\BasicAudioDriver.cs" />
+    <Compile Include="Drivers\Audio\BasicAudioLevelDriver.cs" />
     <Compile Include="Drivers\BasicPanelMainInterfaceDriver.cs" />
-    <Compile Include="Drivers\BasicAudioDriver.cs" />
     <Compile Include="Drivers\HelpButtonDriver.cs" />
     <Compile Include="Drivers\InfoButtonDriver.cs" />
     <Compile Include="Drivers\PinDriver.cs" />
+    <Compile Include="Drivers\SubpageReferenceList.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Joins\UiBoolJoin.cs" />
     <Compile Include="Joins\UIStringJoin.cs" />

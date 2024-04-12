@@ -248,3 +248,9 @@ BasicAudioDriver needs to be modified so we can call an instance of it for each 
 We are now going to define an instance of BasicAudioDriver for the program volume and another for the mic level.
 
 Now we have volume and mic control working.
+
+## Tutorial stage 4.1 - Adding a list of levels to the audio DSP
+
+TODO - docs.
+
+The audio driver has been moved so that there is only one line to call the audio driver from the main interface driver, and then the audio driver calls a level driver for room vol and another for room mics, then a subpage reference list driver contains an instance of level driver for each level. The level driver now takes sigs rather than join numbers so that it can work for regular sigs and sigs inside of smart objects.

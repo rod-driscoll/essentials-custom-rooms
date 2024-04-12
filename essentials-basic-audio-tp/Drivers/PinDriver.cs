@@ -7,7 +7,6 @@ using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.SmartObjects;
-using PepperDash.Essentials.Room.Config;
 using System;
 using System.Text;
 
@@ -64,8 +63,9 @@ namespace essentials_basic_tp_epi.Drivers
             TriList.SetSigFalseAction(PressJoin, () => IsAuthorized = false);
             TriList.SetBool(joins.UiBoolJoin.PinDialogShowVisible, true);
 
-            _timeoutMs = 1000 * config.ScreenSaverTimeoutMin == 0 ? 20 : config.ScreenSaverTimeoutMin * 60;
-
+            _timeoutMs = 1000 * (config.ScreenSaverTimeoutMin == 0 ? 20 : config.ScreenSaverTimeoutMin * 60);
+            Debug.Console(2, "{0}. timeOut: {1}ms", ClassName, _timeoutMs);
+            
             //Debug.Console(2, "{0}. testing for tsx52or60: type: {1}", ClassName, trilist.GetType().Name);
             Tswx52ButtonVoiceControl tswx52ButtonVoiceControl = TriList as Tswx52ButtonVoiceControl;
             if (tswx52ButtonVoiceControl != null)
@@ -147,13 +147,14 @@ namespace essentials_basic_tp_epi.Drivers
 
         private void ManageInactivityTimer()
         {
-            //Debug.Console(0, "{0} ManageInactivityTimer start", ClassName);
             if (InactivityTimer != null)
             {
+                Debug.Console(0, "{0} ManageInactivityTimer resetting", ClassName);
                 InactivityTimer.Reset(_timeoutMs);
             }
             else
             {
+                Debug.Console(0, "{0} ManageInactivityTimer creating new timer: {1}ms", ClassName, _timeoutMs);
                 InactivityTimer = new CTimer((o) => InactivityTimerExpired(), _timeoutMs);
             }
             //Debug.Console(0, "{0} ManageInactivityTimer end", ClassName);

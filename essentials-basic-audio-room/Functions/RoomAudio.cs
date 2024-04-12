@@ -1,8 +1,11 @@
 ﻿using essentials_custom_rooms_epi;
 using PepperDash.Core;
+using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace essentials_basic_room.Functions
 {
@@ -45,9 +48,11 @@ namespace essentials_basic_room.Functions
         bool IHasCurrentVolumeControls.ZeroVolumeWhenSwtichingVolumeDevices { get; }
 
         public ushort DefaultVolume { get; set; }
+        public string Label { get; set; }
 
-        public RoomVolume(IKeyed device)
+        public RoomVolume(IKeyed device, string label)
         {
+            Label = label;
             CurrentVolumeDevice = device;
             DefaultVolumeControls = CurrentVolumeDevice as IBasicVolumeControls;
             Debug.Console(2, "{0} CurrentVolumeDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : CurrentVolumeDevice.Key);
@@ -82,22 +87,33 @@ namespace essentials_basic_room.Functions
     {
         public string ClassName { get { return "RoomAudio"; } }
 
-        public Dictionary<string, RoomVolume> Levels;
-        //public List<IKeyed> RoomVolumeDevices { get; private set; }
+        public Dictionary<string, RoomVolume> Levels; // Master volume and mic level for the room
+        //public Dictionary<string, RoomVolume> Faders; // custom levels for the room
 
         public Config config { get; private set; }
 
         public RoomAudio(Config config)
         {
             Debug.Console(2, "{0} RoomAudio constructor", ClassName);
+            this.config = config;
 
+            // master volume and mic faders
             Levels = new Dictionary<string, RoomVolume>();
             if (!String.IsNullOrEmpty(config.DefaultAudioKey))
-                Levels.Add(eVolumeKey.Volume.ToString(), new RoomVolume(DeviceManager.GetDeviceForKey(config.DefaultAudioKey)));
+                Levels.Add(eVolumeKey.Volume.ToString(), new RoomVolume(DeviceManager.GetDeviceForKey(config.DefaultAudioKey), eVolumeKey.Volume.ToString()));
             if (!String.IsNullOrEmpty(config.DefaultMicKey))
-                Levels.Add(eVolumeKey.MicLevel.ToString(), new RoomVolume(DeviceManager.GetDeviceForKey(config.DefaultMicKey)));
+                Levels.Add(eVolumeKey.MicLevel.ToString(), new RoomVolume(DeviceManager.GetDeviceForKey(config.DefaultMicKey), eVolumeKey.MicLevel.ToString()));
+            
+            // list of faders for tech page
+            foreach (var fader_ in config.Faders)
+            {
+                Debug.Console(2, "{0} fader: {1}, label: {2}", ClassName, fader_.Key, fader_.Value.Label);
+                var level_ = new RoomVolume(DeviceManager.GetDeviceForKey(fader_.Value.DeviceKey), fader_.Value.Label);
+                Levels.Add(fader_.Key, level_);
+                level_.DefaultVolume = (ushort)fader_.Value.Level;
+            }
+            //Faders = new Dictionary<string, RoomVolume>();
 
-            this.config = config;
             CustomActivate();
         }
 
