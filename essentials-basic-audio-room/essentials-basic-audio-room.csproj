@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{89010CC2-07CA-44F1-A34A-539BFFEB0FE0}</ProjectGuid>
+    <ProjectGuid>{41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>essentials_basic_room</RootNamespace>
@@ -113,7 +113,10 @@
     <Compile Include="Config.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Factory.cs" />
-    <Compile Include="Functions\RoomAudio.cs" />
+    <Compile Include="Functions\Audio\RoomAudio.cs" />
+    <Compile Include="Functions\Audio\RoomAudioPreset.cs" />
+    <Compile Include="Functions\Audio\RoomVolumeLevel.cs" />
+    <Compile Include="Functions\RoomPower.cs" />
     <Compile Include="Interfaces\IHasPassword.cs" />
     <Compile Include="Interfaces\IBasicRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -22,6 +22,9 @@ namespace essentials_custom_rooms_epi
 
         [JsonProperty("faders")]
         public Dictionary<string, BasicVolumeLevelConfig> Faders { get; set; }
+
+        [JsonProperty("audioPresets")]
+        public Dictionary<string, BasicVolumeLevelConfig> AudioPresets { get; set; }
     }
 
     /// <summary>

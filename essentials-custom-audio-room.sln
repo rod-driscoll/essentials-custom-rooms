@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-basic-audio-room", "essentials-basic-audio-room\essentials-basic-audio-room.csproj", "{41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-basic-audio-tp", "essentials-basic-audio-tp\essentials-basic-audio-tp.csproj", "{756424DB-3D24-4366-B3F7-CF1F3E6017B3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C} = {41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41CB0C2A-B85A-4DE9-8212-1935E8D7BC0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{756424DB-3D24-4366-B3F7-CF1F3E6017B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{756424DB-3D24-4366-B3F7-CF1F3E6017B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{756424DB-3D24-4366-B3F7-CF1F3E6017B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{756424DB-3D24-4366-B3F7-CF1F3E6017B3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {47512A77-B950-493F-9779-84EB2B0B9432}
+	EndGlobalSection
+EndGlobal

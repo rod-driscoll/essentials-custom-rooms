@@ -254,3 +254,21 @@ Now we have volume and mic control working.
 TODO - docs.
 
 The audio driver has been moved so that there is only one line to call the audio driver from the main interface driver, and then the audio driver calls a level driver for room vol and another for room mics, then a subpage reference list driver contains an instance of level driver for each level. The level driver now takes sigs rather than join numbers so that it can work for regular sigs and sigs inside of smart objects.
+
+## Adding presets on system power
+
+System power is really complex.
+
+* On the touchpanel copy the "Modal" popup from Essentials.
+* Essentials built in rooms start the system when a source is selected from a list, we are going to make it more straightforward.
+
+* Put a power button on the footer, and give it join 15009, then define uint UiBoolJoin.PowerTogglePress = 15009
+* Make a new TP PowerDriver class and in Setup (Setup is called when a room is assigned to the TP) inset SetSigFalseAction(PowerToggleJoin,PowerButtonPressed); This wil trigger CurrentRoom.RunDefaultPresentRoute(); which will end up calling OnFeedback.FireUpdate(); which is the definition of the room being powered on.
+* Add Audio.SetDefaultLevels(); to the room RunRouteAction. This is where we need to recall an actual preset.
+* 
+
+
+### Notification ribbon
+
+
+* On the touchpanel copy the "Notification Ribbon" popup from Essentials.

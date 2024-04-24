@@ -61,7 +61,7 @@ namespace essentials_basic_tp_epi.Drivers
                     TriList.SetString(joins.UIStringJoin.SipAddress, roomConf.Addresses.SipAddress);
             }
             TriList.SetString(UIStringJoin.HeaderButtonIcon3, "Info");
-            Parent.PopupInterlock.ShowInterlockedWithToggle(PageJoin);
+            //Parent.PopupInterlock.ShowInterlockedWithToggle(PageJoin);
             
             Debug.Console(2, "{0} Setup done", ClassName);
         }

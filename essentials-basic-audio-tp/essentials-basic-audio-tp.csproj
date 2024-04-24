@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BEDD69D2-6764-4EB4-BCB3-9611380532F4}</ProjectGuid>
+    <ProjectGuid>{756424DB-3D24-4366-B3F7-CF1F3E6017B3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>essentials_basic_tp</RootNamespace>
@@ -159,7 +159,9 @@
     <Compile Include="Drivers\BasicPanelMainInterfaceDriver.cs" />
     <Compile Include="Drivers\HelpButtonDriver.cs" />
     <Compile Include="Drivers\InfoButtonDriver.cs" />
+    <Compile Include="Drivers\NotificationRibbonDriver.cs" />
     <Compile Include="Drivers\PinDriver.cs" />
+    <Compile Include="Drivers\PowerDriver.cs" />
     <Compile Include="Drivers\SubpageReferenceList.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Joins\UiBoolJoin.cs" />
@@ -171,7 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\essentials-basic-audio-room\essentials-basic-audio-room.csproj">
-      <Project>{89010cc2-07ca-44f1-a34a-539bffeb0fe0}</Project>
+      <Project>{41cb0c2a-b85a-4de9-8212-1935e8d7bc0c}</Project>
       <Name>essentials-basic-audio-room</Name>
     </ProjectReference>
   </ItemGroup>

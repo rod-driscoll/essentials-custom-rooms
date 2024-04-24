@@ -67,7 +67,7 @@ namespace essentials_basic_tp_epi.Drivers
                 else
                     foreach (var item_ in CurrentRoom_.Audio.Levels)
                         Debug.Console(2, "{0} CurrentRoom_.Audio.Levels[{1}] exists", ClassName, item_.Key);
-                Debug.Console(2, "{0} RefreshCurrentRoom, CurrentVolumeDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
+                Debug.Console(2, "{0} RefreshCurrentRoom, CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
                 if (CurrentVolumeDevice != null) // Connect current room 
                 {
                     CurrentVolumeDevice.CurrentVolumeDeviceChange += CurrentRoom_CurrentAudioDeviceChange;
@@ -78,7 +78,7 @@ namespace essentials_basic_tp_epi.Drivers
 
             Debug.Console(2, "{0} RefreshAudioDeviceConnections done", ClassName);
 
-            if (controls.Key == eVolumeKey.Volume.ToString())
+            if (controls.Key == VolumeKey.Volume.ToString())
             {
                 if (TriList is TswFt5ButtonSystem)
                 {
@@ -104,7 +104,7 @@ namespace essentials_basic_tp_epi.Drivers
         public void VolumeUpPress(bool state)
         {
             Debug.Console(1, "UpPress");
-            Debug.Console(2, "{0} UpPress CurrentVolumeDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
+            Debug.Console(2, "{0} UpPress CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
             if (CurrentVolumeDevice?.CurrentVolumeControls != null)
                 CurrentVolumeDevice.CurrentVolumeControls.VolumeUp(state);
         }
@@ -197,7 +197,7 @@ namespace essentials_basic_tp_epi.Drivers
                 {
                     driver.Setup(room);
                     var key_ = driver.controls.Key; // number, not name
-                    //Debug.Console(2, "{0} Setup key: {1} {2}", ClassName, key_, driver.CurrentVolumeDevice==null?"== null":"exists");
+                    //Debug.Console(2, "{0} Setup key: {1} {2}", ClassName, key_, driver.CurrentDevice==null?"== null":"exists");
                     if (driver.CurrentVolumeDevice != null) 
                     {
                         var i = Convert.ToInt16(key_);
