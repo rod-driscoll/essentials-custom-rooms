@@ -110,12 +110,23 @@
                             "useAbsoluteValue": true,
                             "unmuteOnVolChange": false
                         },
-                        "preset-room-1":
+                        "preset-1":
                         {
-                            "label": "Reception preset",
+                            "label": "System On",
                             "levelInstanceTag": "Snapshot_ControllerLoad1",
                             "disabled": false,
                             "hasLevel": true,
+                            "hasMute": false,
+                            "useAbsoluteValue": true
+                        },
+                        "preset-2":
+                        {
+                            "label": "System Off",
+                            "levelInstanceTag": "Snapshot_ControllerLoad2",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": false,
+                            "isMic": false,
                             "useAbsoluteValue": true
                         }
                     },
@@ -195,15 +206,18 @@
                         }
                     },
                     "audioPresets": {
-                        "system-on": {
+                        "1": {
+                            "function": "system-on",
                             "deviceKey": "dsp-1--preset-1",
                             "label": "System on"
                         },
-                        "system-off": {
+                        "2": {
+                            "function": "system-off",
                             "deviceKey": "dsp-1--preset-2",
                             "label": "System off"
                         },
-                        "default-levels": {
+                        "3": {
+                            "function": "default-levels",
                             "deviceKey": "dsp-1--preset-3",
                             "label": "Default levels"
                         }

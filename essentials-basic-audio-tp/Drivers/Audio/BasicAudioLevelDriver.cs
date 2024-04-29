@@ -42,19 +42,9 @@ namespace essentials_basic_tp.Drivers
         /// as triggered by Volume up/down operations
         /// </summary>
         BoolFeedbackPulseExtender VolumeGaugeFeedback;
-        /// <summary>
-        /// The amount of time that the volume buttons stays on screen, in ms
-        /// </summary>
-        //public uint VolumeButtonPopupTimeout
-        //{
-        //    get { return VolumeButtonsPopupFeedback.TimeoutMs; }
-        //    set { VolumeButtonsPopupFeedback.TimeoutMs = value; }
-        //}
-        
+
         public event EventHandler<VolumeDeviceChangeEventArgs> CurrentVolumeDeviceChange;
-
         public BasicAudioDriverControls controls { get; private set; }
-
 
         public BasicAudioLevelDriver(BasicPanelMainInterfaceDriver parent, BasicAudioDriverControls controls)
                     : base(parent.TriList)
@@ -69,8 +59,6 @@ namespace essentials_basic_tp.Drivers
                 VolumeGaugeFeedback.Feedback
                     .LinkInputSig(controls.Sigs.GaugeVisible);
             }
-
-            //Register();
             //Debug.Console(2, "{0} constructor done", ClassName);
         }
 

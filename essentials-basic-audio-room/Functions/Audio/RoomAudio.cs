@@ -52,9 +52,9 @@ namespace essentials_basic_room.Functions
 
             foreach (var item_ in config.AudioPresets)
             {
-                Debug.Console(2, "{0} preset: {1}, name: {2}, key: {3}", ClassName, item_.Key, item_.Value.Label, item_.Value.DeviceKey); 
+                Debug.Console(2, "{0} preset: {1}, name: {2}, key: {3}, function: {4}", ClassName, item_.Key, item_.Value.Label, item_.Value.DeviceKey, item_.Value.Function);
                 // preset: system-on, name: System on , key: preset-1
-                var preset_ = new RoomAudioPreset(item_.Key, item_.Value);
+                var preset_ = new RoomAudioPreset(item_.Value);
                 //Debug.Console(2, "{0} preset {1} ", ClassName, preset_==null ? "== null":"exists");
                 Presets.Add(item_.Key, preset_);
             }
@@ -102,11 +102,11 @@ namespace essentials_basic_room.Functions
             Debug.Console(1, "{0} PresetRecall", ClassName);
             if (Presets?.Count > 0)
             {
-                var kvp_ = Presets.First(x => x.Key == name); //< string, RoomAudioPreset >
+                var kvp_ = Presets.First(x => x.Value.Function == name); //< string, RoomAudioPreset > where RoomAudioPreset.Function == "system-on"
                 if (!String.IsNullOrEmpty(kvp_.Key))
                 {
                     Debug.Console(1, "{0} kvp: {1}", ClassName, kvp_.Key);
-                    kvp_.Value.RunPreset();
+                    kvp_.Value.RecallPreset();
                     return true;
                 }
             }

@@ -2,7 +2,6 @@
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -75,16 +74,22 @@ namespace essentials_basic_room.Functions.Audio
         public IKeyed CurrentDevice { get; private set; }
 
         public string Name { get; set; }
-        public string StopOrPresetButtonLabel { get; private set; }
         public string Key { get; private set; }
+        public string Function { get; private set; }
+        public string StopOrPresetButtonLabel { get; private set; }
         private ushort presetNumber;
 
-        public RoomAudioPreset(string key, BasicVolumeLevelConfig config)
+        public RoomVolumeLevel Level { get; private set; }
+
+        public RoomAudioPreset(BasicAudioPresetConfig config)
         {
             Name = config.Label;
-            Key = key; // e.g. "system-on", the room device looks for key="system-on" to call on system power
+            Key = config.DeviceKey;
+            Function = config.Function; // e.g. "system-on", the room device looks for Function="system-on" to call on system power
 
-            var match = Regex.Match(config.DeviceKey, @"([-_\w]+)--(.+)"); // config.DeviceKey = "deviceKey--presetName"
+
+            var match = Regex.Match(Key, @"([-_\w]+)--(.+)"); // Key = "deviceKey--presetName"
+            // add device defined in config device "presets", this doesn't get feedback though
             if (match.Success)
             {
                 var devKey = match.Groups[1].Value; // e.g. "dsp-1"
@@ -97,7 +102,7 @@ namespace essentials_basic_room.Functions.Audio
 
                     var presetKey_ = match.Groups[2].Value; // e.g. "preset-1"
                     //Debug.Console(2, "{0} presetKey_: {1}", ClassName, presetKey_);
-                    var m1_ = Regex.Match(presetKey_, @"(\d)");
+                    var m1_ = Regex.Match(presetKey_, @"(\d)"); // e.g. "1"
                     if (m1_.Success)
                     {
                         //Debug.Console(2, "{0} preset Index: {1}", ClassName, m1_.Groups[1].Value);
@@ -108,6 +113,12 @@ namespace essentials_basic_room.Functions.Audio
                     Initialize();
                     CustomActivate();
                 }
+                // add device defined in config device "levelControlBlocks", this gets feedback, but must be defined in qsys as a NamedControl
+                var levelDevKey = match.Groups[1].Value + "-" + match.Groups[2].Value; // e.g. "dsp-1-preset-1]"
+                var levelDevice_ = (DeviceManager.GetDeviceForKey(levelDevKey));
+                Debug.Console(2, "{0} levelDevice {1}", ClassName, levelDevice_ == null ? "== null" : levelDevice_.Key);
+                if (levelDevice_ != null)
+                    Level = new RoomVolumeLevel(levelDevice_, Name);
             }
         }
 
@@ -126,9 +137,9 @@ namespace essentials_basic_room.Functions.Audio
         /// The audio DSP plugins don't use an interface for presets so we have to use reflection to use them.
         /// q-sys plugin has this method, we'll probabay find other models use different methods
         /// </summary>
-        public void RunPreset()
+        public void RecallPreset()
         {
-            Debug.Console(2, CurrentDevice, "{0} RunPreset: {1}", ClassName, presetNumber);
+            Debug.Console(2, CurrentDevice, "{0} RecallPreset: {1}", ClassName, presetNumber);
             //Debug.Console(2, CurrentDevice, "{0} RunPresetNumber CurrentDevice {1}", ClassName, CurrentDevice == null ? "== null" : "exists");
             var method = CurrentDevice.GetType().GetMethod("RunPresetNumber",
                                                     BindingFlags.Public | BindingFlags.Instance,
@@ -146,7 +157,7 @@ namespace essentials_basic_room.Functions.Audio
                 }
                 catch (Exception e)
                 {
-                    Debug.Console(2, CurrentDevice, "{0} RunPreset({1}) ERROR: {2}", ClassName, presetNumber, e.Message);
+                    Debug.Console(2, CurrentDevice, "{0} RecallPreset({1}) ERROR: {2}", ClassName, presetNumber, e.Message);
                 }
             }
         }

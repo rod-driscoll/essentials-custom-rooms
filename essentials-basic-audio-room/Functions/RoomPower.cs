@@ -177,7 +177,10 @@ namespace essentials_basic_room.Functions
                         Debug.Console(2, "{0} PowerTimerExpired, unsubscribing", ClassName);
                         CurrentSeconds = 0;
                         if (PowerStatus == PowerStates.cooling)
-                            PowerStatus = PowerStates.off;
+                        {
+                            if(PendingPowerStatus == PowerStates.off || PendingPowerStatus == PowerStates.standby)
+                                PowerStatus = PendingPowerStatus;
+                        }
                         else if (PowerStatus == PowerStates.warming)
                             PowerStatus = PowerStates.on;
 

@@ -1,5 +1,4 @@
 ﻿using Crestron.SimplSharpPro;
-using Crestron.SimplSharpPro.DeviceSupport;
 using essentials_basic_room.Functions;
 using essentials_basic_room_epi;
 using essentials_basic_tp_epi.Drivers;
@@ -70,8 +69,10 @@ namespace essentials_basic_tp.Drivers
                    })
             ));
             Debug.Console(0, "{0} {1} loaded ", ClassName, VolumeKey.MicLevel.ToString());
-
+            // Load faders on SRL
             ChildDrivers.Add(new AudioListDriver(parent));
+            // Load presets in SmartObject DynamicList
+            ChildDrivers.Add(new AudioPresetListDriver(parent));
             // toggle audio page
             TriList.SetSigFalseAction(UIBoolJoin.VolumeButtonPopupPress, () =>
                 parent.PopupInterlock.ShowInterlockedWithToggle(UIBoolJoin.VolumeButtonPopupPress));

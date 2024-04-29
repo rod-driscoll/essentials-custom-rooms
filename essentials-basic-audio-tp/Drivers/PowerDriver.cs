@@ -8,7 +8,6 @@ using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using System;
 using System.Linq;
-using static Crestron.SimplSharpPro.CrestronConnected.CrestronConnectedDisplayV2;
 
 namespace essentials_basic_tp.Drivers
 {
