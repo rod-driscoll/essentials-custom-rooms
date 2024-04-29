@@ -259,6 +259,16 @@ The audio driver has been moved so that there is only one line to call the audio
 
 System power is really complex, I haven't documented the process because it was a lot. I've tried to move as much code into power driver classes so once you have working code you only need to know where to add code to be triggered on power events.
 
+Audio presets do not support feedback in Essentials but it can be done by using levelControlBlocks.
+
+* Create presets in the config file properties section of the dsp config
+  * e.g., "properties": { "presets": { "preset-1": { "label": "System On", "preset": "PRESETS 1 0" }}}
+  * this will allow presets to be triggered
+* Give each preset a named control ID then add them to the config file using the same name as used in the presets section (e.g. "preset-1").
+  * e.g., "properties": { "levelControlBlocks": { "preset-1": "label": "System On", "levelInstanceTag": "Snapshot_ControllerLoad1", "disabled": false, "hasLevel": true, "hasMute": false, "useAbsoluteValue": true }}
+
+Now for the code required, I got carried away and added the power modal subpage and the ribbon info subpage, and am calling startup and shutdown presets using the power control, a dynamic list of presets has also been added to the audio control page.
+
 * On the touchpanel copy the "Modal" and "Notification ribbon" popup from Essentials.
 * Essentials built-in rooms start the system when a source is selected from a list, which then calls CurrentRoom.RunDefaultPresentRoute().
 
@@ -266,6 +276,7 @@ System power is really complex, I haven't documented the process because it was 
 * Make a new TP PowerDriver class and in Setup (Setup is called when a room is assigned to the TP) inset SetSigFalseAction(PowerToggleJoin,PowerButtonPressed); This wil trigger CurrentRoom.RunDefaultPresentRoute(); which will end up calling OnFeedback.FireUpdate(); which is the definition of the room being powered on.
 * Add Audio.SetDefaultLevels(); to the room RunRouteAction. This is where we need to recall an actual preset.
 * write more documentation...
+
 
 ## Moving forward
 
