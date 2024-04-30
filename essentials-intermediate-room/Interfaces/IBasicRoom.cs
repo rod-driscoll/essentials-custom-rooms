@@ -4,9 +4,10 @@ using PepperDash.Essentials.Core;
 
 namespace essentials_basic_room_epi
 {
-    public interface IBasicRoom: IEssentialsRoom//, IHasCurrentVolumeControls
+    public interface IBasicRoom: IEssentialsRoom
     {
         Config PropertiesConfig { get; }
+        void StartUp();
     }
     public interface IBasicRoomSetup
     {
@@ -16,5 +17,9 @@ namespace essentials_basic_room_epi
     {
         RoomAudio Audio { get; set; }
     }
-    
+    public interface IHasPowerFunction
+    {
+        RoomPower Power { get; set; }
+    }
+
 }

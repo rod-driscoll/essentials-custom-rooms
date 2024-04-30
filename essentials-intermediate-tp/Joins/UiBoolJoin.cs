@@ -4,6 +4,8 @@
     {
         public const uint ToggleButtonPress = 3334;
 
+        public const uint PowerTogglePress = 15009;
+
 
         public const uint PinDialogShowVisible = 15220;
         public const uint PinDialogShowPress = 15221;

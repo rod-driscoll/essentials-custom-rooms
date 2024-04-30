@@ -32,7 +32,8 @@ namespace essentials_basic_tp_epi.Drivers
             this.Config = config;
             AddReservedSigs(trilist);
             PopupInterlock = new JoinedSigInterlock(TriList);
-            //ChildDrivers.Add(new BasicHeaderDriver(this, config));
+            ChildDrivers.Add(new NotificationRibbonDriver(this, config));
+            ChildDrivers.Add(new PowerDriver(this, config));
             ChildDrivers.Add(new PinDriver(this, config));
             PopupInterlockDrivers.Add(new BasicAudioDriver(this));
             PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));

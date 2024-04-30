@@ -1,5 +1,4 @@
 ﻿using Crestron.SimplSharpPro;
-using Crestron.SimplSharpPro.DeviceSupport;
 using essentials_basic_room.Functions;
 using essentials_basic_room_epi;
 using essentials_basic_tp_epi.Drivers;
@@ -48,7 +47,7 @@ namespace essentials_basic_tp.Drivers
             Parent = parent;
             // main volume driver
             ChildDrivers.Add(new BasicAudioLevelDriver(parent,
-                new BasicAudioDriverControls(eVolumeKey.Volume.ToString(),
+                new BasicAudioDriverControls(VolumeKey.Volume.ToString(),
                     new BasicAudioDriverSigs
                     {
                         GaugeVisible      = TriList.BooleanInput [UIBoolJoin.VolumeGaugePopupVisible],
@@ -60,18 +59,20 @@ namespace essentials_basic_tp.Drivers
                         Slider1Fb         = TriList.UShortOutput [UIUshortJoin.VolumeSlider1Value],
                     })
             ));
-            Debug.Console(0, "{0} {1} loaded ", ClassName, eVolumeKey.Volume.ToString());
+            Debug.Console(0, "{0} {1} loaded ", ClassName, VolumeKey.Volume.ToString());
             // mic level driver
             ChildDrivers.Add(new BasicAudioLevelDriver(parent,
-                new BasicAudioDriverControls(eVolumeKey.MicLevel.ToString(),
+                new BasicAudioDriverControls(VolumeKey.MicLevel.ToString(),
                     new BasicAudioDriverSigs {
                         MutePress         = TriList.BooleanOutput[UIBoolJoin.Volume1SpeechMutePressAndFB],
                         MuteFb            = TriList.BooleanInput [UIBoolJoin.Volume1SpeechMutePressAndFB],
                    })
             ));
-            Debug.Console(0, "{0} {1} loaded ", ClassName, eVolumeKey.MicLevel.ToString());
-
+            Debug.Console(0, "{0} {1} loaded ", ClassName, VolumeKey.MicLevel.ToString());
+            // Load faders on SRL
             ChildDrivers.Add(new AudioListDriver(parent));
+            // Load presets in SmartObject DynamicList
+            ChildDrivers.Add(new AudioPresetListDriver(parent));
             // toggle audio page
             TriList.SetSigFalseAction(UIBoolJoin.VolumeButtonPopupPress, () =>
                 parent.PopupInterlock.ShowInterlockedWithToggle(UIBoolJoin.VolumeButtonPopupPress));

@@ -1,5 +1,6 @@
 ﻿using Crestron.SimplSharpPro.DeviceSupport;
 using essentials_basic_room.Functions;
+using essentials_basic_room.Functions.Audio;
 using essentials_basic_room_epi;
 using essentials_basic_tp_epi.Drivers;
 using PepperDash.Core;
@@ -41,19 +42,9 @@ namespace essentials_basic_tp.Drivers
         /// as triggered by Volume up/down operations
         /// </summary>
         BoolFeedbackPulseExtender VolumeGaugeFeedback;
-        /// <summary>
-        /// The amount of time that the volume buttons stays on screen, in ms
-        /// </summary>
-        //public uint VolumeButtonPopupTimeout
-        //{
-        //    get { return VolumeButtonsPopupFeedback.TimeoutMs; }
-        //    set { VolumeButtonsPopupFeedback.TimeoutMs = value; }
-        //}
-        
+
         public event EventHandler<VolumeDeviceChangeEventArgs> CurrentVolumeDeviceChange;
-
         public BasicAudioDriverControls controls { get; private set; }
-
 
         public BasicAudioLevelDriver(BasicPanelMainInterfaceDriver parent, BasicAudioDriverControls controls)
                     : base(parent.TriList)
@@ -68,8 +59,6 @@ namespace essentials_basic_tp.Drivers
                 VolumeGaugeFeedback.Feedback
                     .LinkInputSig(controls.Sigs.GaugeVisible);
             }
-
-            //Register();
             //Debug.Console(2, "{0} constructor done", ClassName);
         }
 
@@ -79,7 +68,7 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IBasicRoom room)
         {
-            Debug.Console(2, "{0} Setup", ClassName);
+            //Debug.Console(2, "{0} Setup", ClassName);
 
             if (CurrentVolumeDevice != null) // Disconnect current room 
             {
@@ -91,7 +80,7 @@ namespace essentials_basic_tp.Drivers
             var CurrentRoom_ = room as IHasAudioDevice; // implements this class
             if (CurrentRoom_ != null)
             {
-                //CurrentRoom_.Audio.Levels.TryGetValue(controls.Key, out CurrentVolumeDevice);
+                //CurrentRoom_.Audio.Levels.TryGetValue(controls.Key, out CurrentDevice);
                 if (CurrentRoom_.Audio.Levels.ContainsKey(controls.Key))
                 {
                     CurrentVolumeDevice = CurrentRoom_.Audio.Levels[controls.Key];
@@ -102,7 +91,7 @@ namespace essentials_basic_tp.Drivers
                     //foreach(var item_ in CurrentRoom_.Audio.Levels)
                     //    Debug.Console(2, "{0} CurrentRoom_.Audio.Levels[{1}] exists", ClassName, item_.Key);
                 }
-                Debug.Console(2, "{0} RefreshCurrentRoom, CurrentVolumeDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
+                //Debug.Console(2, "{0} RefreshCurrentRoom, CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
                 if (CurrentVolumeDevice != null) // Connect current room 
                 {
                     CurrentVolumeDevice.CurrentVolumeDeviceChange += CurrentRoom_CurrentAudioDeviceChange;
@@ -112,7 +101,7 @@ namespace essentials_basic_tp.Drivers
 
             //Debug.Console(2, "{0} RefreshAudioDeviceConnections done", ClassName);
 
-            if (controls.Key == eVolumeKey.Volume.ToString())
+            if (controls.Key == VolumeKey.Volume.ToString())
             {
                 if (TriList is TswFt5ButtonSystem)
                 {
@@ -147,7 +136,7 @@ namespace essentials_basic_tp.Drivers
         {
             Debug.Console(1, "{0} UpPress({1})", ClassName, state);
             TriggerVolumePopup(state);
-            Debug.Console(2, "{0} UpPress CurrentVolumeDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
+            Debug.Console(2, "{0} UpPress CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
             Debug.Console(2, "{0} UpPress CurrentVolumeControls {1}", ClassName, CurrentVolumeDevice.CurrentVolumeControls == null ? "== null" : "exists");
             if (CurrentVolumeDevice?.CurrentVolumeControls != null)
                 CurrentVolumeDevice.CurrentVolumeControls.VolumeUp(state);
@@ -170,7 +159,7 @@ namespace essentials_basic_tp.Drivers
 
             // Volume control
             var dev = CurrentVolumeDevice?.CurrentVolumeControls;
-            Debug.Console(2, "{0} RefreshAudioDeviceConnections CurrentVolumeDevice {1}", ClassName, dev == null ? "== null" : "exists");
+            Debug.Console(2, "{0} RefreshAudioDeviceConnections CurrentDevice {1}", ClassName, dev == null ? "== null" : "exists");
             if (dev != null) // connect buttons
             {
                 if(controls.Sigs.UpPress != null)
@@ -209,7 +198,7 @@ namespace essentials_basic_tp.Drivers
             }
             if (controls.Sigs.Label != null)
             {
-                var roomVol_ = CurrentVolumeDevice as RoomVolume;
+                var roomVol_ = CurrentVolumeDevice as RoomVolumeLevel;
                 Debug.Console(2, "{0} RefreshAudioDeviceConnections roomVol_ {1}", ClassName, roomVol_ == null ? "== null" : roomVol_.Label);
                 if(roomVol_ != null)
                     controls.Sigs.Label.StringValue = roomVol_.Label;

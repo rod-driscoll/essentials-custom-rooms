@@ -277,7 +277,6 @@ Now for the code required, I got carried away and added the power modal subpage 
 * Add Audio.SetDefaultLevels(); to the room RunRouteAction. This is where we need to recall an actual preset.
 * write more documentation...
 
-
 ## Moving forward
 
-Next I'll add a display.
+Next I'll add a display

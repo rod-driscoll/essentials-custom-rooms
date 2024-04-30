@@ -113,7 +113,10 @@
     <Compile Include="Config.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Factory.cs" />
-    <Compile Include="Functions\RoomAudio.cs" />
+    <Compile Include="Functions\Audio\RoomAudio.cs" />
+    <Compile Include="Functions\Audio\RoomAudioPreset.cs" />
+    <Compile Include="Functions\Audio\RoomVolumeLevel.cs" />
+    <Compile Include="Functions\RoomPower.cs" />
     <Compile Include="Interfaces\IHasPassword.cs" />
     <Compile Include="Interfaces\IBasicRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
