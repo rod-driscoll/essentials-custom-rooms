@@ -7,8 +7,8 @@
     <ProjectGuid>{89010CC2-07CA-44F1-A34A-539BFFEB0FE0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>essentials_intermediate_room</RootNamespace>
-    <AssemblyName>essentials-intermediate-room</AssemblyName>
+    <RootNamespace>essentials_basic_room</RootNamespace>
+    <AssemblyName>essentials-basic-room</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -116,6 +116,7 @@
     <Compile Include="Functions\Audio\RoomAudio.cs" />
     <Compile Include="Functions\Audio\RoomAudioPreset.cs" />
     <Compile Include="Functions\Audio\RoomVolumeLevel.cs" />
+    <Compile Include="Functions\RoomDisplay.cs" />
     <Compile Include="Functions\RoomPower.cs" />
     <Compile Include="Interfaces\IHasPassword.cs" />
     <Compile Include="Interfaces\IBasicRoom.cs" />

@@ -15,6 +15,7 @@ namespace essentials_basic_tp_epi.Drivers
     public class PinDriver: PanelDriverBase, IBasicRoomSetup
     {
         public string ClassName { get { return "PinDriver"; } }
+        public uint LogLevel { get; set; }
 
         public uint PressJoin { get; private set; }
         public uint PageJoin { get; private set; }
@@ -49,13 +50,14 @@ namespace essentials_basic_tp_epi.Drivers
         public PinDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
                     : base(parent.TriList)
         {
+            LogLevel = 2;
             Parent = parent;
 
             var config_ = config as IHasPassword;
             if (config_ != null)
                 uiPin = config_.Password;
             else
-                Debug.Console(2, "{0}. touchpanel password == null", ClassName);
+                Debug.Console(LogLevel, "{0}. touchpanel password == null", ClassName);
 
             PressJoin = joins.UiBoolJoin.PinDialogShowPress;
             PageJoin = UIBoolJoin.PinDialog4DigitVisible;
@@ -64,38 +66,38 @@ namespace essentials_basic_tp_epi.Drivers
             TriList.SetBool(joins.UiBoolJoin.PinDialogShowVisible, true);
 
             _timeoutMs = 1000 * (config.ScreenSaverTimeoutMin == 0 ? 20 : config.ScreenSaverTimeoutMin * 60);
-            Debug.Console(2, "{0}. timeOut: {1}ms", ClassName, _timeoutMs);
+            Debug.Console(LogLevel, "{0}. timeOut: {1}ms", ClassName, _timeoutMs);
             
-            //Debug.Console(2, "{0}. testing for tsx52or60: type: {1}", ClassName, trilist.GetType().Name);
+            //Debug.Console(LogLevel, "{0}. testing for tsx52or60: type: {1}", ClassName, trilist.GetType().Name);
             Tswx52ButtonVoiceControl tswx52ButtonVoiceControl = TriList as Tswx52ButtonVoiceControl;
             if (tswx52ButtonVoiceControl != null)
             {
-                //Debug.Console(2, "DefaultPanelMainInterfaceDriver is Tswx52ButtonVoiceControl. ExtenderTouchDetectionReservedSigs {1}= null", ClassName, tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs == null ? "=" : "!");
+                //Debug.Console(LogLevel, "DefaultPanelMainInterfaceDriver is Tswx52ButtonVoiceControl. ExtenderTouchDetectionReservedSigs {1}= null", ClassName, tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs == null ? "=" : "!");
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.Use();
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.DeviceExtenderSigChange += ExtenderTouchDetectionReservedSigs_DeviceExtenderSigChange;
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.Time.UShortValue = 1;
-                //Debug.Console(2, "{0} ManageInactivityTimer", ClassName);
+                //Debug.Console(LogLevel, "{0} ManageInactivityTimer", ClassName);
                 ManageInactivityTimer();
             }
             else
             {
-                //Debug.Console(2, "{0} as TswX70Base", ClassName);
+                //Debug.Console(LogLevel, "{0} as TswX70Base", ClassName);
                 TswX70Base tswX70Base = TriList as TswX70Base;
                 if (tswX70Base != null)
                 {
                     tswX70Base.ExtenderTouchDetectionReservedSigs.Use();
                     tswX70Base.ExtenderTouchDetectionReservedSigs.DeviceExtenderSigChange += ExtenderTouchDetectionReservedSigs_DeviceExtenderSigChange;
                     tswX70Base.ExtenderTouchDetectionReservedSigs.Time.UShortValue = 1;
-                    //Debug.Console(2, "{0} ManageInactivityTimer", ClassName);
+                    //Debug.Console(LogLevel, "{0} ManageInactivityTimer", ClassName);
                     ManageInactivityTimer();
-                    //Debug.Console(2, "{0} ManageInactivityTimer done", ClassName);
+                    //Debug.Console(LogLevel, "{0} ManageInactivityTimer done", ClassName);
                 }
             }
             PinKeypad = new SmartObjectNumeric(TriList.SmartObjects[UISmartObjectJoin.TechPinDialogKeypad], true);
 
             Register();
 
-            Debug.Console(2, "{0} constructor done", ClassName);
+            Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }
 
         /// <summary>
@@ -104,24 +106,24 @@ namespace essentials_basic_tp_epi.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IBasicRoom room)
         {
-            Debug.Console(2, "{0} Setup", ClassName);
+            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
             var config_ = room.PropertiesConfig as IHasPassword;
             if (config_ != null)
                 roomPin = config_.Password;
             else
-                Debug.Console(2, "{0}. touchpanel password == null", ClassName);
+                Debug.Console(LogLevel, "{0}. touchpanel password == null", ClassName);
 
-            Debug.Console(2, "{0} Setup done", ClassName);
+            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
         }
 
         public void Register()
         {
-            Debug.Console(2, "{0} Register", ClassName);
+            Debug.Console(LogLevel, "{0} Register", ClassName);
             SetupPinModal();
         }
         public void Unregister()
         {
-            Debug.Console(2, "{0} Unregister", ClassName);
+            Debug.Console(LogLevel, "{0} Unregister", ClassName);
             TriList.ClearBoolSigAction(UIBoolJoin.PinDialogCancelPress);
             PinKeypad.Digit0.ClearSigAction();
             PinKeypad.Digit1.ClearSigAction();

@@ -2,6 +2,7 @@
 {
     public static class UiBoolJoin
     {
+        public const uint DisplayPowerTogglePress = 41;
         public const uint ToggleButtonPress = 3334;
 
         public const uint PowerTogglePress = 15009;

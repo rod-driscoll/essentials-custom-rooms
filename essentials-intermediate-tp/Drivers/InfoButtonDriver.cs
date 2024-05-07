@@ -9,6 +9,7 @@ namespace essentials_basic_tp_epi.Drivers
     public class InfoButtonDriver : PanelDriverBase, IBasicRoomSetup
     {
         public string ClassName { get { return "InfoButtonDriver"; } }
+        public uint LogLevel { get; set; }
 
         public uint PressJoin { get; private set; }
         public uint PageJoin { get; private set; }
@@ -20,6 +21,7 @@ namespace essentials_basic_tp_epi.Drivers
         public InfoButtonDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
             : base(parent.TriList)
         {
+            LogLevel = 2;
             Parent = parent;
 
             PressJoin = UIBoolJoin.HeaderRoomButtonPress;
@@ -30,7 +32,7 @@ namespace essentials_basic_tp_epi.Drivers
 
             Parent.PopupInterlock.StatusChanged += PopupInterlock_StatusChanged;
             
-            Debug.Console(2, "{0} constructor done", ClassName);
+            Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }
 
         private void PopupInterlock_StatusChanged(object sender, StatusChangedEventArgs e)
@@ -47,14 +49,14 @@ namespace essentials_basic_tp_epi.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IBasicRoom room)
         {
-            Debug.Console(2, "{0} Setup", ClassName);
+            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
             EssentialsRoomPropertiesConfig roomConf = room.PropertiesConfig;
             if (roomConf?.Addresses != null)
             {
-                Debug.Console(2, "{0} Addresses != null", ClassName);
+                Debug.Console(LogLevel, "{0} Addresses != null", ClassName);
                 if (roomConf.Addresses.PhoneNumber != null)
                 {
-                    Debug.Console(2, "{0} PhoneNumber != null", ClassName);
+                    Debug.Console(LogLevel, "{0} PhoneNumber != null", ClassName);
                     TriList.SetString(joins.UIStringJoin.PhoneNumber, roomConf.Addresses.PhoneNumber);
                 }
                 if (roomConf.Addresses.SipAddress != null) 
@@ -63,19 +65,19 @@ namespace essentials_basic_tp_epi.Drivers
             TriList.SetString(UIStringJoin.HeaderButtonIcon3, "Info");
             //Parent.PopupInterlock.ShowInterlockedWithToggle(PageJoin);
             
-            Debug.Console(2, "{0} Setup done", ClassName);
+            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
         }
 
         public void Register()
         {
-            Debug.Console(2, "{0} Register", ClassName);
+            Debug.Console(LogLevel, "{0} Register", ClassName);
             TriList.SetSigFalseAction(joins.UiBoolJoin.ToggleButtonPress, () =>
                 TriList.SetBool(joins.UiBoolJoin.ToggleButtonPress, 
                     !TriList.BooleanInput[joins.UiBoolJoin.ToggleButtonPress].BoolValue) );
         }
         public void Unregister()
         {
-            Debug.Console(2, "{0} Unregister", ClassName);
+            Debug.Console(LogLevel, "{0} Unregister", ClassName);
             TriList.ClearBoolSigAction(joins.UiBoolJoin.ToggleButtonPress);
         }
 

@@ -3,13 +3,25 @@ using Newtonsoft.Json;
 using PepperDash.Essentials.Room.Config;
 using System.Collections.Generic;
 
-namespace essentials_custom_rooms_epi
+namespace essentials_basic_room_epi
 {
     public class Config : EssentialsRoomPropertiesConfig, IHasPassword
     {
 
         [JsonProperty("password")]
         public string Password { get; set; }
+
+        #region display config
+
+        [JsonProperty("defaultDisplayKey")]
+        public string DefaultDisplayKey { get; set; }
+
+        [JsonProperty("destinationListKey")]
+        public string DestinationListKey { get; set; }
+        
+        #endregion display config
+
+        #region audio config
 
         /// <summary>
         /// The key of the default audio device
@@ -25,6 +37,8 @@ namespace essentials_custom_rooms_epi
 
         [JsonProperty("audioPresets")]
         public Dictionary<string, BasicAudioPresetConfig> AudioPresets { get; set; }
+
+        #endregion audio config
     }
 
     /// <summary>

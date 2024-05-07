@@ -10,6 +10,7 @@ namespace essentials_basic_tp.Drivers
     internal class NotificationRibbonDriver : PanelDriverBase, IBasicRoomSetup
     {
         public string ClassName { get { return "NotificationRibbonDriver"; } }
+        public uint LogLevel { get; set; }
 
         /// <summary>
         /// Controls timeout of notification ribbon timer
@@ -23,8 +24,9 @@ namespace essentials_basic_tp.Drivers
         public NotificationRibbonDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
             : base(parent.TriList)
         {
+            LogLevel = 2;
             Parent = parent;
-            Debug.Console(2, "{0} constructor done", ClassName);
+            Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }
 
 
@@ -63,9 +65,9 @@ namespace essentials_basic_tp.Drivers
         }
 
         public void Setup(IBasicRoom room)
-        { 
-            //Debug.Console(2, "{0} Setup", ClassName);
-            Debug.Console(2, "{0} Setup done", ClassName);
+        {
+            //Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
         }
     }
 }

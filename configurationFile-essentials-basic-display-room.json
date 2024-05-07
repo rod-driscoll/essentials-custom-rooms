@@ -1,0 +1,93 @@
+{
+    "system": {},
+    "system_url": "",
+    "template_url": "",
+    "template": {
+        "rooms": [],
+        "devices": [
+            {
+                "key": "processor",
+                "name": "CP4",
+                "type": "cp4",
+                "group": "processor",
+                "uid": 0
+            },
+            {
+                "key": "display-1",
+                "name": "display",
+                "type": "pjlink",
+                "group": "displays",
+                "uid": 2,
+                "properties": {
+                    "control": {
+                        "method": "Tcpip",
+                        "tcpSshProperties": {
+                            "autoReconnect": true,
+                            "AutoReconnectIntervalMs": 5000,
+                            "address": "192.168.104.60",
+                            "port": 4352,
+                            "username": "",
+                            "password": "JBMIAProjectorLink"
+                        }
+                    }
+                }
+            },
+            {
+                "key": "touchpanel-1",
+                "name": "touchpanel",
+                "type": "basic-tp",
+                "group": "touchpanel",
+                "uid": 1,
+                "properties": {
+                    "type": "tsw1070",
+                    "control": {
+                        "method": "ipid",
+                        "ipid": "03"
+                    },
+                    "defaultRoomKey": "room-1",
+                    "password": "1988",
+                    "sgdFile": "essentials-intermediate-tp.sgd"
+                }
+            },
+            {
+                "key": "room-1",
+                "name": "Room 1",
+                "type": "basic-room",
+                "group": "room",
+                "uid": 11,
+                "properties": {
+                    "help": {
+                        "message":"Contact reception for help"
+                    },
+                    "addresses": {
+                        "phoneNumber":"Room number not configured",
+                        "sipAddress":"Room address not configured"
+                    },
+                    "password": "1234",
+                    "defaultDisplayKey": "display-1",
+                    "DestinationListKey": "default"
+                }
+            }
+        ],
+        "info": {
+            "processorType": "cp4",
+            "lastUid": 11,
+            "lastModifiedDate": "2024-04-16T17:54:41.315Z",
+            "systemType": "intermediate",
+            "comment": "Demo intermediate system",
+            "requiredControlSofwareVersion": ""
+        },
+        "destinationLists": {
+            "default": {
+                "display-1": {
+                    "sinkKey": "display-1",
+                    "preferredName": "Room display",
+                    "name": "display 1",
+                    "includeInDestinationList": true,
+                    "order": 1,
+                    "sinkType": "Video"
+                }
+            }
+        }
+    }
+}

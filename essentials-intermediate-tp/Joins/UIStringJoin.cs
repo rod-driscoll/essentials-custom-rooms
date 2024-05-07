@@ -2,6 +2,7 @@
 {
     public static class UIStringJoin
     {
+        public const uint DisplayPowerStatus = 41;
         public const uint PhoneNumber = 3333;
         public const uint SipAddress = 9999;
 

@@ -1,8 +1,6 @@
 ﻿using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharpPro.UI;
-using essentials_basic_room.Functions;
 using essentials_basic_room_epi;
-using essentials_basic_tp;
 using essentials_basic_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
@@ -15,6 +13,7 @@ namespace essentials_basic_tp_epi.Drivers
     public class BasicPanelMainInterfaceDriver : PanelDriverBase, IDisposable
     {
         public string ClassName { get { return "BasicPanelMainInterfaceDriver"; } }
+        public uint LogLevel { get; set; }
         //public EssentialsPanelMainInterfaceDriver EssentialsDriver { get; private set; }
 
         Config Config;
@@ -27,6 +26,7 @@ namespace essentials_basic_tp_epi.Drivers
             Config config)
             : base(trilist)
         {
+            LogLevel = 2;
             Debug.Console(0, "{0} config {1}", ClassName, config == null ? "== null" : "exists");
             //Debug.Console(0, "{0} trilist {1}", ClassName, trilist == null ? "== null" : "exists");
             this.Config = config;
@@ -35,11 +35,31 @@ namespace essentials_basic_tp_epi.Drivers
             ChildDrivers.Add(new NotificationRibbonDriver(this, config));
             ChildDrivers.Add(new PowerDriver(this, config));
             ChildDrivers.Add(new PinDriver(this, config));
+            ChildDrivers.Add(new DisplayDriver(this, config));
+
+
             PopupInterlockDrivers.Add(new BasicAudioDriver(this));
             PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));
             PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
 
-            Debug.Console(2, "{0} constructor done", ClassName);
+            // suppress excess logging on classes
+            Debug.Console(0, "{0} suppressing excess logging on drivers, ChildDrivers {1}", ClassName, ChildDrivers == null ? "== null" : "exists");
+            foreach (var driver in ChildDrivers)
+            {
+                var driver_ = driver as ILogClassDetails;
+                if (driver_ != null)
+                    driver_.LogLevel = (uint)(driver_ is DisplayDriver ? 1: 255); // 255 means they won't log
+            }
+            Debug.Console(0, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
+            foreach (var driver in PopupInterlockDrivers)
+            {
+                var driver_ = driver as ILogClassDetails;
+                Debug.Console(0, "{0} driver is {1}", ClassName, driver.GetType().Name);
+                if (driver_ != null)
+                    driver_.LogLevel = 255;
+            }
+
+            Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }
 
         /// <summary>
@@ -63,18 +83,18 @@ namespace essentials_basic_tp_epi.Drivers
 
         private void AddReservedSigs(BasicTriListWithSmartObject trilist)
         {
-            //Debug.Console(2, "{0} testing for tsx52or60: type: {1}", ClassName, trilist.GetType().Name);
+            //Debug.Console(LogLevel, "{0} testing for tsx52or60: type: {1}", ClassName, trilist.GetType().Name);
             Tswx52ButtonVoiceControl tswx52ButtonVoiceControl = trilist as Tswx52ButtonVoiceControl;
             if (tswx52ButtonVoiceControl != null)
             {
-                //Debug.Console(2, "{0} is Tswx52ButtonVoiceControl. ExtenderTouchDetectionReservedSigs {1}= null", ClassName, tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs == null ? "=" : "!");
+                //Debug.Console(LogLevel, "{0} is Tswx52ButtonVoiceControl. ExtenderTouchDetectionReservedSigs {1}= null", ClassName, tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs == null ? "=" : "!");
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.Use();
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.DeviceExtenderSigChange += ExtenderTouchDetectionReservedSigs_DeviceExtenderSigChange;
                 tswx52ButtonVoiceControl.ExtenderTouchDetectionReservedSigs.Time.UShortValue = 1;
             }
             else
             {
-                //Debug.Console(2, "{0} as TswX70Base", ClassName);
+                //Debug.Console(LogLevel, "{0} as TswX70Base", ClassName);
                 TswX70Base tswX70Base = trilist as TswX70Base;
                 if (tswX70Base != null)
                 {

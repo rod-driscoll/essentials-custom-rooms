@@ -10,9 +10,10 @@ using PepperDash.Essentials.Core.UI;
 namespace essentials_basic_tp_epi
 {
     // This would be EssentialsTouchpanelController in default Essentials
-    public class Device : TouchpanelBase
+    public class Device : TouchpanelBase, ILogClassDetails
     {
-        public string ClassName = "Device";
+        public string ClassName { get { return "Device"; } }
+        public uint LogLevel { get; set; }
         public PanelDriverBase PanelDriver { get; private set; }
         Config config;
 
@@ -22,6 +23,7 @@ namespace essentials_basic_tp_epi
  		public Device(string key, string name, BasicTriListWithSmartObject panel, Config config)
             : base(key, name, panel, config)
         {
+            LogLevel = 2;
             this.config = config;
         }
 
@@ -57,8 +59,8 @@ namespace essentials_basic_tp_epi
                 Debug.Console(0, this, "Room '{0}' is IBasicRoom", roomKey);
                 var room_ = (room as IBasicRoom);
 
-                Debug.Console(2, "{0} PropertiesConfig {1}", ClassName, room_.PropertiesConfig == null ? "==null" : "exists");
-                Debug.Console(2, "{0} Properties {1}", ClassName, room_.Config.Properties == null ? "==null" : "exists");
+                Debug.Console(LogLevel, "{0} PropertiesConfig {1}", ClassName, room_.PropertiesConfig == null ? "==null" : "exists");
+                Debug.Console(LogLevel, "{0} Properties {1}", ClassName, room_.Config.Properties == null ? "==null" : "exists");
 
                 mainDriver.SetupChildDrivers(room_);
                 Debug.Console(0, this, "Room '{0}' UI Controllers loaded", roomKey);
@@ -77,7 +79,7 @@ namespace essentials_basic_tp_epi
 
         protected override void ExtenderSystemReservedSigs_DeviceExtenderSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
         {
-            Debug.Console(2, this, "{0} ExtenderSystemReservedSigs_DeviceExtenderSigChange not implemented", ClassName);
+            Debug.Console(LogLevel, this, "{0} ExtenderSystemReservedSigs_DeviceExtenderSigChange not implemented", ClassName);
         }
 
     }

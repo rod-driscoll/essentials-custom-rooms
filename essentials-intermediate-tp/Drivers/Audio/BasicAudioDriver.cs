@@ -5,6 +5,7 @@ using essentials_basic_tp_epi.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
+using System;
 using System.Collections.Generic;
 
 namespace essentials_basic_tp.Drivers
@@ -34,6 +35,31 @@ namespace essentials_basic_tp.Drivers
     public class BasicAudioDriver : PanelDriverBase, IBasicRoomSetup
     {
         public string ClassName { get { return "AudioDriver"; } }
+        private uint _logLevel;
+        public uint LogLevel { 
+            get { return _logLevel; } 
+            set {
+                try
+                {
+                    _logLevel = value;
+                    //Debug.Console(2, "{0} Setting LogLevel {1}", ClassName, _logLevel);
+                    //Debug.Console(2, "{0} Setting LogLevel ChildDrivers {1}", ClassName, ChildDrivers == null ? " = null" : "exists");
+                    foreach (var driver in ChildDrivers)
+                    {
+                        var driver_ = driver as ILogClassDetails;
+                        Debug.Console(2, "{0} Setting driver standard LogLevel {1}, {2} {3}", ClassName, _logLevel, driver.GetType().Name, driver_ == null ? " = null" : "exists");
+                        if (driver_ != null)
+                            driver_.LogLevel = _logLevel;
+                    }
+                    Debug.Console(2, "{0} Setting LogLevel {1} done", ClassName, _logLevel);
+                }
+                catch (Exception e)
+                {
+                    Debug.Console(0, "{0} Setting LogLevel ERROR: {1}", ClassName, e.Message);
+                }
+            } 
+        }
+        
         /// <summary>
         /// The parent driver for this
         /// </summary>
@@ -43,6 +69,7 @@ namespace essentials_basic_tp.Drivers
         public BasicAudioDriver(BasicPanelMainInterfaceDriver parent)
             : base(parent.TriList)
         {
+            LogLevel = 2;
             Debug.Console(0, "{0} loading ", ClassName);
             Parent = parent;
             // main volume driver
@@ -78,7 +105,7 @@ namespace essentials_basic_tp.Drivers
                 parent.PopupInterlock.ShowInterlockedWithToggle(UIBoolJoin.VolumeButtonPopupPress));
 
             //Register();
-            Debug.Console(2, "{0} constructor done", ClassName);
+            Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }
 
         /// <summary>
@@ -87,23 +114,23 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IBasicRoom room)
         {
-            Debug.Console(2, "{0} Setup, room {1}", ClassName, room == null ? "== null" : "exists");
+            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
             foreach (var driver in ChildDrivers)
             {
-                //Debug.Console(2, "{0} Setup {1}", ClassName, driver.GetType().Name);
+                //Debug.Console(LogLevel, "{0} Setup {1}", ClassName, driver.GetType().Name);
                 var roomDriver_ = driver as IBasicRoomSetup;
-                Debug.Console(2, "{0} Setup {1}, driver {2}", ClassName, driver.GetType().Name, roomDriver_==null?"== null":"exists");
+                Debug.Console(LogLevel, "{0} Setup {1}, driver {2}", ClassName, driver.GetType().Name, roomDriver_==null?"== null":"exists");
                 roomDriver_?.Setup(room);
             }
-            Debug.Console(2, "{0} Setup done", ClassName);
+            Debug.Console(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }
         public void Register()
         {
-            Debug.Console(2, "{0} Register", ClassName);
+            Debug.Console(LogLevel, "{0} Register", ClassName);
         }
         public void Unregister()
         {
-            Debug.Console(2, "{0} Unregister", ClassName);
+            Debug.Console(LogLevel, "{0} Unregister", ClassName);
         }
     }
 }

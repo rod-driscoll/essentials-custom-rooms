@@ -1,0 +1,271 @@
+{
+    "system": {},
+    "system_url": "",
+    "template_url": "",
+    "template": {
+        "rooms": [],
+        "devices": [
+            {
+                "key": "processor",
+                "name": "CP4",
+                "type": "cp4",
+                "group": "processor",
+                "uid": 0
+            },
+            {
+                "key": "dsp-1",
+                "name": "QSC Q-Sys Essentials Plugin",
+                "type": "qscdsp",
+                "group": "pluginDevices",
+                "properties": {
+                    "control": {
+                        "method": "tcpIp",
+                        "endOfLineString": "\n",
+                        "deviceReadyResponsePattern": "",
+                        "tcpSshProperties": {
+                            "address": "192.168.104.226",
+                            "port": 1702,
+                            "username": "",
+                            "password": "",
+                            "autoReconnect": true,
+                            "autoReconnectIntervalMs": 5000
+                        }
+                    },
+                    "prefix": "",
+                    "levelControlBlocks": {
+                        "fader-room-1": {
+                            "label": "Reception",
+                            "levelInstanceTag": "Foyer.Master.Vol",
+                            "muteInstanceTag": "Foyer.Master.Mute",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "isMic": false,
+                            "useAbsoluteValue": false,
+                            "unmuteOnVolChange": true
+                        },
+                        "mics-room-1": {
+                            "label": "Reception mics",
+                            "levelInstanceTag": "HHeld.Mic.Vol",
+                            "muteInstanceTag": "HHeld.Mic.Mute",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "isMic": false,
+                            "useAbsoluteValue": false,
+                            "unmuteOnVolChange": true
+                        },
+                        "fader-room-2": {
+                            "label": "Assembly",
+                            "levelInstanceTag": "House.Master.Vol",
+                            "muteInstanceTag": "House.Master.Mute",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "isMic": false,
+                            "useAbsoluteValue": false,
+                            "unmuteOnVolChange": true
+                        },
+                        "hh-mic-room-2": {
+                            "label": "Handheld",
+                            "levelInstanceTag": "HHeld.Mic.Vol",
+                            "muteInstanceTag": "HHeld.Mic.Mute",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "isMic": false,
+                            "useAbsoluteValue": false,
+                            "unmuteOnVolChange": true
+                        },
+                        "lapel-mic-room-2": {
+                            "label": "Lapel",
+                            "levelInstanceTag": "Lapel.Mic.Vol",
+                            "muteInstanceTag": "Lapel.Mic.Mute",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "isMic": false,
+                            "useAbsoluteValue": false,
+                            "unmuteOnVolChange": true
+                        },
+                        "wall-plate-room-2": {
+                            "label": "Wall plate",
+                            "levelInstanceTag": "Assembly.Wall.Plate.Vol",
+                            "muteInstanceTag": "Assembly.Wall.Plate.Mute",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "isMic": false,
+                            "useAbsoluteValue": false,
+                            "unmuteOnVolChange": true
+                        },
+                        "sourceControl-1": {
+                            "comment": "When using a fader for source selection you must include useAbsoluteValue:true",
+                            "label": "Room A Audio",
+                            "levelInstanceTag": "Router2x1Output1Select",
+                            "disabled": false,
+                            "hasLevel": false,
+                            "hasMute": false,
+                            "isMic": false,
+                            "useAbsoluteValue": true,
+                            "unmuteOnVolChange": false
+                        },
+                        "preset-1":
+                        {
+                            "label": "System On",
+                            "levelInstanceTag": "Snapshot_ControllerLoad1",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": false,
+                            "useAbsoluteValue": true
+                        },
+                        "preset-2":
+                        {
+                            "label": "System Off",
+                            "levelInstanceTag": "Snapshot_ControllerLoad2",
+                            "disabled": false,
+                            "hasLevel": true,
+                            "hasMute": false,
+                            "isMic": false,
+                            "useAbsoluteValue": true
+                        }
+                    },
+                    "presets": { 
+                        "preset-1": {
+                            "label": "System On",
+                            "preset": "PRESETS 1 0",
+                            "bank": "PRESETS",
+                            "number": "1"
+                        },
+                        "preset-2": {
+                            "label": "System Off",
+                            "preset": "PRESETS 2 0",
+                            "bank": "PRESETS",
+                            "number": "2"
+                        },
+                        "preset-3": {
+                            "label": "Default Levels",
+                            "preset": "PRESETS 3 0",
+                            "bank": "PRESETS",
+                            "number": "3"
+                        }
+                    },
+                    "dialerControlBlock": {},
+                    "cameraControlBlocks": {}
+                }
+            },
+            {
+                "key": "display-1",
+                "name": "display",
+                "type": "pjlink",
+                "group": "displays",
+                "uid": 2,
+                "properties": {
+                    "control": {
+                        "method": "Tcpip",
+                        "tcpSshProperties": {
+                            "autoReconnect": true,
+                            "AutoReconnectIntervalMs": 2000,
+                            "address": "192.168.104.60",
+                            "port": 4352,
+                            "username": "",
+                            "password": "JBMIAProjectorLink"
+                        }
+                    }
+                }
+            },
+            {
+                "key": "touchpanel-1",
+                "name": "touchpanel",
+                "type": "basic-tp",
+                "group": "touchpanel",
+                "uid": 1,
+                "properties": {
+                    "type": "tsw1070",
+                    "control": {
+                        "method": "ipid",
+                        "ipid": "03"
+                    },
+                    "defaultRoomKey": "room-1",
+                    "password": "1988",
+                    "sgdFile": "essentials-intermediate-tp.sgd"
+                }
+            },
+            {
+                "key": "room-1",
+                "name": "Room 1",
+                "type": "basic-room",
+                "group": "room",
+                "uid": 11,
+                "properties": {
+                    "help": {
+                        "message":"Contact reception for help"
+                    },
+                    "addresses": {
+                        "phoneNumber":"Room number not configured",
+                        "sipAddress":"Room address not configured"
+                    },
+                    "password": "1234",
+                    "defaultDisplayKey": "display-1",
+                    "DestinationListKey": "default",
+                    "defaultAudioKey": "dsp-1-fader-room-1",
+                    "defaultMicKey": "dsp-1-mics-room-1",
+                    "faders": {
+                        "1" : {
+                            "level": 40,
+                            "deviceKey": "dsp-1-mics-room-1",
+                            "label": "Volume"
+                        },
+                        "2" : {
+                            "level": 40,
+                            "deviceKey": "dsp-1-fader-room-1",
+                            "label": "Microphones"
+                        },
+                        "3" : {
+                            "level": 40,
+                            "deviceKey": "dsp-1-fader-room-2",
+                            "label": "Room 2"
+                        }
+                    },
+                    "audioPresets": {
+                        "1": {
+                            "function": "system-on",
+                            "deviceKey": "dsp-1--preset-1",
+                            "label": "System on"
+                        },
+                        "2": {
+                            "function": "system-off",
+                            "deviceKey": "dsp-1--preset-2",
+                            "label": "System off"
+                        },
+                        "3": {
+                            "function": "default-levels",
+                            "deviceKey": "dsp-1--preset-3",
+                            "label": "Default levels"
+                        }
+                    }
+                }
+            }
+        ],
+        "info": {
+            "processorType": "cp4",
+            "lastUid": 11,
+            "lastModifiedDate": "2024-04-16T17:54:41.315Z",
+            "systemType": "intermediate",
+            "comment": "Demo intermediate system",
+            "requiredControlSofwareVersion": ""
+        },
+        "destinationLists": {
+            "default": {
+                "display-1": {
+                    "sinkKey": "display-1",
+                    "preferredName": "Room display",
+                    "name": "display 1",
+                    "includeInDestinationList": true,
+                    "order": 1,
+                    "sinkType": "Video"
+                }
+            }
+        }
+    }
+}

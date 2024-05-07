@@ -7,8 +7,8 @@
     <ProjectGuid>{BEDD69D2-6764-4EB4-BCB3-9611380532F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>essentials_intermediate_tp</RootNamespace>
-    <AssemblyName>essentials-intermediate-tp</AssemblyName>
+    <RootNamespace>essentials_basic_tp</RootNamespace>
+    <AssemblyName>essentials-basic-tp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -158,13 +158,14 @@
     <Compile Include="Drivers\Audio\BasicAudioDriver.cs" />
     <Compile Include="Drivers\Audio\BasicAudioLevelDriver.cs" />
     <Compile Include="Drivers\BasicPanelMainInterfaceDriver.cs" />
+    <Compile Include="Drivers\DisplayDriver.cs" />
     <Compile Include="Drivers\HelpButtonDriver.cs" />
     <Compile Include="Drivers\InfoButtonDriver.cs" />
     <Compile Include="Drivers\NotificationRibbonDriver.cs" />
     <Compile Include="Drivers\PinDriver.cs" />
     <Compile Include="Drivers\PowerDriver.cs" />
-    <Compile Include="Drivers\SmartObjectDynamicList.cs" />
-    <Compile Include="Drivers\SubpageReferenceList.cs" />
+    <Compile Include="SmartObjects\SmartObjectDynamicList.cs" />
+    <Compile Include="SmartObjects\SubpageReferenceList.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Joins\UiBoolJoin.cs" />
     <Compile Include="Joins\UiSmartObjectJoin.cs" />
