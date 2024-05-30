@@ -1,4 +1,5 @@
 ﻿using essentials_basic_room.Functions;
+using Newtonsoft.Json;
 using PepperDash.Essentials.Core;
 
 namespace essentials_basic_room_epi
@@ -31,6 +32,16 @@ namespace essentials_basic_room_epi
     public interface IHasDisplayFunction
     {
         RoomDisplay Display { get; set; }
+    }
+    public interface ILifterConfig
+    {
+        [JsonProperty("lifter")]
+        LifterConfig Lifter { get; set; }
+    }
+    public interface IScreenConfig
+    {
+        [JsonProperty("screen")]
+        ScreenConfig Screen { get; set; }
     }
 
 }

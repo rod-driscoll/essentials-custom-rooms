@@ -1,4 +1,5 @@
 ﻿using Crestron.SimplSharp;
+using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharpPro.UI;
 using essentials_basic_room.Interfaces;
@@ -178,19 +179,30 @@ namespace essentials_basic_tp_epi.Drivers
         /// </summary>
         void SetupPinModal()
         {
+            Debug.Console(0, "{0} SetupPinModal", ClassName);
             TriList.SetSigFalseAction(UIBoolJoin.PinDialogCancelPress, CancelPinDialog);
-            PinKeypad.Digit0.UserObject = new Action<bool>(b => { if (b) DialPinDigit('0'); });
-            PinKeypad.Digit1.UserObject = new Action<bool>(b => { if (b) DialPinDigit('1'); });
-            PinKeypad.Digit2.UserObject = new Action<bool>(b => { if (b) DialPinDigit('2'); });
-            PinKeypad.Digit3.UserObject = new Action<bool>(b => { if (b) DialPinDigit('3'); });
-            PinKeypad.Digit4.UserObject = new Action<bool>(b => { if (b) DialPinDigit('4'); });
-            PinKeypad.Digit5.UserObject = new Action<bool>(b => { if (b) DialPinDigit('5'); });
-            PinKeypad.Digit6.UserObject = new Action<bool>(b => { if (b) DialPinDigit('6'); });
-            PinKeypad.Digit7.UserObject = new Action<bool>(b => { if (b) DialPinDigit('7'); });
-            PinKeypad.Digit8.UserObject = new Action<bool>(b => { if (b) DialPinDigit('8'); });
-            PinKeypad.Digit9.UserObject = new Action<bool>(b => { if (b) DialPinDigit('9'); });
+            try
+            {
+                PinKeypad.Digit0.UserObject = new Action<bool>(b => { if (b) DialPinDigit('0'); });
+                PinKeypad.Digit1.UserObject = new Action<bool>(b => { if (b) DialPinDigit('1'); });
+                PinKeypad.Digit2.UserObject = new Action<bool>(b => { if (b) DialPinDigit('2'); });
+                PinKeypad.Digit3.UserObject = new Action<bool>(b => { if (b) DialPinDigit('3'); });
+                PinKeypad.Digit4.UserObject = new Action<bool>(b => { if (b) DialPinDigit('4'); });
+                PinKeypad.Digit5.UserObject = new Action<bool>(b => { if (b) DialPinDigit('5'); });
+                PinKeypad.Digit6.UserObject = new Action<bool>(b => { if (b) DialPinDigit('6'); });
+                PinKeypad.Digit7.UserObject = new Action<bool>(b => { if (b) DialPinDigit('7'); });
+                PinKeypad.Digit8.UserObject = new Action<bool>(b => { if (b) DialPinDigit('8'); });
+                PinKeypad.Digit9.UserObject = new Action<bool>(b => { if (b) DialPinDigit('9'); });
+            }
+            catch (Exception e)
+            {
+                Debug.Console(0, "{0} SetupPinModal ERROR: {1}", ClassName, e.Message);
+                foreach (var out_ in PinKeypad.SmartObject.BooleanOutput)
+                {
+                    Debug.Console(0, "{0} SetupPinModal PinKeypad.BooleanOutput: {1}", ClassName, out_.Name);
+                }
+            }
         }
-
         /// <summary>
         /// 
         /// </summary>

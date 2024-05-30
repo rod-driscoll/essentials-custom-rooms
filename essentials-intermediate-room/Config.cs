@@ -1,5 +1,6 @@
 ﻿using essentials_basic_room.Interfaces;
 using Newtonsoft.Json;
+using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Room.Config;
 using System.Collections.Generic;
 
@@ -70,5 +71,42 @@ namespace essentials_basic_room_epi
         [JsonProperty("level")]
         public int Level { get; set; }
 
+    }
+
+    public class DisplayPropsConfig
+    {
+        [JsonProperty("control")]
+        public EssentialsControlPropertiesConfig Control { get; set; }
+
+        [JsonProperty("lifter")]
+        public LifterConfig Lifter { get; set; }
+
+        [JsonProperty("screen")]
+        public ScreenConfig Screen { get; set; }
+    }
+
+    public class LifterConfig
+    {
+        [JsonProperty("deviceKey")]
+        public string DeviceKey { get; set; }
+
+        [JsonProperty("downTriggersDisplayOn")]
+        public bool DownTriggersDisplayOn { get; set; }
+        [JsonProperty("displayOffTriggersUp")]
+        public bool DisplayOffTriggersUp { get; set; }
+    }
+    public class ScreenConfig
+    {
+        [JsonProperty("deviceKey")]
+        public string DeviceKey { get; set; }
+
+        [JsonProperty("downTriggersDisplayOn")]
+        public bool DownTriggersDisplayOn { get; set; }
+        [JsonProperty("displayOnTriggersDown")]
+        public bool DisplayOnTriggersDown { get; set; }
+        [JsonProperty("upTriggersDisplayOff")]
+        public bool UpTriggersDisplayOff { get; set; }
+        [JsonProperty("displayOffTriggersUp")]
+        public bool DisplayOffTriggersUp { get; set; }
     }
 }

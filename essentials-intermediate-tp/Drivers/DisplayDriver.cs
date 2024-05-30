@@ -80,9 +80,9 @@ namespace essentials_basic_tp.Drivers
             Debug.Console(LogLevel, "{0} Setup, IHasDisplayFunction {1}", ClassName, room_ == null ? "== null" : room.Key);
             if (room_ != null)
             {
-                Debug.Console(LogLevel, "{0} Setup, DisplayDriver {1}", ClassName, room_.Display == null ? "== null" : "exists");
+                Debug.Console(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
                 CurrentDefaultDevice = room_.Display.DefaultDisplay;
-                Debug.Console(LogLevel, "{0} Setup, DisplayDriver.DefaultDisplay {1}", ClassName, room_.Display.DefaultDisplay == null ? "== null" : room_.Display.DefaultDisplay.Key);
+                Debug.Console(LogLevel, "{0} Setup, Driver.DefaultDisplay {1}", ClassName, room_.Display.DefaultDisplay == null ? "== null" : room_.Display.DefaultDisplay.Key);
                 CurrentDefaultDevice.CurrentSourceChange += CurrentDefaultDevice_CurrentSourceChange;
                 
                 dispTwoWay = CurrentDefaultDevice as IHasPowerControlWithFeedback;
@@ -187,14 +187,16 @@ namespace essentials_basic_tp.Drivers
                     if (dispWarmCool.IsWarmingUpFeedback.BoolValue)
                     {
                         CurrentDefaultDevicePowerState = PowerStates.warming;
-                        TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin));
-                        Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, warming", ClassName);
+                        //TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin)); // can't use GetBool because it gets BooleanOutput
+                        TriList.SetBool(PowerToggleJoin, !TriList.BooleanInput[PowerToggleJoin].BoolValue);
+                        //Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, warming", ClassName);
                     }
                     else if (dispWarmCool.IsCoolingDownFeedback.BoolValue)
                     {
                         CurrentDefaultDevicePowerState = PowerStates.cooling;
-                        TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin));
-                        Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, cooling", ClassName);
+                        //TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin)); // can't use GetBool because it gets BooleanOutput
+                        TriList.SetBool(PowerToggleJoin, !TriList.BooleanInput[PowerToggleJoin].BoolValue);
+                        //Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, cooling", ClassName);
                     }
                 }
                 else if (dispTwoWay != null)
@@ -209,7 +211,7 @@ namespace essentials_basic_tp.Drivers
             {
                 TriList.SetBool(PowerToggleJoin, true);
                 Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, setting", ClassName);
-           }
+            }
             else if (CurrentDefaultDevicePowerState == PowerStates.off || CurrentDefaultDevicePowerState == PowerStates.standby)
             {
                 TriList.SetBool(PowerToggleJoin, false); 

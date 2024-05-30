@@ -164,6 +164,8 @@
     <Compile Include="Drivers\NotificationRibbonDriver.cs" />
     <Compile Include="Drivers\PinDriver.cs" />
     <Compile Include="Drivers\PowerDriver.cs" />
+    <Compile Include="Drivers\LifterDriver.cs" />
+    <Compile Include="Drivers\ScreenDriver.cs" />
     <Compile Include="SmartObjects\SmartObjectDynamicList.cs" />
     <Compile Include="SmartObjects\SubpageReferenceList.cs" />
     <Compile Include="Factory.cs" />
