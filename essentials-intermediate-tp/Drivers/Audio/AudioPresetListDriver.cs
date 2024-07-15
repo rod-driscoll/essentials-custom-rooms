@@ -1,5 +1,4 @@
 ﻿using essentials_basic_room_epi;
-using essentials_basic_tp_epi.joins;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
@@ -14,7 +13,7 @@ namespace essentials_basic_tp_epi.Drivers
         public uint LogLevel { get; set; }
         //private BasicPanelMainInterfaceDriver Parent;
 
-        uint SmartObjectId = UiSmartObjectJoin.AudioPresetList;
+        uint SmartObjectId = joins.UISmartObjectJoin.AudioPresetList;
         uint nameSigOffset = 10; // not sure what this is
 
         SmartObjectDynamicList sol { get; set; }

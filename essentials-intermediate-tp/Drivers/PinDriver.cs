@@ -1,5 +1,4 @@
 ﻿using Crestron.SimplSharp;
-using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharpPro.UI;
 using essentials_basic_room.Interfaces;
@@ -60,11 +59,11 @@ namespace essentials_basic_tp_epi.Drivers
             else
                 Debug.Console(LogLevel, "{0}. touchpanel password == null", ClassName);
 
-            PressJoin = joins.UiBoolJoin.PinDialogShowPress;
+            PressJoin = joins.UIBoolJoin.PinDialogShowPress;
             PageJoin = UIBoolJoin.PinDialog4DigitVisible;
 
             TriList.SetSigFalseAction(PressJoin, () => IsAuthorized = false);
-            TriList.SetBool(joins.UiBoolJoin.PinDialogShowVisible, true);
+            TriList.SetBool(joins.UIBoolJoin.PinDialogShowVisible, true);
 
             _timeoutMs = 1000 * (config.ScreenSaverTimeoutMin == 0 ? 20 : config.ScreenSaverTimeoutMin * 60);
             Debug.Console(LogLevel, "{0}. timeOut: {1}ms", ClassName, _timeoutMs);

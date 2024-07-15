@@ -1,16 +1,14 @@
 ﻿using essentials_basic_room_epi;
 using Newtonsoft.Json;
 using PepperDash.Core;
-using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Config;
-using PepperDash.Essentials.Core.Devices;
-using PepperDash.Essentials.Core.Shades;
+using PepperDash.Essentials.Core.CrestronIO;
 using PepperDash.Essentials.Devices.Common.Environment.Somfy;
 using System;
 using System.Collections.Generic;
-using Crestron.SimplSharpPro;
-using PepperDash.Essentials.Core.CrestronIO;
+using PepperDash.Essentials.Core.Shades;
+using relay_controlled_motor_epi.Interfaces;
 
 namespace essentials_basic_room.Functions
 {
@@ -43,6 +41,74 @@ namespace essentials_basic_room.Functions
             SetupDefaultDisplay();
             SetupDestinationList();
         }
+        private void SetupDefaultDisplayLifter(DisplayPropsConfig displayProps)
+        {
+            Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter displayProps {1}", ClassName, displayProps.Lifter == null ? "== null" : displayProps.Lifter.DeviceKey);
+            if (displayProps.Lifter != null)
+            {
+                var device_ = DeviceManager.GetDeviceForKey(displayProps.Lifter.DeviceKey);
+                DefaultLifter = device_ as ShadeBase;
+                //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter DefaultLifter {1}", ClassName, DefaultLifter == null ? "== null" : device_.Key);
+                // device_ is IShadesOpenClosedFeedback
+                if (device_ is IShadesOpenClosedFeedback)
+                {
+                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter device_ is IShadesOpenClosedFeedback", ClassName);
+                }
+                if (device_ is ShadeBase)
+                {
+                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter device_ is ShadeBase", ClassName);
+                    var config_ = ConfigReader.ConfigObject.Devices.Find(x => x.Key == device_.Key);
+                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter config_ {1}", ClassName, config_ == null ? "== null" : config_.GetType().ToString());
+                    var props_ = JsonConvert.DeserializeObject<RelayControlledShadeConfigProperties>(config_.Properties.ToString());
+                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter props_ {1}", ClassName, props_ == null ? "== null" : props_.GetType().ToString());
+
+                    IOPortConfig relayConfig_ = props_.Relays.Open;
+                    IKeyed csKey_ = DeviceManager.GetDeviceForKey(relayConfig_.PortDeviceKey);
+                    var relay_ = (csKey_ as ISwitchedOutputCollection).SwitchedOutputs[relayConfig_.PortNumber];
+                    Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter OPEN relay_ {1}", ClassName, relay_ == null ? "== null" : relayConfig_.PortNumber.ToString());
+                    relay_.OutputIsOnFeedback.OutputChange += Lifter_OpenRelay_OutputIsOnFeedback_OutputChange;
+
+                    relayConfig_ = props_.Relays.Close;
+                    csKey_ = DeviceManager.GetDeviceForKey(relayConfig_.PortDeviceKey);
+                    relay_ = (csKey_ as ISwitchedOutputCollection).SwitchedOutputs[relayConfig_.PortNumber];
+                    Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter CLOSE relay_ {1}", ClassName, relay_ == null ? "== null" : relayConfig_.PortNumber.ToString());
+                    relay_.OutputIsOnFeedback.OutputChange += Lifter_CloseRelay_OutputIsOnFeedback_OutputChange;
+                }
+                //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter device_ configured", ClassName);
+            }
+        }
+        private void SetupDefaultDisplayScreen(DisplayPropsConfig displayProps)
+        {
+            Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen displayProps {1}", ClassName, displayProps.Screen == null ? "== null" : displayProps.Screen.DeviceKey);
+            if (displayProps.Screen != null)
+            {
+                var device_ = DeviceManager.GetDeviceForKey(displayProps.Screen.DeviceKey);
+                DefaultScreen = device_ as ShadeBase;
+                Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen DefaultScreen {1}", ClassName, DefaultScreen == null ? "== null" : device_.Key);
+
+                if (device_ is ShadeBase)
+                {
+                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen device_ is ShadeBase", ClassName);
+                    var config_ = ConfigReader.ConfigObject.Devices.Find(x => x.Key == device_.Key);
+                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen config_ {1}", ClassName, config_ == null ? "== null" : config_.GetType().Name.ToString());
+                    var props_ = JsonConvert.DeserializeObject<RelayControlledShadeConfigProperties>(config_.Properties.ToString());
+                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen props_ {1}", ClassName, props_ == null ? "== null" : props_.GetType().Name.ToString());
+
+                    IOPortConfig relayConfig_ = props_.Relays.Open;
+                    IKeyed csKey_ = DeviceManager.GetDeviceForKey(relayConfig_.PortDeviceKey);
+                    var relay_ = (csKey_ as ISwitchedOutputCollection).SwitchedOutputs[relayConfig_.PortNumber];
+                    Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen OPEN relay_ {1}", ClassName, relay_ == null ? "== null" : relayConfig_.PortNumber.ToString());
+                    relay_.OutputIsOnFeedback.OutputChange += Screen_OpenRelay_OutputIsOnFeedback_OutputChange;
+
+                    relayConfig_ = props_.Relays.Close;
+                    csKey_ = DeviceManager.GetDeviceForKey(relayConfig_.PortDeviceKey);
+                    relay_ = (csKey_ as ISwitchedOutputCollection).SwitchedOutputs[relayConfig_.PortNumber];
+                    Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen CLOSE relay_ {1}", ClassName, relay_ == null ? "== null" : relayConfig_.PortNumber.ToString());
+                    relay_.OutputIsOnFeedback.OutputChange += Screen_CloseRelay_OutputIsOnFeedback_OutputChange;
+                }
+                //Debug.Console(LogLevel, "{0} SetupDefaultDisplayScreen device_ configured", ClassName);
+            }
+        }
         private void SetupDefaultDisplay()
         {
             if(!String.IsNullOrEmpty(config.DefaultDisplayKey)) 
@@ -70,45 +136,18 @@ namespace essentials_basic_room.Functions
                         var props_ = JsonConvert.DeserializeObject<DisplayPropsConfig>(dispConfig_.Properties.ToString());
                         //Debug.Console(LogLevel, "{0} SetupDefaultDisplay props_ {1}", ClassName, props_ == null ? "== null" : config.DefaultDisplayKey);
 
-                        //Debug.Console(LogLevel, "{0} SetupDefaultDisplay lifterProps_ {1}", ClassName, props_.Lifter == null ? "== null" : props_.Lifter.DeviceKey);
-                        if (props_.Lifter != null)
-                        {
-                            var lifter_ = DeviceManager.GetDeviceForKey(props_.Lifter.DeviceKey);
-                            DefaultLifter = lifter_ as ShadeBase;
-                            Debug.Console(LogLevel, "{0} SetupDefaultDisplay DefaultLifter {1}", ClassName, DefaultLifter == null ? "== null" : DefaultLifter.Key);
-                            //
-                            if(lifter_ is RelayControlledShade)
-                            {
-                                //Debug.Console(LogLevel, "{0} SetupDefaultDisplay lifter_ is RelayControlledShade", ClassName);
-                                
-                                var lifterConfig_ = ConfigReader.ConfigObject.Devices.Find(x => x.Key == props_.Lifter.DeviceKey);
-                                //Debug.Console(LogLevel, "{0} SetupDefaultDisplay lifterConfig_ {1}", ClassName, lifterConfig_ == null ? "== null" : lifterConfig_.GetType().ToString());
-                                var lifterProps_ = JsonConvert.DeserializeObject<RelayControlledShadeConfigProperties>(lifterConfig_.Properties.ToString());
-                                //Debug.Console(LogLevel, "{0} SetupDefaultDisplay lifterProps_ {1}", ClassName, lifterProps_ == null ? "== null" : lifterProps_.GetType().ToString());
+                        SetupDefaultDisplayLifter(props_);
+                        SetupDefaultDisplayScreen(props_);
 
-                                IOPortConfig relayConfig_ = lifterProps_.Relays.Open;
-                                IKeyed csKey_ = DeviceManager.GetDeviceForKey(relayConfig_.PortDeviceKey);
-                                var relay_ = (csKey_ as ISwitchedOutputCollection).SwitchedOutputs[relayConfig_.PortNumber];
-                                Debug.Console(LogLevel, "{0} SetupDefaultDisplay OPEN relay_ {1}", ClassName, relay_ == null ? "== null" : relayConfig_.PortNumber.ToString());
-                                relay_.OutputIsOnFeedback.OutputChange += OpenRelay_OutputIsOnFeedback_OutputChange;
-
-                                relayConfig_ = lifterProps_.Relays.Close;
-                                csKey_ = DeviceManager.GetDeviceForKey(relayConfig_.PortDeviceKey);
-                                relay_ = (csKey_ as ISwitchedOutputCollection).SwitchedOutputs[relayConfig_.PortNumber];
-                                Debug.Console(LogLevel, "{0} SetupDefaultDisplay CLOSE relay_ {1}", ClassName, relay_ == null ? "== null" : relayConfig_.PortNumber.ToString());
-                                relay_.OutputIsOnFeedback.OutputChange += CloseRelay_OutputIsOnFeedback_OutputChange;
-                            }
-                            //Debug.Console(LogLevel, "{0} SetupDefaultDisplay lifter_ configured", ClassName);
-                        }
-                       /*
-                        Debug.Console(LogLevel, "{0} SetupDefaultDisplay screenProps_ {1}", ClassName, props_.Screen == null ? "== null" : props_.Screen.DeviceKey);
-                        if (props_.Screen != null)
-                        {
-                            var screen_ = DeviceManager.GetDeviceForKey(props_.Screen.DeviceKey);
-                            var DefaultScreen = screen_ as ShadeBase;
-                            Debug.Console(LogLevel, "{0} SetupDefaultDisplay DefaultScreen {1}", ClassName, DefaultScreen == null ? "== null" : DefaultScreen.Key);
-                        }
-                        */
+                        /*
+                         Debug.Console(LogLevel, "{0} SetupDefaultDisplay screenProps_ {1}", ClassName, props_.Screen == null ? "== null" : props_.Screen.DeviceKey);
+                         if (props_.Screen != null)
+                         {
+                             var screen_ = DeviceManager.GetDeviceForKey(props_.Screen.DeviceKey);
+                             var DefaultScreen = screen_ as ShadeBase;
+                             Debug.Console(LogLevel, "{0} SetupDefaultDisplay DefaultScreen {1}", ClassName, DefaultScreen == null ? "== null" : DefaultScreen.Key);
+                         }
+                         */
                     }
                 }
                 else
@@ -116,13 +155,22 @@ namespace essentials_basic_room.Functions
            }
         }
 
-        private void OpenRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
+        private void Screen_OpenRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
-            Debug.Console(LogLevel, "{0} OpenRelayFeedback: {1}", ClassName, e.BoolValue);
+            Debug.Console(LogLevel, "{0} Screen_OpenRelayFeedback: {1}", ClassName, e.BoolValue);
         }
-        private void CloseRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
+        private void Screen_CloseRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
-            Debug.Console(LogLevel, "{0} CloseRelayFeedback: {1}", ClassName, e.BoolValue);
+            Debug.Console(LogLevel, "{0} Screen_CloseRelayFeedback: {1}", ClassName, e.BoolValue);
+        }
+
+        private void Lifter_OpenRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
+        {
+            Debug.Console(LogLevel, "{0} Lifter_OpenRelayFeedback: {1}", ClassName, e.BoolValue);
+        }
+        private void Lifter_CloseRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
+        {
+            Debug.Console(LogLevel, "{0} Lifter_CloseRelayFeedback: {1}", ClassName, e.BoolValue);
         }
 
         private void SetupDestinationList()

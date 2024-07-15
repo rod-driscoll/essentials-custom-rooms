@@ -1,11 +1,11 @@
 ﻿using essentials_basic_room_epi;
 using essentials_basic_tp.Drivers;
-using essentials_basic_tp_epi.joins;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using System;
 using System.Collections.Generic;
 using SubpageReferenceList = essentials_basic_tp.Drivers.SubpageReferenceList;
+using joins = essentials_basic_tp_epi.joins;
 
 namespace essentials_basic_tp_epi.Drivers
 {
@@ -40,7 +40,7 @@ namespace essentials_basic_tp_epi.Drivers
 
         SubpageReferenceList srl { get; set; }
 
-        uint SmartObjectId = UiSmartObjectJoin.VolumeList;
+        uint SmartObjectId = joins.UISmartObjectJoin.VolumeList;
         uint dig_offset = 4;
         uint ana_offset = 1;
         uint ser_offset = 1;

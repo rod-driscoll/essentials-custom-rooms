@@ -71,14 +71,14 @@ namespace essentials_basic_tp_epi.Drivers
         public void Register()
         {
             Debug.Console(LogLevel, "{0} Register", ClassName);
-            TriList.SetSigFalseAction(joins.UiBoolJoin.ToggleButtonPress, () =>
-                TriList.SetBool(joins.UiBoolJoin.ToggleButtonPress, 
-                    !TriList.BooleanInput[joins.UiBoolJoin.ToggleButtonPress].BoolValue) );
+            TriList.SetSigFalseAction(joins.UIBoolJoin.ToggleButtonPress, () =>
+                TriList.SetBool(joins.UIBoolJoin.ToggleButtonPress, 
+                    !TriList.BooleanInput[joins.UIBoolJoin.ToggleButtonPress].BoolValue) );
         }
         public void Unregister()
         {
             Debug.Console(LogLevel, "{0} Unregister", ClassName);
-            TriList.ClearBoolSigAction(joins.UiBoolJoin.ToggleButtonPress);
+            TriList.ClearBoolSigAction(joins.UIBoolJoin.ToggleButtonPress);
         }
 
     }

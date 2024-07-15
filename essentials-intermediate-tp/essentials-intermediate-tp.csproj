@@ -166,11 +166,12 @@
     <Compile Include="Drivers\PowerDriver.cs" />
     <Compile Include="Drivers\LifterDriver.cs" />
     <Compile Include="Drivers\ScreenDriver.cs" />
+    <Compile Include="Joins\IIUshortJoin.cs" />
     <Compile Include="SmartObjects\SmartObjectDynamicList.cs" />
     <Compile Include="SmartObjects\SubpageReferenceList.cs" />
     <Compile Include="Factory.cs" />
-    <Compile Include="Joins\UiBoolJoin.cs" />
-    <Compile Include="Joins\UiSmartObjectJoin.cs" />
+    <Compile Include="Joins\UIBoolJoin.cs" />
+    <Compile Include="Joins\UISmartObjectJoin.cs" />
     <Compile Include="Joins\UIStringJoin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

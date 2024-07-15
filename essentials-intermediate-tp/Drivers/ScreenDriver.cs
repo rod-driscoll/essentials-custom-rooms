@@ -11,9 +11,9 @@ using joins = essentials_basic_tp_epi.joins;
 
 namespace essentials_basic_tp.Drivers
 {
-    public class LifterDriver : PanelDriverBase, IBasicRoomSetup//, IShadesFeedback
+    public class ScreenDriver : PanelDriverBase, IBasicRoomSetup//, IShadesFeedback
     {
-        public string ClassName { get { return "LifterDriver"; } }
+        public string ClassName { get { return "ScreenDriver"; } }
         public uint LogLevel { get; set; }
 
         private BasicPanelMainInterfaceDriver Parent;
@@ -32,18 +32,18 @@ namespace essentials_basic_tp.Drivers
         public ShadeBase CurrentDefaultDevice { get; private set; }
         public PowerStates CurrentDefaultDevicePowerState { get; private set; }
 
-        public LifterDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
+        public ScreenDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
                     : base(parent.TriList)
         {
-            LogLevel = 2;
+            LogLevel =  2;
             Parent = parent;
-            UpPressJoin = joins.UIBoolJoin.LifterUpPress;
-            DownPressJoin = joins.UIBoolJoin.LifterDownPress;
-            StopPressJoin = joins.UIBoolJoin.LifterStopPress;
-            TogglePressJoin = joins.UIBoolJoin.LifterTogglePress;
-            SecondsRemainingJoin = joins.UIUshortJoin.LifterSecondsRemaining;
-            PositionPercentJoin = joins.UIUshortJoin.LifterPositionPercent;
-            StatusTextJoin = joins.UIStringJoin.LifterStatusTextJoin;
+            UpPressJoin = joins.UIBoolJoin.ScreenUpPress;
+            DownPressJoin = joins.UIBoolJoin.ScreenDownPress;
+            StopPressJoin = joins.UIBoolJoin.ScreenStopPress;
+            TogglePressJoin = joins.UIBoolJoin.ScreenTogglePress;
+            SecondsRemainingJoin = joins.UIUshortJoin.ScreenSecondsRemaining;
+            PositionPercentJoin = joins.UIUshortJoin.ScreenPositionPercent;
+            StatusTextJoin = joins.UIStringJoin.ScreenStatusTextJoin;
 
             var ribbon = Parent.ChildDrivers.First(x => x is NotificationRibbonDriver);
             if (ribbon != null)
@@ -125,7 +125,7 @@ namespace essentials_basic_tp.Drivers
         }
 
         private void IsOpenClosedFeedback_OutputChange(object sender, FeedbackEventArgs e)
-        {
+        { 
             var openCloseFeedback_ = CurrentDefaultDevice as IShadesOpenClosedFeedback;
             if (openCloseFeedback_ != null)
             {
@@ -175,7 +175,7 @@ namespace essentials_basic_tp.Drivers
             IsMovingFeedback_OutputChange(sender, e);
         }
 
-
+        
         /// <summary>
         /// Called when room changes
         /// </summary>
@@ -192,7 +192,7 @@ namespace essentials_basic_tp.Drivers
             if (room_ != null)
             {
                 Debug.Console(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
-                ConnectDevice(room_.Display.DefaultLifter);
+                ConnectDevice(room_.Display.DefaultScreen);
             }
             Debug.Console(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }
@@ -270,7 +270,7 @@ namespace essentials_basic_tp.Drivers
                 {
                     if (device_.ShadeIsRaisingFeedback.BoolValue)
                     {
-                        TriList.SetBool(DownPressJoin, !TriList.BooleanInput[DownPressJoin].BoolValue);
+                        TriList.SetBool(DownPressJoin, !TriList.BooleanInput[UpPressJoin].BoolValue);
                         TriList.SetBool(TogglePressJoin, !TriList.BooleanInput[TogglePressJoin].BoolValue);
                     }
                     else if (device_.ShadeIsLoweringFeedback.BoolValue)

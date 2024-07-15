@@ -7,5 +7,9 @@
         public const uint SipAddress = 9999;
 
         public const uint PinDialogIcon = 3980;
+
+        // join numbers assiigned below are fillers, not actually used in prod yet
+        public const uint ScreenStatusTextJoin = 10001;
+        public const uint LifterStatusTextJoin = 10001;
     }
 }

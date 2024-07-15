@@ -1,13 +1,12 @@
-﻿using Crestron.SimplSharp;
-using essentials_basic_room.Functions;
+﻿using essentials_basic_room.Functions;
 using essentials_basic_room_epi;
 using essentials_basic_tp_epi.Drivers;
-using essentials_basic_tp_epi.joins;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using System;
 using System.Linq;
+using joins = essentials_basic_tp_epi.joins;
 
 namespace essentials_basic_tp.Drivers
 {
@@ -37,13 +36,13 @@ namespace essentials_basic_tp.Drivers
         private BasicPanelMainInterfaceDriver Parent;
         public PowerDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
             : base(parent.TriList)
-        {
+        {            
             LogLevel = 2;
             Parent = parent;
             // may need to change this from GenericModalVisible if we use the GenericModal dialog for anything else such as room combine
             PressJoin = UIBoolJoin.GenericModalVisible;
             PageJoin = UIBoolJoin.GenericModalVisible;
-            PowerToggleJoin = UiBoolJoin.PowerTogglePress;
+            PowerToggleJoin = joins.UIBoolJoin.PowerTogglePress;
 
             TriList.SetSigFalseAction(PressJoin, () =>
                 Parent.PopupInterlock.ShowInterlockedWithToggle(PageJoin));

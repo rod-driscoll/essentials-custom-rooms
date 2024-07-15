@@ -36,8 +36,8 @@ namespace essentials_basic_tp_epi.Drivers
             ChildDrivers.Add(new PowerDriver(this, config));
             ChildDrivers.Add(new PinDriver(this, config));
             ChildDrivers.Add(new DisplayDriver(this, config));
+            ChildDrivers.Add(new ScreenDriver(this, config));
             ChildDrivers.Add(new LifterDriver(this, config));
-            //ChildDrivers.Add(new ScreenDriver(this, config));
 
 
             PopupInterlockDrivers.Add(new BasicAudioDriver(this));
@@ -50,7 +50,7 @@ namespace essentials_basic_tp_epi.Drivers
             {
                 var driver_ = driver as ILogClassDetails;
                 if (driver_ != null)
-                    driver_.LogLevel = (uint)(driver_ is LifterDriver ? 1: 255); // 255 means they won't log
+                    driver_.LogLevel = (uint)(driver_ is ScreenDriver ? 1: 255); // 255 means they won't log
             }
             Debug.Console(0, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
             foreach (var driver in PopupInterlockDrivers)
@@ -60,7 +60,6 @@ namespace essentials_basic_tp_epi.Drivers
                 if (driver_ != null)
                     driver_.LogLevel = 255;
             }
-
             Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }
 

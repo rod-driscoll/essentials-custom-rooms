@@ -1,15 +1,14 @@
 ﻿using Crestron.SimplSharp;
-using Crestron.SimplSharp.SQLite;
 using essentials_basic_room.Functions;
 using essentials_basic_room_epi;
 using essentials_basic_tp_epi.Drivers;
-using essentials_basic_tp_epi.joins;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using joins = essentials_basic_tp_epi.joins;
 
 namespace essentials_basic_tp.Drivers
 {
@@ -25,7 +24,7 @@ namespace essentials_basic_tp.Drivers
         private BasicPanelMainInterfaceDriver Parent;
         NotificationRibbonDriver ribbonDriver;
 
-        private List<IRoutingSinkWithSwitching> CurrentDevices;
+        //private List<IRoutingSinkWithSwitching> CurrentDevices;
         public IRoutingSinkWithSwitching CurrentDefaultDevice { get; private set; }
         public PowerStates CurrentDefaultDevicePowerState { get; private set; }
 
@@ -37,8 +36,8 @@ namespace essentials_basic_tp.Drivers
             LogLevel = 2;
             Parent = parent;
 
-            PowerToggleJoin = UiBoolJoin.DisplayPowerTogglePress;
-            PowerToggleText = essentials_basic_tp_epi.joins.UIStringJoin.DisplayPowerStatus;
+            PowerToggleJoin = UIBoolJoin.DisplayPowerTogglePress;
+            PowerToggleText = joins.UIStringJoin.DisplayPowerStatus;
 
             var ribbon = Parent.ChildDrivers.First(x => x is NotificationRibbonDriver);
             if (ribbon != null)
