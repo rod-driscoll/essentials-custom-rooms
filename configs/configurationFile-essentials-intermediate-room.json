@@ -175,6 +175,31 @@
                 }
             },
             {
+                "key": "stb-1",
+                "name": "TV tuner",
+                "type": "settopbox",
+                "group": "settopbox",
+                "properties": {
+                    "hasPresets": true,
+                    "hasDpad": true,
+                    "hasNumeric": true,
+                    "hasDvr": false,
+                    "irPulseTime": 3,
+                    "hasControls": true,
+                    "hasAudio": true,
+                    "presetsList": "TV Presets - FTA Sydney.json",
+                    "control":{
+                        "useBridgeJoinMap": false,
+                        "controlPortDevKey": "processor",
+                        "controlPortName": "IR1",
+                        "controlPortNumber": 1,
+                        "irFile": "STRONG SRT 5437.ir",
+                        "method": "ir",
+                        "disableSharing": false
+                    }
+                }
+            },
+            {
                 "key": "touchpanel-1",
                 "name": "touchpanel",
                 "type": "basic-tp",
@@ -210,6 +235,7 @@
                     "DestinationListKey": "default",
                     "defaultAudioKey": "dsp-1-fader-room-1",
                     "defaultMicKey": "dsp-1-mics-room-1",
+                    "defaultSetTopBoxKey": "stb-1",
                     "faders": {
                         "1" : {
                             "level": 40,

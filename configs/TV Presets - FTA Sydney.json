@@ -1,0 +1,140 @@
+{
+    "name": "Sydney FTA TV List",
+    "channels": [
+      {
+        "name": "ABC",
+        "IconUrl": "abctv hd.png",
+        "Channel": "20"
+      },
+      {
+        "name": "ABC Kids/Family",
+        "IconUrl": "abc kids-abc family.png",
+        "Channel": "22"
+      },
+      {
+        "name": "ABC Entertains",
+        "IconUrl": "abc entertains.png",
+        "Channel": "23"
+      },
+      {
+        "name": "ABC News",
+        "IconUrl": "abc news.png",
+        "Channel": "24"
+      },
+      {
+        "name": "SBS One",
+        "IconUrl": "sbs one hd.png",
+        "Channel": "30"
+      },
+      {
+        "name": "SBS Viceland",
+        "IconUrl": "sbs viceland hd.png",
+        "Channel": "31"
+      },
+      {
+        "name": "SBS World Movies",
+        "IconUrl": "sbs world movies.png",
+        "Channel": "32"
+      },
+      {
+        "name": "SBS Food",
+        "IconUrl": "sbs food.png",
+        "Channel": "33"
+      },
+      {
+        "name": "NITV",
+        "IconUrl": "nitv hd.png",
+        "Channel": "34"
+      },
+      {
+        "name": "SBS WorldWatch",
+        "IconUrl": "sbs worldwatch.png",
+        "Channel": "35"
+      },
+      {
+        "name": "7 HD",
+        "IconUrl": "7hd sydney.png",
+        "Channel": "70"
+      },
+      {
+        "name": "7TWO",
+        "IconUrl": "7two.png",
+        "Channel": "72"
+      },
+      {
+        "name": "7mate",
+        "IconUrl": "7mate.png",
+        "Channel": "74"
+      },
+      {
+        "name": "7Bravo",
+        "IconUrl": "7bravo.png",
+        "Channel": "75"
+      },
+      {
+        "name": "7flix",
+        "IconUrl": "7flix.png",
+        "Channel": "76"
+      },
+      {
+        "name": "TVSN",
+        "IconUrl": "tvsn.png",
+        "Channel": "77"
+      },
+      {
+        "name": "RACING.COM",
+        "IconUrl": "racing.com.png",
+        "Channel": "78"
+      },
+      {
+        "name": "9 HD",
+        "IconUrl": "9hd.png",
+        "Channel": "90"
+      },
+      {
+        "name": "9Go!",
+        "IconUrl": "9go!.png",
+        "Channel": "93"
+      },
+      {
+        "name": "9Life",
+        "IconUrl": "9life.png",
+        "Channel": "94"
+      },
+      {
+        "name": "9Gem",
+        "IconUrl": "9gem.png",
+        "Channel": "95"
+      },
+      {
+        "name": "9Rush",
+        "IconUrl": "9rush.png",
+        "Channel": "96"
+      },
+      {
+        "name": "Extra",
+        "IconUrl": "extra.png",
+        "Channel": "97"
+      },
+      {
+        "name": "10 HD",
+        "IconUrl": "10 hd.png",
+        "Channel": "15"
+      },
+      {
+        "name": "10 Peach",
+        "IconUrl": "10peach.png",
+        "Channel": "11"
+      },
+      {
+        "name": "10 BOLD",
+        "IconUrl": "10bold.png",
+        "Channel": "12"
+      },
+      {
+        "name": "Nickelodeon",
+        "IconUrl": "nickelodeon.png",
+        "Channel": "13"
+      }
+    ]
+  }
