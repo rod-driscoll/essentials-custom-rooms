@@ -84,6 +84,17 @@ In the Essentials config file set "type":"minimal-tp" and then the type of touch
 * ToggleButtonDriver.cs
   * this is an example driver that toggles a button, this completely custom, many such drivers will be the core of custom plugins.
 
+#### motorised screen and lifter
+
+* This is an external epi from my repo, it uses all the ShadeController interfaces to avoid needing to create a core library plugin.
+
+#### TV preset control
+
+* Add a device to your config, and a reference in the room part of the config.
+* Add the RoomSetTopBox.cs to the room and SetTopBoxDriver.cs to the tp.
+* Zip all your images up into images.zip, then place them onto the processor at: \\html\presets\images.zip
+* Create a json file with your preset names and place it in \\html\presets\lists\TV Presets.json
+
 ## contributors
 
 Rod Driscoll: <rod@theavitgroup.com.au>

@@ -33,6 +33,10 @@ namespace essentials_basic_room_epi
     {
         RoomDisplay Display { get; set; }
     }
+    public interface IHasSetTopBoxFunction
+    {
+        RoomSetTopBox SetTopBox { get; set; }
+    }
     public interface ILifterConfig
     {
         [JsonProperty("lifter")]

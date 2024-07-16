@@ -8,6 +8,7 @@
         public const uint ScreenStopPress = 44;
         public const uint ScreenTogglePress = 45;
 
+        public const uint TvTunerButtonPress = 3333;
         public const uint ToggleButtonPress = 3334;
 
         public const uint PowerTogglePress = 15009;

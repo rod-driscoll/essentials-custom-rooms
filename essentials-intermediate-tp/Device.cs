@@ -12,7 +12,7 @@ namespace essentials_basic_tp_epi
     // This would be EssentialsTouchpanelController in default Essentials
     public class Device : TouchpanelBase, ILogClassDetails
     {
-        public string ClassName { get { return "Device"; } }
+        public string ClassName { get { return "DefaultSetTopBox"; } }
         public uint LogLevel { get; set; }
         public PanelDriverBase PanelDriver { get; private set; }
         Config config;

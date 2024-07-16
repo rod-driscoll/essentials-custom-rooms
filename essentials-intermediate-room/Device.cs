@@ -8,9 +8,9 @@ using System;
 
 namespace essentials_basic_room_epi
 {
-    public class Device : EssentialsRoomBase, IBasicRoom, IHasAudioDevice, IHasPowerFunction, IHasDisplayFunction
+    public class Device : EssentialsRoomBase, IBasicRoom, IHasAudioDevice, IHasPowerFunction, IHasDisplayFunction, IHasSetTopBoxFunction
     {
-        public string ClassName { get { return "Device"; } }
+        public string ClassName { get { return "DefaultSetTopBox"; } }
         public uint LogLevel { get; set; }
 
         public Config PropertiesConfig { get; private set; }
@@ -19,6 +19,7 @@ namespace essentials_basic_room_epi
         public RoomPower Power { get; set; }
         public RoomAudio Audio { get; set; }
         public RoomDisplay Display { get; set; }
+        public RoomSetTopBox SetTopBox { get; set; }
 
         public Device(DeviceConfig config)
             : base(config)
@@ -36,6 +37,8 @@ namespace essentials_basic_room_epi
                 Audio = new RoomAudio(PropertiesConfig);
 
                 Display = new RoomDisplay(PropertiesConfig);
+
+                SetTopBox = new RoomSetTopBox(PropertiesConfig);
                 InitializeRoom();
                 Debug.Console(LogLevel, this, "{0} constructor complete", ClassName);
             }

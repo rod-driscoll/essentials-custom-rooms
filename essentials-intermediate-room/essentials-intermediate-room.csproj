@@ -118,6 +118,7 @@
     <Compile Include="Functions\Audio\RoomVolumeLevel.cs" />
     <Compile Include="Functions\RoomDisplay.cs" />
     <Compile Include="Functions\RoomPower.cs" />
+    <Compile Include="Functions\RoomSetTopBox.cs" />
     <Compile Include="Interfaces\IHasPassword.cs" />
     <Compile Include="Interfaces\IBasicRoom.cs" />
     <Compile Include="Interfaces\Devices\IRelayControlledMotor.cs" />

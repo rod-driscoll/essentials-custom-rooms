@@ -43,6 +43,7 @@ namespace essentials_basic_tp_epi.Drivers
             PopupInterlockDrivers.Add(new BasicAudioDriver(this));
             PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));
             PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
+            PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
 
             // suppress excess logging on classes
             Debug.Console(0, "{0} suppressing excess logging on drivers, ChildDrivers {1}", ClassName, ChildDrivers == null ? "== null" : "exists");
@@ -50,7 +51,7 @@ namespace essentials_basic_tp_epi.Drivers
             {
                 var driver_ = driver as ILogClassDetails;
                 if (driver_ != null)
-                    driver_.LogLevel = (uint)(driver_ is ScreenDriver ? 1: 255); // 255 means they won't log
+                    driver_.LogLevel = 255; // 255 means they won't log
             }
             Debug.Console(0, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
             foreach (var driver in PopupInterlockDrivers)
@@ -58,13 +59,13 @@ namespace essentials_basic_tp_epi.Drivers
                 var driver_ = driver as ILogClassDetails;
                 Debug.Console(0, "{0} driver is {1}", ClassName, driver.GetType().Name);
                 if (driver_ != null)
-                    driver_.LogLevel = 255;
+                    driver_.LogLevel = (uint)(driver_ is SetTopBoxDriver ? 1 : 255); // 255 means they won't log
             }
             Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }
 
         /// <summary>
-        /// called from Device when a room is assigned
+        /// called from DefaultSetTopBox when a room is assigned
         /// </summary>
         /// <param name="room"></param>
         public void SetupChildDrivers(IBasicRoom room)

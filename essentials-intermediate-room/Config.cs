@@ -40,6 +40,14 @@ namespace essentials_basic_room_epi
         public Dictionary<string, BasicAudioPresetConfig> AudioPresets { get; set; }
 
         #endregion audio config
+
+        #region settopbox config
+
+
+        [JsonProperty("defaultSetTopBoxKey")]
+        public string DefaultSetTopBoxKey { get; set; }
+
+        #endregion settopbox config
     }
 
     /// <summary>
