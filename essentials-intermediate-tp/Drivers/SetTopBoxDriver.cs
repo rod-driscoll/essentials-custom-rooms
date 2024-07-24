@@ -5,7 +5,7 @@ using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.PageManagers;
 using PepperDash.Essentials.Core.Presets;
-using PepperDash.Essentials.Devices.Common.VideoCodec.CiscoCodec;
+using PepperDash.Essentials.Devices.Common;
 using System;
 using joins = essentials_basic_tp_epi.joins;
 
@@ -103,14 +103,24 @@ namespace essentials_basic_tp.Drivers
                 (CurrentDefaultDevice as IChannel).LinkButtons(TriList);
             if (CurrentDefaultDevice is IColor)
                 (CurrentDefaultDevice as IColor).LinkButtons(TriList);
+            //Debug.Console(LogLevel, "{0} Register IDPad {1}", ClassName, (CurrentDefaultDevice is IDPad) ? "exists" : "== null");
             if (CurrentDefaultDevice is IDPad)
                 (CurrentDefaultDevice as IDPad).LinkButtons(TriList);
             if (CurrentDefaultDevice is IDvr)
                 (CurrentDefaultDevice as IDvr).LinkButtons(TriList);
+            //Debug.Console(LogLevel, "{0} Register INumericKeypad {1}", ClassName, (CurrentDefaultDevice is INumericKeypad) ? "exists":"== null");
             if (CurrentDefaultDevice is INumericKeypad)
                 (CurrentDefaultDevice as INumericKeypad).LinkButtons(TriList);
             if (CurrentDefaultDevice is ITransport)
                 (CurrentDefaultDevice as ITransport).LinkButtons(TriList);
+            if (CurrentDefaultDevice is IRSetTopBoxBase)
+            {
+                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton1Label = "OK";
+                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton1Command = "OK";
+                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton2Label = "Select";
+                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton2Command = "SELECT";
+            }
+
             pageManager = new SetTopBoxThreePanelPageManager(CurrentDefaultDevice, TriList);
             pageManager.Show();
             CurrentDefaultDevice.TvPresets.PresetRecalled += TvPresets_PresetRecalled;
@@ -121,16 +131,20 @@ namespace essentials_basic_tp.Drivers
         {
             Debug.Console(LogLevel, "{0} Unregister", ClassName);
 
-
             if(pageManager != null)
                 pageManager.Hide();
             if (CurrentDefaultDevice != null) // Disconnect current room 
             {
-                CurrentDefaultDevice.TvPresets.PresetRecalled -= TvPresets_PresetRecalled;
-                CurrentDefaultDevice.TvPresets.PresetsLoaded -= TvPresets_PresetsLoaded;
-                CurrentDefaultDevice.TvPresets.PresetsSaved -= TvPresets_PresetsSaved;
-
+                Debug.Console(LogLevel, "{0} Unregister, TvPresets {1}", ClassName, CurrentDefaultDevice.TvPresets == null?"== null": "exist");
+                if (CurrentDefaultDevice.TvPresets != null)
+                {
+                    CurrentDefaultDevice.TvPresets.PresetRecalled -= TvPresets_PresetRecalled;
+                    CurrentDefaultDevice.TvPresets.PresetsLoaded -= TvPresets_PresetsLoaded;
+                    CurrentDefaultDevice.TvPresets.PresetsSaved -= TvPresets_PresetsSaved;
+                }
+                Debug.Console(LogLevel, "{0} Unregister, UnlinkButtons", ClassName);
                 CurrentDefaultDevice.UnlinkButtons(TriList);
+                Debug.Console(LogLevel, "{0} Unregister, Unlink interfaces", ClassName);
                 if (CurrentDefaultDevice is IChannel)
                     (CurrentDefaultDevice as IChannel).UnlinkButtons(TriList);
                 if (CurrentDefaultDevice is IColor)

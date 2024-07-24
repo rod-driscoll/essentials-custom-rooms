@@ -180,13 +180,13 @@
                 "type": "settopbox",
                 "group": "settopbox",
                 "properties": {
-                    "hasPresets": true,
                     "hasDpad": true,
                     "hasNumeric": true,
                     "hasDvr": false,
-                    "irPulseTime": 3,
+                    "irPulseTime": 150,
                     "hasControls": true,
                     "hasAudio": true,
+                    "hasPresets": true,
                     "presetsList": "TV Presets - FTA Sydney.json",
                     "control":{
                         "useBridgeJoinMap": false,
@@ -236,6 +236,7 @@
                     "defaultAudioKey": "dsp-1-fader-room-1",
                     "defaultMicKey": "dsp-1-mics-room-1",
                     "defaultSetTopBoxKey": "stb-1",
+                    "setTopBoxPresetsURL":"http://192.168.104.157",
                     "faders": {
                         "1" : {
                             "level": 40,

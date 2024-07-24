@@ -43,9 +43,10 @@ namespace essentials_basic_room_epi
 
         #region settopbox config
 
-
         [JsonProperty("defaultSetTopBoxKey")]
         public string DefaultSetTopBoxKey { get; set; }
+        [JsonProperty("setTopBoxPresetsURL")]
+        public string SetTopBoxPresetsURL { get; set; }
 
         #endregion settopbox config
     }
