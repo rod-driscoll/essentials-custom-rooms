@@ -53,7 +53,7 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IBasicRoom room)
         {
-            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.Console(LogLevel, "{0} Setup {1}", ClassName, room == null ? "== null" : room.Key);
             //EssentialsRoomPropertiesConfig roomConf = room.PropertiesConfig;
 
             IHasPowerControlWithFeedback dispTwoWay;
@@ -81,18 +81,20 @@ namespace essentials_basic_tp.Drivers
                 Debug.Console(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
                 CurrentDefaultDevice = room_.Display.DefaultDisplay;
                 Debug.Console(LogLevel, "{0} Setup, Driver.DefaultDisplay {1}", ClassName, room_.Display.DefaultDisplay == null ? "== null" : room_.Display.DefaultDisplay.Key);
-                CurrentDefaultDevice.CurrentSourceChange += CurrentDefaultDevice_CurrentSourceChange;
-                
-                dispTwoWay = CurrentDefaultDevice as IHasPowerControlWithFeedback;
-                Debug.Console(LogLevel, "{0} Setup, IHasPowerControlWithFeedback {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
-                if (dispTwoWay != null)// Link power, warming, cooling to display
-                    dispTwoWay.PowerIsOnFeedback.OutputChange += PowerIsOnFeedback_OutputChange;
-                dispWarmCool = CurrentDefaultDevice as IWarmingCooling;
-                Debug.Console(LogLevel, "{0} Setup, IWarmingCooling {1}", ClassName, dispWarmCool == null ? "== null" : CurrentDefaultDevice.Key);
-                if (dispWarmCool != null)
-                {
-                    dispWarmCool.IsWarmingUpFeedback.OutputChange += IsWarmingUpFeedback_OutputChange; ;
-                    dispWarmCool.IsCoolingDownFeedback.OutputChange += IsCoolingDownFeedback_OutputChange; ;
+                if(CurrentDefaultDevice != null)
+                { 
+                    CurrentDefaultDevice.CurrentSourceChange += CurrentDefaultDevice_CurrentSourceChange;
+                    dispTwoWay = CurrentDefaultDevice as IHasPowerControlWithFeedback;
+                    Debug.Console(LogLevel, "{0} Setup, IHasPowerControlWithFeedback {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
+                    if (dispTwoWay != null)// Link power, warming, cooling to display
+                        dispTwoWay.PowerIsOnFeedback.OutputChange += PowerIsOnFeedback_OutputChange;
+                    dispWarmCool = CurrentDefaultDevice as IWarmingCooling;
+                    Debug.Console(LogLevel, "{0} Setup, IWarmingCooling {1}", ClassName, dispWarmCool == null ? "== null" : CurrentDefaultDevice.Key);
+                    if (dispWarmCool != null)
+                    {
+                        dispWarmCool.IsWarmingUpFeedback.OutputChange += IsWarmingUpFeedback_OutputChange; ;
+                        dispWarmCool.IsCoolingDownFeedback.OutputChange += IsCoolingDownFeedback_OutputChange; ;
+                    }
                 }
             }
             Debug.Console(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
@@ -119,7 +121,6 @@ namespace essentials_basic_tp.Drivers
             else
                 Debug.Console(LogLevel, "{0} IsCoolingDownFeedback_OutputChange {1}", ClassName, e.BoolValue);
         }
-
         private void IsWarmingUpFeedback_OutputChange(object sender, FeedbackEventArgs e) // sender is a BoolFeedback Key 'IsWarmingUp'
         {
             if (e.BoolValue)
@@ -142,7 +143,6 @@ namespace essentials_basic_tp.Drivers
             else
                 Debug.Console(LogLevel, "{0} IsWarmingUpFeedback_OutputChange {1}", ClassName, e.BoolValue);
         }
-
         private void PowerIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
             var display_ = sender as IHasPowerControlWithFeedback;
@@ -234,7 +234,6 @@ namespace essentials_basic_tp.Drivers
             UpdateCurrentDisplayFeedback();
             //Debug.Console(0, "{0} StartSecondTimer end", ClassName);
         }
-
         private void SecondTimerExpired(object userSpecific)
         {
             if (CurrentDefaultDevice != null) // make the button flash when warming or cooling
@@ -256,7 +255,6 @@ namespace essentials_basic_tp.Drivers
                 SecondTimer = null;
             }
         }
-
     }
 
 }
