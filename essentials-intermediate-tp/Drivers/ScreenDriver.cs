@@ -270,7 +270,7 @@ namespace essentials_basic_tp.Drivers
                 {
                     if (device_.ShadeIsRaisingFeedback.BoolValue)
                     {
-                        TriList.SetBool(DownPressJoin, !TriList.BooleanInput[UpPressJoin].BoolValue);
+                        TriList.SetBool(UpPressJoin, !TriList.BooleanInput[UpPressJoin].BoolValue);
                         TriList.SetBool(TogglePressJoin, !TriList.BooleanInput[TogglePressJoin].BoolValue);
                     }
                     else if (device_.ShadeIsLoweringFeedback.BoolValue)

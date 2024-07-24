@@ -10,7 +10,7 @@ namespace essentials_basic_room_epi
 {
     public class Device : EssentialsRoomBase, IBasicRoom, IHasAudioDevice, IHasPowerFunction, IHasDisplayFunction, IHasSetTopBoxFunction
     {
-        public string ClassName { get { return "DefaultSetTopBox"; } }
+        public string ClassName { get { return "IntermediateRoom-Device"; } }
         public uint LogLevel { get; set; }
 
         public Config PropertiesConfig { get; private set; }
@@ -27,7 +27,7 @@ namespace essentials_basic_room_epi
             try
             {
                 LogLevel = 0;
-                Debug.Console(LogLevel, this, "{0} constructor starting", ClassName);
+                Debug.Console(LogLevel, this, "constructor starting");
                 PropertiesConfig = JsonConvert.DeserializeObject<Config> (config.Properties.ToString());
                 //Debug.Console(LogLevel, this, "{0} PropertiesConfig {1}", ClassName, PropertiesConfig == null ? "==null" : "exists");
  
@@ -40,7 +40,7 @@ namespace essentials_basic_room_epi
 
                 SetTopBox = new RoomSetTopBox(PropertiesConfig);
                 InitializeRoom();
-                Debug.Console(LogLevel, this, "{0} constructor complete", ClassName);
+                Debug.Console(LogLevel, this, "constructor complete");
             }
             catch (Exception e)
             {
@@ -50,22 +50,22 @@ namespace essentials_basic_room_epi
 
         void InitializeRoom()
         {
-            //Debug.Console(LogLevel, this, "{0} InitializeRoom", ClassName);
-            //Debug.Console(LogLevel, this, "{0} InitializeRoom complete", ClassName);
+            //Debug.Console(LogLevel, this, "InitializeRoom");
+            //Debug.Console(LogLevel, this, "InitializeRoom complete");
         }
 
         public override bool CustomActivate()
         {
-            Debug.Console(LogLevel, this, "{0} CustomActivate", ClassName);
+            Debug.Console(LogLevel, this, "CustomActivate");
             try
             {
 
             }
             catch (Exception e)
             {
-                Debug.Console(LogLevel, this, "{0} ERROR: CustomActivate {1}", ClassName, e.Message);
+                Debug.Console(LogLevel, this, "ERROR: CustomActivate {0}", e.Message);
             }
-            Debug.Console(LogLevel, this, "{0} CustomActivate done", ClassName);
+            Debug.Console(LogLevel, this, "CustomActivate done");
             return base.CustomActivate();
         }
 
@@ -74,7 +74,7 @@ namespace essentials_basic_room_epi
         /// </summary>
         public override void SetDefaultLevels()
         {
-            Debug.Console(LogLevel, this, "{0} SetDefaultLevels", ClassName);
+            Debug.Console(LogLevel, this, "SetDefaultLevels");
             Audio.SetDefaultLevels();
         }
 
@@ -84,19 +84,20 @@ namespace essentials_basic_room_epi
         /// </summary>
         protected override void EndShutdown()
         {
-            Debug.Console(LogLevel, this, "{0} EndShutdown", ClassName);
+            Debug.Console(LogLevel, this, "EndShutdown");
             RunRouteAction("roomOff");
+            Debug.Console(LogLevel, this, "Display {0}", Display==null?"== null":"exists");
+            Display.SetPowerOff();
             Audio.PresetOffRecall();
             Power.SetPowerOff();
-            Display.SetPowerOff();
         }
-
         public void StartUp()
         {
-            Debug.Console(LogLevel, this, "{0} StartUp", ClassName);
+            Debug.Console(LogLevel, this, "StartUp");
+            Debug.Console(LogLevel, this, "Display {0}", Display == null ? "== null" : "exists");
+            Display.SetPowerOn();
             SetDefaultLevels();
             Power.SetPowerOn();
-            Display.SetPowerOn();
         }
 
         CCriticalSection RunRouteLock = new CCriticalSection();
@@ -130,7 +131,7 @@ namespace essentials_basic_room_epi
         }
         public override bool RunDefaultPresentRoute()
         {
-            Debug.Console(LogLevel, this, "{0} RunDefaultPresentRoute", ClassName);
+            Debug.Console(LogLevel, this, "RunDefaultPresentRoute");
             RunRouteAction("defaultRoute");
             return true;
         }
@@ -141,17 +142,17 @@ namespace essentials_basic_room_epi
         /// <param name="args"></param>
         private void Power_PowerChange(object sender, PowerEventArgs args)
         {
-            Debug.Console(LogLevel, "{0} Power_PowerChange, current: {1}, {2} seconds remaining", ClassName, args.Current.ToString(), args.SecondsRemaining.ToString());
+            Debug.Console(LogLevel, "Power_PowerChange, current: {0}, {1} seconds remaining", args.Current.ToString(), args.SecondsRemaining.ToString());
             try
             {
                 OnFeedback.FireUpdate(); // if this errors then check OnFeedbackFunc
-                Debug.Console(LogLevel, "{0} OnFeedback.FireUpdate() done", ClassName);
+                Debug.Console(LogLevel, "OnFeedback.FireUpdate() done");
             }
             catch (Exception e)
             {
-                Debug.Console(LogLevel, "{0} Power_PowerChange ERROR: {1}", ClassName, e.Message);
+                Debug.Console(LogLevel, "Power_PowerChange ERROR: {0}", e.Message);
             }
-            Debug.Console(LogLevel, "{0} Power_PowerChange done", ClassName);
+            Debug.Console(LogLevel, "Power_PowerChange done");
         }
 
         #region power interface definitions
@@ -166,11 +167,11 @@ namespace essentials_basic_room_epi
 
         public override void PowerOnToDefaultOrLastSource()
         {
-            Debug.Console(LogLevel, this, "{0} PowerOnToDefaultOrLastSource not implemented", ClassName);
+            Debug.Console(LogLevel, this, "PowerOnToDefaultOrLastSource not implemented");
         }
         public override void RoomVacatedForTimeoutPeriod(object o)
         {
-            Debug.Console(LogLevel, this, "{0} RoomVacatedForTimeoutPeriod not implemented", ClassName);
+            Debug.Console(LogLevel, this, "RoomVacatedForTimeoutPeriod not implemented");
         }
 
         #endregion

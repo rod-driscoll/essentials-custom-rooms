@@ -78,7 +78,7 @@ namespace essentials_basic_room.Functions
         }
         private void OnPower(PowerEventArgs args)
         {
-            Debug.Console(LogLevel, "{0} OnPower", ClassName);
+            Debug.Console(LogLevel, "{0} OnPower start", ClassName);
             if (PowerChange != null)
                 PowerChange(this, args);
             Debug.Console(0, "{0} OnPower done", ClassName);
@@ -208,7 +208,7 @@ namespace essentials_basic_room.Functions
                 else
                     Debug.Console(0, "{0} PowerTimerExpired, PowerTimer == null", ClassName);
 
-                Debug.Console(0, "{0} PowerTimerExpired done", ClassName);
+                //Debug.Console(0, "{0} PowerTimerExpired done", ClassName);
             }
             catch (Exception e)
             {

@@ -18,8 +18,9 @@ namespace essentials_basic_room.Functions
         public uint LogLevel { get; set; }
         public Config config { get; private set; }
 
+        private DisplayPropsConfig defaultDisplayConfig;
         private List<IRoutingSinkWithSwitching> Displays;
-        public IRoutingSinkWithSwitching DefaultDisplay { get; private set; }
+        public IRoutingSinkWithSwitching DefaultDisplay { get; private set; } // IHasDefaultDisplay
         public ShadeBase DefaultScreen { get; private set; }
         public ShadeBase DefaultLifter { get; private set; }
         public PowerStates DefaultDisplayPowerState { get; private set; }
@@ -29,7 +30,7 @@ namespace essentials_basic_room.Functions
 
         public RoomDisplay(Config config)
         {
-            LogLevel = 0;
+            LogLevel = 0; // 0 == log everything
             Debug.Console(LogLevel, "{0} constructor", ClassName);
             this.config = config;
             Displays = new List<IRoutingSinkWithSwitching>();
@@ -49,11 +50,6 @@ namespace essentials_basic_room.Functions
                 var device_ = DeviceManager.GetDeviceForKey(displayProps.Lifter.DeviceKey);
                 DefaultLifter = device_ as ShadeBase;
                 //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter DefaultLifter {1}", ClassName, DefaultLifter == null ? "== null" : device_.Key);
-                // device_ is IShadesOpenClosedFeedback
-                if (device_ is IShadesOpenClosedFeedback)
-                {
-                    //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter device_ is IShadesOpenClosedFeedback", ClassName);
-                }
                 if (device_ is ShadeBase)
                 {
                     //Debug.Console(LogLevel, "{0} SetupDefaultDisplayLifter device_ is ShadeBase", ClassName);
@@ -114,6 +110,8 @@ namespace essentials_basic_room.Functions
             if(!String.IsNullOrEmpty(config.DefaultDisplayKey)) 
             {
                 DefaultDisplay = DeviceManager.GetDeviceForKey(config.DefaultDisplayKey) as IRoutingSinkWithSwitching;
+                if(!Displays.Contains(DefaultDisplay))
+                    Displays.Add(DefaultDisplay);
                 Debug.Console(LogLevel, "{0} SetupDefaultDisplay {1}", ClassName, DefaultDisplay == null ? "== null" : DefaultDisplay.Key);
                 if (DefaultDisplay != null)
                 {
@@ -133,21 +131,11 @@ namespace essentials_basic_room.Functions
                     if (dispConfig_ != null)
                     {
                         //Debug.Console(LogLevel, "{0} SetupDefaultDisplay, found key in config", ClassName);
-                        var props_ = JsonConvert.DeserializeObject<DisplayPropsConfig>(dispConfig_.Properties.ToString());
+                        defaultDisplayConfig = JsonConvert.DeserializeObject<DisplayPropsConfig>(dispConfig_.Properties.ToString());
                         //Debug.Console(LogLevel, "{0} SetupDefaultDisplay props_ {1}", ClassName, props_ == null ? "== null" : config.DefaultDisplayKey);
 
-                        SetupDefaultDisplayLifter(props_);
-                        SetupDefaultDisplayScreen(props_);
-
-                        /*
-                         Debug.Console(LogLevel, "{0} SetupDefaultDisplay screenProps_ {1}", ClassName, props_.Screen == null ? "== null" : props_.Screen.DeviceKey);
-                         if (props_.Screen != null)
-                         {
-                             var screen_ = DeviceManager.GetDeviceForKey(props_.Screen.DeviceKey);
-                             var DefaultScreen = screen_ as ShadeBase;
-                             Debug.Console(LogLevel, "{0} SetupDefaultDisplay DefaultScreen {1}", ClassName, DefaultScreen == null ? "== null" : DefaultScreen.Key);
-                         }
-                         */
+                        SetupDefaultDisplayLifter(defaultDisplayConfig);
+                        SetupDefaultDisplayScreen(defaultDisplayConfig);
                     }
                 }
                 else
@@ -158,19 +146,58 @@ namespace essentials_basic_room.Functions
         private void Screen_OpenRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
             Debug.Console(LogLevel, "{0} Screen_OpenRelayFeedback: {1}", ClassName, e.BoolValue);
+            if(e.BoolValue)
+            {
+                if (defaultDisplayConfig != null && DefaultDisplay != null)
+                {
+                    var display_ = DefaultDisplay as IHasPowerControl;
+                    if(display_ != null)
+                        if (defaultDisplayConfig.Screen.DownTriggersDisplayOn)
+                                display_.PowerOn();
+                }
+            }
         }
         private void Screen_CloseRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
             Debug.Console(LogLevel, "{0} Screen_CloseRelayFeedback: {1}", ClassName, e.BoolValue);
+            if (e.BoolValue)
+            {
+                if (defaultDisplayConfig != null && DefaultDisplay != null)
+                {
+                    var display_ = DefaultDisplay as IHasPowerControl;
+                    if (display_ != null)
+                        if (defaultDisplayConfig.Screen.UpTriggersDisplayOff)
+                            display_.PowerOff();
+                }
+            }
         }
 
         private void Lifter_OpenRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
             Debug.Console(LogLevel, "{0} Lifter_OpenRelayFeedback: {1}", ClassName, e.BoolValue);
+            if (e.BoolValue)
+            {
+                if (defaultDisplayConfig != null && DefaultDisplay != null)
+                {
+                    var display_ = DefaultDisplay as IHasPowerControl;
+                    if (display_ != null)
+                        if (defaultDisplayConfig.Lifter.DownTriggersDisplayOn)
+                            display_.PowerOn();
+                }
+            }
         }
         private void Lifter_CloseRelay_OutputIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
             Debug.Console(LogLevel, "{0} Lifter_CloseRelayFeedback: {1}", ClassName, e.BoolValue);
+            if (e.BoolValue)
+            {
+                if (defaultDisplayConfig != null && DefaultDisplay != null)
+                {
+                    var display_ = DefaultDisplay as IHasPowerControl;
+                    if (display_ != null)
+                        display_.PowerOff();
+                }
+            }
         }
 
         private void SetupDestinationList()
@@ -213,16 +240,24 @@ namespace essentials_basic_room.Functions
         {
             if(DefaultDisplayPowerState != state)
             {
-                if (DefaultLifter != null)
+                if (defaultDisplayConfig != null)
                 {
                     if (state == PowerStates.standby || state == PowerStates.cooling || state == PowerStates.off)
-                        DefaultLifter.Close();
+                    {
+                        if (DefaultLifter != null && defaultDisplayConfig.Lifter.DisplayOffTriggersUp)
+                            DefaultLifter.Close();
+                        if (DefaultScreen != null && defaultDisplayConfig.Screen.DisplayOffTriggersUp)
+                            DefaultScreen.Close();
+                    }
                     else if (state == PowerStates.on || state == PowerStates.warming)
-                        DefaultLifter.Open();
+                    {
+                        DefaultLifter.Open(); // always open lifter when the display powers on!
+                        if (DefaultScreen != null && defaultDisplayConfig.Screen.DisplayOnTriggersDown)
+                            DefaultScreen.Open();
+                    }
                 }
                 DefaultDisplayPowerState = state;
             }
-          
         }
         void IsCoolingDownFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
@@ -237,7 +272,6 @@ namespace essentials_basic_room.Functions
             //IsCoolingDownFeedback.FireUpdate();
 
         }
-
         void IsWarmingUpFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
             var msg_ = ClassName;
@@ -277,26 +311,27 @@ namespace essentials_basic_room.Functions
 
         public void SetPowerOn()
         {
-            Debug.Console(LogLevel, "{0} SetPowerOn", ClassName);
-            foreach(var display in Displays)
+            //Debug.Console(LogLevel, "{0} SetPowerOn, Displays {1}", ClassName, Displays==null?"== null": Displays.Count.ToString());
+            foreach (var display in Displays)
             {
-                var display_ = display as DisplayBase;
+                var display_ = display as IHasPowerControl;
+                //Debug.Console(LogLevel, "{0} Display {1}", ClassName, display_ == null ? display.GetType().Name : display.Key);
                 if (display_ != null)
                 {
-                    Debug.Console(LogLevel, "{0}[{1}] SetPowerOn", ClassName, display_.Key);                        
+                    Debug.Console(LogLevel, "{0}[{1}] SetPowerOn", ClassName, display.Key);                        
                     display_.PowerOn();
                 }
             }
         }
         public virtual void SetPowerOff()
         {
-            Debug.Console(LogLevel, "{0} SetPowerOff", ClassName);
+            //Debug.Console(LogLevel, "{0} SetPowerOff, Displays {1}", ClassName, Displays == null ? "== null" : Displays.Count.ToString());
             foreach (var display in Displays)
             {
-                var display_ = display as DisplayBase;
+                var display_ = display as IHasPowerControl;
                 if (display_ != null)
                 {
-                    Debug.Console(LogLevel, "{0}[{1}] SetPowerOff", ClassName, display_.Key);
+                    Debug.Console(LogLevel, "{0}[{1}] SetPowerOff", ClassName, display.Key);
                     display_.PowerOff();
                 }
             }

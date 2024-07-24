@@ -59,10 +59,11 @@ namespace essentials_basic_tp_epi
                 Debug.Console(0, this, "Room '{0}' is IBasicRoom", roomKey);
                 var room_ = (room as IBasicRoom);
 
-                Debug.Console(LogLevel, "{0} PropertiesConfig {1}", ClassName, room_.PropertiesConfig == null ? "==null" : "exists");
-                Debug.Console(LogLevel, "{0} Properties {1}", ClassName, room_.Config.Properties == null ? "==null" : "exists");
+                //Debug.Console(LogLevel, "{0} PropertiesConfig {1}", ClassName, room_.PropertiesConfig == null ? "==null" : "exists");
+                //Debug.Console(LogLevel, "{0} Properties {1}", ClassName, room_.Config.Properties == null ? "==null" : "exists");
+                Debug.Console(LogLevel, "{0} mainDriver {1}", ClassName, mainDriver == null ? "==null" : "exists");
 
-                mainDriver.SetupChildDrivers(room_);
+                mainDriver?.SetupChildDrivers(room_);
                 Debug.Console(0, this, "Room '{0}' UI Controllers loaded", roomKey);
 
             }
