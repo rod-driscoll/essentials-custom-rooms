@@ -31,13 +31,10 @@ namespace essentials_basic_room_epi
                 PropertiesConfig = JsonConvert.DeserializeObject<Config> (config.Properties.ToString());
                 //Debug.Console(LogLevel, this, "{0} PropertiesConfig {1}", ClassName, PropertiesConfig == null ? "==null" : "exists");
  
-                Power = new RoomPower(PropertiesConfig);
-                Power.PowerChange += Power_PowerChange;
-
-                Audio = new RoomAudio(PropertiesConfig);
-
-                Display = new RoomDisplay(PropertiesConfig);
-
+                //Power = new RoomPower(PropertiesConfig);
+                //Power.PowerChange += Power_PowerChange;
+                //Audio = new RoomAudio(PropertiesConfig);
+                //Display = new RoomDisplay(PropertiesConfig);
                 SetTopBox = new RoomSetTopBox(PropertiesConfig);
                 InitializeRoom();
                 Debug.Console(LogLevel, this, "constructor complete");
@@ -75,7 +72,7 @@ namespace essentials_basic_room_epi
         public override void SetDefaultLevels()
         {
             Debug.Console(LogLevel, this, "SetDefaultLevels");
-            Audio.SetDefaultLevels();
+            Audio?.SetDefaultLevels();
         }
 
         /// <summary>
@@ -86,18 +83,18 @@ namespace essentials_basic_room_epi
         {
             Debug.Console(LogLevel, this, "EndShutdown");
             RunRouteAction("roomOff");
-            Debug.Console(LogLevel, this, "Display {0}", Display==null?"== null":"exists");
-            Display.SetPowerOff();
-            Audio.PresetOffRecall();
-            Power.SetPowerOff();
+            //Debug.Console(LogLevel, this, "Display {0}", Display==null?"== null":"exists");
+            Display?.SetPowerOff();
+            Audio?.PresetOffRecall();
+            Power?.SetPowerOff();
         }
         public void StartUp()
         {
             Debug.Console(LogLevel, this, "StartUp");
-            Debug.Console(LogLevel, this, "Display {0}", Display == null ? "== null" : "exists");
-            Display.SetPowerOn();
+            //Debug.Console(LogLevel, this, "Display {0}", Display == null ? "== null" : "exists");
+            Display?.SetPowerOn();
             SetDefaultLevels();
-            Power.SetPowerOn();
+            Power?.SetPowerOn();
         }
 
         CCriticalSection RunRouteLock = new CCriticalSection();

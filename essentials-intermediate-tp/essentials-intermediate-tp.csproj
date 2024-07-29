@@ -180,9 +180,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\essentials-custom-lib\essentials-custom-lib.csproj">
+    <ProjectReference Include="..\essentials-custom-lib\avit-essentials-common.csproj">
       <Project>{8711e421-9039-4879-995b-54c4f845a628}</Project>
-      <Name>essentials-custom-lib</Name>
+      <Name>avit-essentials-common</Name>
     </ProjectReference>
     <ProjectReference Include="..\essentials-intermediate-room\essentials-intermediate-room.csproj">
       <Project>{89010cc2-07ca-44f1-a34a-539bffeb0fe0}</Project>

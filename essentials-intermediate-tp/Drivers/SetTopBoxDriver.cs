@@ -43,10 +43,11 @@ namespace essentials_basic_tp.Drivers
 
         private void PopupInterlock_StatusChanged(object sender, StatusChangedEventArgs e)
         {
+            Debug.Console(LogLevel, "{0} PopupInterlock_StatusChanged, e.NewJoin: {1}, e.PreviousJoin: {2}", ClassName, e.NewJoin, e.PreviousJoin);
+            if (e.PreviousJoin == PageJoin)
+                Unregister();
             if (e.NewJoin == PageJoin)
                 Register();
-            else if (e.PreviousJoin == PageJoin)
-                Unregister();
         }
 
         /// <summary>
@@ -98,65 +99,89 @@ namespace essentials_basic_tp.Drivers
         public void Register()
         {
             Debug.Console(LogLevel, "{0} Register", ClassName);
-            CurrentDefaultDevice.LinkButtons(TriList);
-            if (CurrentDefaultDevice is IChannel)
-                (CurrentDefaultDevice as IChannel).LinkButtons(TriList);
-            if (CurrentDefaultDevice is IColor)
-                (CurrentDefaultDevice as IColor).LinkButtons(TriList);
-            //Debug.Console(LogLevel, "{0} Register IDPad {1}", ClassName, (CurrentDefaultDevice is IDPad) ? "exists" : "== null");
-            if (CurrentDefaultDevice is IDPad)
-                (CurrentDefaultDevice as IDPad).LinkButtons(TriList);
-            if (CurrentDefaultDevice is IDvr)
-                (CurrentDefaultDevice as IDvr).LinkButtons(TriList);
-            //Debug.Console(LogLevel, "{0} Register INumericKeypad {1}", ClassName, (CurrentDefaultDevice is INumericKeypad) ? "exists":"== null");
-            if (CurrentDefaultDevice is INumericKeypad)
-                (CurrentDefaultDevice as INumericKeypad).LinkButtons(TriList);
-            if (CurrentDefaultDevice is ITransport)
-                (CurrentDefaultDevice as ITransport).LinkButtons(TriList);
-            if (CurrentDefaultDevice is IRSetTopBoxBase)
+            try
             {
-                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton1Label = "OK";
-                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton1Command = "OK";
-                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton2Label = "Select";
-                (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton2Command = "SELECT";
-            }
+                if (TriList == null)
+                    Debug.Console(LogLevel, "{0} TriList == null", ClassName);
 
-            pageManager = new SetTopBoxThreePanelPageManager(CurrentDefaultDevice, TriList);
-            pageManager.Show();
-            CurrentDefaultDevice.TvPresets.PresetRecalled += TvPresets_PresetRecalled;
-            CurrentDefaultDevice.TvPresets.PresetsLoaded += TvPresets_PresetsLoaded;
-            CurrentDefaultDevice.TvPresets.PresetsSaved += TvPresets_PresetsSaved;
+                if (CurrentDefaultDevice == null)
+                    Debug.Console(LogLevel, "{0} CurrentDefaultDevice == null", ClassName);
+                else
+                {
+                    CurrentDefaultDevice.LinkButtons(TriList);
+                    if (CurrentDefaultDevice is IChannel)
+                        (CurrentDefaultDevice as IChannel).LinkButtons(TriList);
+                    if (CurrentDefaultDevice is IColor)
+                        (CurrentDefaultDevice as IColor).LinkButtons(TriList);
+                    //Debug.Console(LogLevel, "{0} Register IDPad {1}", ClassName, (CurrentDefaultDevice is IDPad) ? "exists" : "== null");
+                    if (CurrentDefaultDevice is IDPad)
+                        (CurrentDefaultDevice as IDPad).LinkButtons(TriList);
+                    if (CurrentDefaultDevice is IDvr)
+                        (CurrentDefaultDevice as IDvr).LinkButtons(TriList);
+                    //Debug.Console(LogLevel, "{0} Register INumericKeypad {1}", ClassName, (CurrentDefaultDevice is INumericKeypad) ? "exists":"== null");
+                    if (CurrentDefaultDevice is INumericKeypad)
+                        (CurrentDefaultDevice as INumericKeypad).LinkButtons(TriList);
+                    if (CurrentDefaultDevice is ITransport)
+                        (CurrentDefaultDevice as ITransport).LinkButtons(TriList);
+                    if (CurrentDefaultDevice is IRSetTopBoxBase)
+                    {
+                        Debug.Console(LogLevel, "{0} CurrentDefaultDevice is IRSetTopBoxBase", ClassName);
+                        (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton1Label = "OK";
+                        (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton1Command = "OK";
+                        (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton2Label = "Select";
+                        (CurrentDefaultDevice as IRSetTopBoxBase).KeypadAccessoryButton2Command = "SELECT";
+                    }
+                    else
+                        Debug.Console(LogLevel, "{0} CurrentDefaultDevice is NOT IRSetTopBoxBase", ClassName);
+
+                    pageManager = new SetTopBoxThreePanelPageManager(CurrentDefaultDevice, TriList);
+                    pageManager.Show();
+                    CurrentDefaultDevice.TvPresets.PresetRecalled += TvPresets_PresetRecalled;
+                    CurrentDefaultDevice.TvPresets.PresetsLoaded += TvPresets_PresetsLoaded;
+                    CurrentDefaultDevice.TvPresets.PresetsSaved += TvPresets_PresetsSaved;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Console(LogLevel, "{0} Register ERROR: {1}", ClassName, e.Message);
+            }
         }
         public void Unregister()
         {
             Debug.Console(LogLevel, "{0} Unregister", ClassName);
-
-            if(pageManager != null)
-                pageManager.Hide();
-            if (CurrentDefaultDevice != null) // Disconnect current room 
-            {
-                Debug.Console(LogLevel, "{0} Unregister, TvPresets {1}", ClassName, CurrentDefaultDevice.TvPresets == null?"== null": "exist");
-                if (CurrentDefaultDevice.TvPresets != null)
+            try
+            {        
+                if(pageManager != null)
+                    pageManager.Hide();
+                if (CurrentDefaultDevice != null) // Disconnect current room 
                 {
-                    CurrentDefaultDevice.TvPresets.PresetRecalled -= TvPresets_PresetRecalled;
-                    CurrentDefaultDevice.TvPresets.PresetsLoaded -= TvPresets_PresetsLoaded;
-                    CurrentDefaultDevice.TvPresets.PresetsSaved -= TvPresets_PresetsSaved;
+                    Debug.Console(LogLevel, "{0} Unregister, TvPresets {1}", ClassName, CurrentDefaultDevice.TvPresets == null ? "== null" : "exist");
+                    if (CurrentDefaultDevice.TvPresets != null)
+                    {
+                        CurrentDefaultDevice.TvPresets.PresetRecalled -= TvPresets_PresetRecalled;
+                        CurrentDefaultDevice.TvPresets.PresetsLoaded -= TvPresets_PresetsLoaded;
+                        CurrentDefaultDevice.TvPresets.PresetsSaved -= TvPresets_PresetsSaved;
+                    }
+                    Debug.Console(LogLevel, "{0} Unregister, UnlinkButtons", ClassName);
+                    CurrentDefaultDevice.UnlinkButtons(TriList);
+                    Debug.Console(LogLevel, "{0} Unregister, Unlink interfaces", ClassName);
+                    if (CurrentDefaultDevice is IChannel)
+                        (CurrentDefaultDevice as IChannel).UnlinkButtons(TriList);
+                    if (CurrentDefaultDevice is IColor)
+                        (CurrentDefaultDevice as IColor).UnlinkButtons(TriList);
+                    if (CurrentDefaultDevice is IDPad)
+                        (CurrentDefaultDevice as IDPad).UnlinkButtons(TriList);
+                    if (CurrentDefaultDevice is IDvr)
+                        (CurrentDefaultDevice as IDvr).UnlinkButtons(TriList);
+                    if (CurrentDefaultDevice is INumericKeypad)
+                        (CurrentDefaultDevice as INumericKeypad).UnlinkButtons(TriList);
+                    if (CurrentDefaultDevice is ITransport)
+                        (CurrentDefaultDevice as ITransport).UnlinkButtons(TriList);
                 }
-                Debug.Console(LogLevel, "{0} Unregister, UnlinkButtons", ClassName);
-                CurrentDefaultDevice.UnlinkButtons(TriList);
-                Debug.Console(LogLevel, "{0} Unregister, Unlink interfaces", ClassName);
-                if (CurrentDefaultDevice is IChannel)
-                    (CurrentDefaultDevice as IChannel).UnlinkButtons(TriList);
-                if (CurrentDefaultDevice is IColor)
-                    (CurrentDefaultDevice as IColor).UnlinkButtons(TriList);
-                if (CurrentDefaultDevice is IDPad)
-                    (CurrentDefaultDevice as IDPad).UnlinkButtons(TriList);
-                if (CurrentDefaultDevice is IDvr)
-                    (CurrentDefaultDevice as IDvr).UnlinkButtons(TriList);
-                if (CurrentDefaultDevice is INumericKeypad)
-                    (CurrentDefaultDevice as INumericKeypad).UnlinkButtons(TriList);
-                if (CurrentDefaultDevice is ITransport)
-                    (CurrentDefaultDevice as ITransport).UnlinkButtons(TriList);
+            }
+            catch (Exception e)
+            {
+                Debug.Console(LogLevel, "{0} Unregister ERROR: {1}", ClassName, e.Message);
             }
         }
     }

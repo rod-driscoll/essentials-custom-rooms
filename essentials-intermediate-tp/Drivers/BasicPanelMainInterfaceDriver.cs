@@ -32,16 +32,16 @@ namespace essentials_basic_tp_epi.Drivers
             this.Config = config;
             AddReservedSigs(trilist);
             PopupInterlock = new JoinedSigInterlock(TriList);
-            ChildDrivers.Add(new NotificationRibbonDriver(this, config));
-            ChildDrivers.Add(new PowerDriver(this, config));
-            ChildDrivers.Add(new PinDriver(this, config));
-            ChildDrivers.Add(new DisplayDriver(this, config));
-            ChildDrivers.Add(new ScreenDriver(this, config));
+            //ChildDrivers.Add(new NotificationRibbonDriver(this, config));
+            //ChildDrivers.Add(new PowerDriver(this, config));
+            //ChildDrivers.Add(new PinDriver(this, config));
+            //ChildDrivers.Add(new DisplayDriver(this, config));
+            //ChildDrivers.Add(new ScreenDriver(this, config));
             //ChildDrivers.Add(new LifterDriver(this, config));
 
-            PopupInterlockDrivers.Add(new BasicAudioDriver(this));
-            PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));
-            PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
+            //PopupInterlockDrivers.Add(new BasicAudioDriver(this));
+            //PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));
+            //PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
             PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
 
             // suppress excess logging on classes
@@ -50,8 +50,8 @@ namespace essentials_basic_tp_epi.Drivers
             {
                 var driver_ = driver as ILogClassDetails;
                 if (driver_ != null)
-                    //driver_.LogLevel = 255; // 255 means they won't log
-                    driver_.LogLevel = (uint)(driver_ is DisplayDriver ? 1 : 255); // 255 means they won't log
+                    driver_.LogLevel = 255; // 255 means they won't log
+                    //driver_.LogLevel = (uint)(driver_ is DisplayDriver ? 1 : 255); // 255 means they won't log
             }
             Debug.Console(0, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
             foreach (var driver in PopupInterlockDrivers)
@@ -76,14 +76,14 @@ namespace essentials_basic_tp_epi.Drivers
                 foreach (var driver in ChildDrivers)
                 {
                     var roomDriver_ = driver as IBasicRoomSetup;
-                    Debug.Console(LogLevel, "{0} Setup roomDriver_ {1}", ClassName, roomDriver_==null? "== null": roomDriver_.ClassName);
+                    //Debug.Console(LogLevel, "{0} Setup roomDriver_ {1}", ClassName, roomDriver_==null? "== null": roomDriver_.ClassName);
                     roomDriver_?.Setup(room);
                 }
                 Debug.Console(LogLevel, "{0} PopupInterlockDrivers", ClassName);
                 foreach (var driver in PopupInterlockDrivers)
                 {
                     var roomDriver_ = driver as IBasicRoomSetup;
-                    Debug.Console(LogLevel, "{0} Setup roomDriver_ {1}", ClassName, roomDriver_ == null ? "== null" : roomDriver_.ClassName);
+                    //Debug.Console(LogLevel, "{0} Setup roomDriver_ {1}", ClassName, roomDriver_ == null ? "== null" : roomDriver_.ClassName);
                     roomDriver_?.Setup(room);
                 }
             }
@@ -91,7 +91,7 @@ namespace essentials_basic_tp_epi.Drivers
             {
                 Debug.Console(LogLevel, "{0} SetupChildDrivers ERROR: {1}", ClassName, e.Message);
             }
-            Debug.Console(LogLevel, "{0} SetupChildDrivers done", ClassName);
+            //Debug.Console(LogLevel, "{0} SetupChildDrivers done", ClassName);
         }
 
         private void AddReservedSigs(BasicTriListWithSmartObject trilist)

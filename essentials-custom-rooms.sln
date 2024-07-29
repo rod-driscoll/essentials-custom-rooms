@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-basic-audio-room
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-basic-audio-tp", "essentials-basic-audio-tp\essentials-basic-audio-tp.csproj", "{756424DB-3D24-4366-B3F7-CF1F3E6017B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "essentials-custom-lib", "essentials-custom-lib\essentials-custom-lib.csproj", "{8711E421-9039-4879-995B-54C4F845A628}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "avit-essentials-common", "essentials-custom-lib\avit-essentials-common.csproj", "{8711E421-9039-4879-995B-54C4F845A628}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -127,5 +127,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\essentials-custom-lib\avit-essentials-common.csproj">
+      <Project>{8711e421-9039-4879-995b-54c4f845a628}</Project>
+      <Name>avit-essentials-common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
