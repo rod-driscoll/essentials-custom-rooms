@@ -8,14 +8,17 @@ using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Config;
 using PepperDash.Essentials.Core.CrestronIO;
 using PepperDash.Essentials.Core.Shades;
+using System;
 using System.Collections.Generic;
 
-namespace PepperDash.Essentials.Devices.Common.Environment.Somfy
+namespace avit_essentials_common.obsolete
 {
     /// <summary>
     /// Controls a single Motor using three relays
     /// </summary>
-    public class RelayControlledMotor : ShadeBase, IShadesOpenCloseStop
+
+    [Obsolete("EssentialsCustomLib.obsolete.RelayControlledMotor is Deprecated - use relay-controlled-motor-epi")]
+    public class Z_RelayControlledMotor : ShadeBase, IShadesOpenCloseStop
     {
         RelayControlledMotorConfigProperties Config;
 
@@ -27,7 +30,7 @@ namespace PepperDash.Essentials.Devices.Common.Environment.Somfy
 
         public string StopOrPresetButtonLabel { get; set; }
 
-        public RelayControlledMotor(string key, string name, RelayControlledMotorConfigProperties config)
+        public Z_RelayControlledMotor(string key, string name, RelayControlledMotorConfigProperties config)
             : base(key, name)
         {
             Config = config;
@@ -120,7 +123,7 @@ namespace PepperDash.Essentials.Devices.Common.Environment.Somfy
         }
     }
 
-    public class RelayControlledMotorFactory : EssentialsPluginDeviceFactory<RelayControlledMotor>
+    public class RelayControlledMotorFactory : EssentialsPluginDeviceFactory<Z_RelayControlledMotor>
     {
         public RelayControlledMotorFactory()
         {
@@ -132,7 +135,7 @@ namespace PepperDash.Essentials.Devices.Common.Environment.Somfy
             Debug.Console(1, "Factory Attempting to create new Generic Comm Device");
             var props = Newtonsoft.Json.JsonConvert.DeserializeObject<RelayControlledMotorConfigProperties>(dc.Properties.ToString());
 
-            return new RelayControlledMotor(dc.Key, dc.Name, props);
+            return new Z_RelayControlledMotor(dc.Key, dc.Name, props);
         }
     }
 
