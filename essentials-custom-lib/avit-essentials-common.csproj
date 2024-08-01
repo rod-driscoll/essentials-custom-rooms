@@ -151,7 +151,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="devices\environment\Z_RelayControlledMotor.cs" />
     <Compile Include="function-drivers\DateTimeFormat.cs" />
     <Compile Include="interfaces\ILogClassDetails.cs" />
     <Compile Include="interfaces\IRPorts\IHasIrOutputPortController.cs" />
