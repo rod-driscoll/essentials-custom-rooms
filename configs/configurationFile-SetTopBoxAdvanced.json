@@ -1,0 +1,103 @@
+{
+    "system": {},
+    "system_url": "",
+    "template_url": "",
+    "template": {
+        "rooms": [],
+        "devices": [
+            {
+                "key": "processor",
+                "name": "CP4",
+                "type": "cp4",
+                "group": "processor",
+                "uid": 0
+            },
+            {
+                "key": "ir-gateway-1",
+                "name": "IR Gateway",
+                "type": "ip2ir",
+                "group": "irgateway",
+                "properties": {
+                    "pulseTime": 200,
+                    "control": {
+                        "method": "tcpIp",
+                        "endOfLineString": "\n",
+                        "tcpSshProperties": {
+                            "address": "192.168.104.111",
+                            "port": 4998,
+                            "autoReconnect": true,
+                            "autoReconnectIntervalMs": 5000
+                        }
+                    }
+                }
+            },
+            {
+                "key": "stb-advanced",
+                "name": "TV tuner advanced",
+                "type": "stb-advanced",
+                "group": "settopbox",
+                "properties": {
+                    "hasPresets": true,
+                    "hasDpad": true,
+                    "hasNumeric": true,
+                    "hasDvr": false,
+                    "irPulseTime": 150,
+                    "hasControls": true,
+                    "hasAudio": true,
+                    "presetsList": "TV Presets - FTA Sydney.json",
+                    "control":{
+                        "method": "tcpIp",
+                        "controlPortDevKey": "ir-gateway-1",
+                        "irFile": "Digitel Terestrial Set Top Box.gcir",
+                        "controlPortNumber": 1,
+                        "endOfLineString": "\n"
+                    }
+                }
+            },
+            {
+                "key": "touchpanel-1",
+                "name": "touchpanel",
+                "type": "basic-tp",
+                "group": "touchpanel",
+                "properties": {
+                    "type": "tsw1070",
+                    "control": {
+                        "method": "ipid",
+                        "ipid": "03"
+                    },
+                    "defaultRoomKey": "room-1",
+                    "password": "1988",
+                    "sgdFile": "PCC-TSW-1070.sgd"
+                }
+            },
+            {
+                "key": "room-1",
+                "name": "Demo",
+                "type": "basic-room",
+                "group": "room",
+                "properties": {
+                    "help": {
+                        "message":"Please contact reception for help"
+                    },
+                    "addresses": {
+                        "phoneNumber":"<phone-number>",
+                        "sipAddress":"<address>"
+                    },
+                    "password": "1234",
+                    "defaultSetTopBoxKey": "stb-advanced",
+                    "setTopBoxPresetsURL":"http://192.168.104.109:8080",
+                    "logo":{
+                        "type":"system"
+                    }
+                }
+            }
+        ],
+        "info": {
+            "processorType": "cp4",
+            "lastModifiedDate": "2024-04-16T17:54:41.315Z",
+            "systemType": "custom",
+            "comment": "Custom system with room and tp plugins",
+            "requiredControlSofwareVersion": ""
+        }
+    }
+}
