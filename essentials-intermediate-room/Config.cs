@@ -4,7 +4,7 @@ using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Room.Config;
 using System.Collections.Generic;
 
-namespace essentials_basic_room_epi
+namespace essentials_basic_room
 {
     public class Config : EssentialsRoomPropertiesConfig, IHasPassword
     {

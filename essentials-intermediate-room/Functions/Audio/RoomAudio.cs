@@ -1,5 +1,5 @@
-﻿using essentials_basic_room.Functions.Audio;
-using essentials_basic_room_epi;
+﻿using avit_essentials_common.interfaces;
+using essentials_basic_room.Functions.Audio;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using System;

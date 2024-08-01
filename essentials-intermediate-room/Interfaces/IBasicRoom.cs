@@ -1,18 +1,14 @@
-﻿using essentials_basic_room.Functions;
+﻿using avit_essentials_common.interfaces;
+using essentials_basic_room.Functions;
 using Newtonsoft.Json;
 using PepperDash.Essentials.Core;
 
-namespace essentials_basic_room_epi
+namespace essentials_basic_room
 {
     public interface IBasicRoom : IEssentialsRoom, ILogClassDetails
     {
         Config PropertiesConfig { get; }
         void StartUp();
-    }
-    public interface ILogClassDetails
-    {
-        uint LogLevel { set; }
-        string ClassName { get; }
     }
     /// <summary>
     /// drivers contain this so they can set up when the attached room changes

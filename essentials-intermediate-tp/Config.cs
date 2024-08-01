@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using PepperDash.Essentials.Core;
 
-namespace essentials_basic_tp_epi
+namespace essentials_advanced_tp
 {
     public class Config : CrestronTouchpanelPropertiesConfig, IHasPassword
     {

@@ -1,13 +1,13 @@
-﻿using essentials_basic_room_epi;
+﻿using avit_essentials_common.interfaces;
+using essentials_basic_room;
 using essentials_basic_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using System;
 using System.Collections.Generic;
 using SubpageReferenceList = essentials_basic_tp.Drivers.SubpageReferenceList;
-using joins = essentials_basic_tp_epi.joins;
 
-namespace essentials_basic_tp_epi.Drivers
+namespace essentials_advanced_tp.Drivers
 {
     public class AudioListDriver : PanelDriverBase, IBasicRoomSetup
     {

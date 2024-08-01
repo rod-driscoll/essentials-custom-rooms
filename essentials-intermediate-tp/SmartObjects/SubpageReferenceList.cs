@@ -1,6 +1,6 @@
 ﻿using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DeviceSupport;
-using essentials_basic_room_epi;
+using essentials_basic_room;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using System;

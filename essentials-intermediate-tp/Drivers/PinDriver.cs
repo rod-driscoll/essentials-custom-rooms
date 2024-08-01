@@ -2,7 +2,7 @@
 using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharpPro.UI;
 using essentials_basic_room.Interfaces;
-using essentials_basic_room_epi;
+using essentials_basic_room;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
@@ -10,7 +10,7 @@ using PepperDash.Essentials.Core.SmartObjects;
 using System;
 using System.Text;
 
-namespace essentials_basic_tp_epi.Drivers
+namespace essentials_advanced_tp.Drivers
 {
     public class PinDriver: PanelDriverBase, IBasicRoomSetup
     {

@@ -165,6 +165,7 @@
     <Compile Include="Drivers\PinDriver.cs" />
     <Compile Include="Drivers\PowerDriver.cs" />
     <Compile Include="Drivers\LifterDriver.cs" />
+    <Compile Include="Drivers\RoomCombineDriver.cs" />
     <Compile Include="Drivers\ScreenDriver.cs" />
     <Compile Include="Drivers\SetTopBoxDriver.cs" />
     <Compile Include="Joins\IIUshortJoin.cs" />

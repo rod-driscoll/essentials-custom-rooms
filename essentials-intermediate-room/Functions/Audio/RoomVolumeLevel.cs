@@ -1,9 +1,7 @@
-﻿using essentials_basic_room_epi;
+﻿using avit_essentials_common.interfaces;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using System;
-using static PepperDash.Essentials.Devices.Common.VideoCodec.Cisco.CiscoCodecConfiguration;
-using static PepperDash.Essentials.Devices.Common.VideoCodec.CiscoCodecBookings;
 
 namespace essentials_basic_room.Functions.Audio
 {

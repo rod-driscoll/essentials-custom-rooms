@@ -1,8 +1,7 @@
-﻿using Crestron.SimplSharp;
-using essentials_basic_room_epi;
+﻿using avit_essentials_common.interfaces;
+using Crestron.SimplSharp;
 using PepperDash.Core;
 using System;
-using Device = essentials_basic_room_epi.Device;
 
 namespace essentials_basic_room.Functions
 {

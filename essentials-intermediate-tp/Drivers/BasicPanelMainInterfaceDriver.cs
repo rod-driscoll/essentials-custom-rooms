@@ -1,6 +1,7 @@
-﻿using Crestron.SimplSharpPro.DeviceSupport;
+﻿using avit_essentials_common.interfaces;
+using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharpPro.UI;
-using essentials_basic_room_epi;
+using essentials_basic_room;
 using essentials_basic_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
@@ -8,7 +9,7 @@ using PepperDash.Essentials.Core;
 using System;
 using System.Collections.Generic;
 
-namespace essentials_basic_tp_epi.Drivers
+namespace essentials_advanced_tp.Drivers
 {
     public class BasicPanelMainInterfaceDriver : PanelDriverBase, IDisposable
     {
@@ -38,28 +39,30 @@ namespace essentials_basic_tp_epi.Drivers
             //ChildDrivers.Add(new DisplayDriver(this, config));
             //ChildDrivers.Add(new ScreenDriver(this, config));
             //ChildDrivers.Add(new LifterDriver(this, config));
+            ChildDrivers.Add(new RoomCombineDriver(this, config));
 
             //PopupInterlockDrivers.Add(new BasicAudioDriver(this));
             //PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));
             //PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
-            PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
+            //PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
 
             // suppress excess logging on classes
-            Debug.Console(0, "{0} suppressing excess logging on drivers, ChildDrivers {1}", ClassName, ChildDrivers == null ? "== null" : "exists");
+            //Debug.Console(2, "{0} suppressing excess logging on drivers, ChildDrivers {1}", ClassName, ChildDrivers == null ? "== null" : "exists");
             foreach (var driver in ChildDrivers)
             {
                 var driver_ = driver as ILogClassDetails;
                 if (driver_ != null)
-                    driver_.LogLevel = 255; // 255 means they won't log
-                    //driver_.LogLevel = (uint)(driver_ is DisplayDriver ? 1 : 255); // 255 means they won't log
+                    //driver_.LogLevel = 255; // 255 means they won't log
+                    driver_.LogLevel = (uint)(driver_ is RoomCombineDriver ? 1 : 255); // 255 means they won't log
             }
-            Debug.Console(0, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
+            //Debug.Console(2, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
             foreach (var driver in PopupInterlockDrivers)
             {
                 var driver_ = driver as ILogClassDetails;
                 Debug.Console(0, "{0} driver is {1}", ClassName, driver.GetType().Name);
                 if (driver_ != null)
-                    driver_.LogLevel = (uint)(driver_ is SetTopBoxDriver ? 1 : 255); // 255 means they won't log
+                    driver_.LogLevel = 255; // 255 means they won't log
+                    //driver_.LogLevel = (uint)(driver_ is SetTopBoxDriver ? 1 : 255); // 255 means they won't log
             }
             Debug.Console(LogLevel, "{0} constructor done", ClassName);
         }

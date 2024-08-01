@@ -2,11 +2,12 @@
 using essentials_basic_room.Functions;
 using Newtonsoft.Json;
 using PepperDash.Core;
+using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Config;
 using System;
 
-namespace essentials_basic_room_epi
+namespace essentials_basic_room
 {
     public class Device : EssentialsRoomBase, IBasicRoom, IHasAudioDevice, IHasPowerFunction, IHasDisplayFunction, IHasSetTopBoxFunction
     {
@@ -35,7 +36,7 @@ namespace essentials_basic_room_epi
                 //Power.PowerChange += Power_PowerChange;
                 //Audio = new RoomAudio(PropertiesConfig);
                 //Display = new RoomDisplay(PropertiesConfig);
-                SetTopBox = new RoomSetTopBox(PropertiesConfig);
+                //SetTopBox = new RoomSetTopBox(PropertiesConfig);
                 InitializeRoom();
                 Debug.Console(LogLevel, this, "constructor complete");
             }
@@ -45,11 +46,19 @@ namespace essentials_basic_room_epi
             }
         }
 
+        HttpLogoServer LogoServer;
         void InitializeRoom()
         {
-            //Debug.Console(LogLevel, this, "InitializeRoom");
-            //Debug.Console(LogLevel, this, "InitializeRoom complete");
-        }
+            Debug.Console(LogLevel, this, "InitializeRoom");
+            try
+            {
+                LogoServer = new HttpLogoServer(8080, Global.DirectorySeparator + "html" + Global.DirectorySeparator);
+            }
+            catch (Exception)
+            {
+                Debug.Console(0, Debug.ErrorLogLevel.Notice, "NOTICE: Logo server cannot be started. Likely already running in another program");
+            }
+            Debug.Console(LogLevel, this, "InitializeRoom complete");        }
 
         public override bool CustomActivate()
         {

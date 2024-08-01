@@ -1,5 +1,5 @@
-﻿using essentials_basic_room_epi;
-using essentials_basic_tp_epi.Drivers;
+﻿using essentials_basic_room;
+using essentials_advanced_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
@@ -7,7 +7,7 @@ using PepperDash.Essentials.Core.PageManagers;
 using PepperDash.Essentials.Core.Presets;
 using PepperDash.Essentials.Devices.Common;
 using System;
-using joins = essentials_basic_tp_epi.joins;
+using joins = essentials_advanced_tp.joins;
 
 namespace essentials_basic_tp.Drivers
 {
@@ -75,12 +75,10 @@ namespace essentials_basic_tp.Drivers
         {
             Debug.Console(LogLevel, "{0} TvPresets_PresetsSaved", ClassName);
         }
-
         private void TvPresets_PresetsLoaded(object sender, EventArgs e)
         {
             Debug.Console(LogLevel, "{0} TvPresets_PresetsLoaded", ClassName);
         }
-
         private void TvPresets_PresetRecalled(ISetTopBoxNumericKeypad device, string channel)
         {
             PresetChannel preset_ = CurrentDefaultDevice.TvPresets.PresetsList.Find(x => x.Channel == channel);
@@ -104,9 +102,8 @@ namespace essentials_basic_tp.Drivers
                 if (TriList == null)
                     Debug.Console(LogLevel, "{0} TriList == null", ClassName);
 
-                if (CurrentDefaultDevice == null)
-                    Debug.Console(LogLevel, "{0} CurrentDefaultDevice == null", ClassName);
-                else
+                    Debug.Console(LogLevel, "{0} CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null?"== null":"exists");
+                if (CurrentDefaultDevice != null)
                 {
                     CurrentDefaultDevice.LinkButtons(TriList);
                     if (CurrentDefaultDevice is IChannel)

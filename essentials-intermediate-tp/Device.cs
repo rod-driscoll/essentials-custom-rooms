@@ -1,13 +1,14 @@
-﻿using Crestron.SimplSharpPro;
+﻿using avit_essentials_common.interfaces;
+using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DeviceSupport;
-using essentials_basic_room_epi;
-using essentials_basic_tp_epi.Drivers;
+using essentials_advanced_tp.Drivers;
+using essentials_basic_room;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.UI;
 
-namespace essentials_basic_tp_epi
+namespace essentials_advanced_tp
 {
     // This would be EssentialsTouchpanelController in default Essentials
     public class Device : TouchpanelBase, ILogClassDetails

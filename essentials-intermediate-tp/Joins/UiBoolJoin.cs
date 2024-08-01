@@ -1,4 +1,4 @@
-﻿namespace essentials_basic_tp_epi.joins
+﻿namespace essentials_advanced_tp.joins
 {
     public static class UIBoolJoin
     {
@@ -7,6 +7,13 @@
         public const uint ScreenDownPress = 43;
         public const uint ScreenStopPress = 44;
         public const uint ScreenTogglePress = 45;
+
+        public const uint CombinePagePress = 151;
+        public const uint CombinePageVisible = 151;
+        public const uint CombineConfirmPress = 153;
+        public const uint CombineCancelPress = 154;
+        public const uint CombinePress = 155;
+        public const uint UnCombinePress = 156;
 
         public const uint TvTunerButtonPress = 3333;
         public const uint ToggleButtonPress = 3334;

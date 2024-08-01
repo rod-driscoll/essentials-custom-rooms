@@ -1,10 +1,10 @@
-﻿using essentials_basic_room_epi;
+﻿using essentials_basic_room;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Room.Config;
 
-namespace essentials_basic_tp_epi.Drivers
+namespace essentials_advanced_tp.Drivers
 {
     public class InfoButtonDriver : PanelDriverBase, IBasicRoomSetup
     {
@@ -37,10 +37,10 @@ namespace essentials_basic_tp_epi.Drivers
 
         private void PopupInterlock_StatusChanged(object sender, StatusChangedEventArgs e)
         {
+            if (e.PreviousJoin == PageJoin)
+                Unregister();
             if (e.NewJoin == PageJoin)
                 Register();
-            else if (e.PreviousJoin == PageJoin)
-                Unregister();
         }
 
         /// <summary>

@@ -1,14 +1,13 @@
-﻿using essentials_basic_room_epi;
+﻿using avit_essentials_common.interfaces;
 using Newtonsoft.Json;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Config;
 using PepperDash.Essentials.Core.CrestronIO;
+using PepperDash.Essentials.Core.Shades;
 using PepperDash.Essentials.Devices.Common.Environment.Somfy;
 using System;
 using System.Collections.Generic;
-using PepperDash.Essentials.Core.Shades;
-using relay_controlled_motor_epi.Interfaces;
 
 namespace essentials_basic_room.Functions
 {

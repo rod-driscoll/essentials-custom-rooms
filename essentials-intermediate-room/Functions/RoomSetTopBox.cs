@@ -1,6 +1,6 @@
-﻿using Crestron.SimplSharp.Reflection;
-using essentials_basic_room_epi;
+﻿using avit_essentials_common.interfaces;
 using avit_essentials_common.IRPorts;
+using Crestron.SimplSharp.Reflection;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
@@ -46,7 +46,7 @@ namespace essentials_basic_room.Functions
                         Debug.Console(LogLevel, "{0} ISetTopBoxControls {1}", ClassName, DefaultSetTopBox == null?"== null":"exists");
                         
                         var stb_ = device_ as IRSetTopBoxBase; // null for non crestron ir ports
-                        Debug.Console(LogLevel, "{0} IRSetTopBoxBase {1}", ClassName, stb_ == null?"== null":"exists");
+                        Debug.Console(LogLevel, "{0} IRSetTopBoxBase, {1} a Crestron native IR port", ClassName, stb_ == null?"Not":"Is");
                         var stbPortController_ = device_ as IHasIrOutputPortController; // null, not the same assembly
                         Debug.Console(LogLevel, "{0} IHasIrOutputPortController {1}", ClassName, stbPortController_ == null ? "== null" : "exists");
                         if (stb_ != null) // Crestron IR port
@@ -60,7 +60,7 @@ namespace essentials_basic_room.Functions
                             {
                                 Debug.Console(LogLevel, "{0} stbPortController.IrPort {1}", ClassName, stbPortController_ == null ? "== null" : "exists");
                                 if (stbPortController_.IrPort != null)
-                                    stbPortController_.IrPort.DriverLoaded.OutputChange += DriverLoaded_OutputChange; return;
+                                    stbPortController_.IrPort.DriverLoaded.OutputChange += DriverLoaded_OutputChange;
                             }
                             catch (Exception e)
                             {
@@ -69,7 +69,7 @@ namespace essentials_basic_room.Functions
                         }
                         else // a whole lot of experimentation to try and load IrPort from the assembly because the interface isn't in this assembly
                         {
-                            TryToLoadFromAssembly();
+                            //TryToLoadFromAssembly();
                         }
                         var stbPresets_ = device_ as ITvPresetsProvider;
                         if (stbPresets_.TvPresets != null && config.SetTopBoxPresetsURL != null)

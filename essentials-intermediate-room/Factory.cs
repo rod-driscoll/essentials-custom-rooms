@@ -2,7 +2,7 @@
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 
-namespace essentials_basic_room_epi
+namespace essentials_basic_room
 {
     public class Factory : EssentialsPluginDeviceFactory<Device>
     {

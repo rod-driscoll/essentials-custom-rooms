@@ -1,6 +1,6 @@
 ﻿using Crestron.SimplSharp;
-using essentials_basic_room_epi;
-using essentials_basic_tp_epi.Drivers;
+using essentials_basic_room;
+using essentials_advanced_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;

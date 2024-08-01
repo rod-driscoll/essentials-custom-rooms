@@ -1,11 +1,11 @@
-﻿using essentials_basic_room_epi;
+﻿using essentials_basic_room;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Room.Config;
 using System;
 
-namespace essentials_basic_tp_epi.Drivers
+namespace essentials_advanced_tp.Drivers
 {
     public class HelpButtonDriver : PanelDriverBase, IBasicRoomSetup
     {

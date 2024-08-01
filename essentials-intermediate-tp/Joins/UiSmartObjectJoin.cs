@@ -1,4 +1,4 @@
-﻿namespace essentials_basic_tp_epi.joins
+﻿namespace essentials_advanced_tp.joins
 {
     public static class UISmartObjectJoin
     {
