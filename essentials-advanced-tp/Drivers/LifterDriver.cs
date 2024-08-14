@@ -6,6 +6,8 @@ using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Shades;
+using ShadeBase = PepperDash.Essentials.Devices.Common.Shades.ShadeBase;
+using Serilog.Events;
 using System.Linq;
 using joins = essentials_advanced_tp.joins;
 
@@ -14,7 +16,7 @@ namespace essentials_basic_tp.Drivers
     public class LifterDriver : PanelDriverBase, IAdvancedRoomSetup//, IShadesFeedback
     {
         public string ClassName { get { return "LifterDriver"; } }
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
 
         private BasicPanelMainInterfaceDriver Parent;
         NotificationRibbonDriver ribbonDriver;
@@ -35,7 +37,7 @@ namespace essentials_basic_tp.Drivers
         public LifterDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
                     : base(parent.TriList)
         {
-            LogLevel = 2;
+            LogLevel = LogEventLevel.Information;
             Parent = parent;
             UpPressJoin = joins.UIBoolJoin.LifterUpPress;
             DownPressJoin = joins.UIBoolJoin.LifterDownPress;
@@ -50,18 +52,18 @@ namespace essentials_basic_tp.Drivers
                 ribbonDriver = ribbon as NotificationRibbonDriver;
 
             Register(); // the driver is always available so register here rather than on popupinterlock
-            Debug.Console(LogLevel, "{0} constructor done", ClassName);
+            Debug.LogMessage(LogLevel, "{0} constructor done", ClassName);
         }
 
         private void ConnectDevice(ShadeBase device)
         {
             CurrentDefaultDevice = device;
-            Debug.Console(LogLevel, "{0} ConnectDevice, CurrentDefaultDevice {1}", ClassName, device == null ? "== null" : device.Key);
+            Debug.LogMessage(LogLevel, "{0} ConnectDevice, CurrentDefaultDevice {1}", ClassName, device == null ? "== null" : device.Key);
 
             var positionFeedback_ = device as IShadesFeedback;
             if (positionFeedback_ != null)
             {
-                Debug.Console(LogLevel, "{0} Setup, registering PositionFeedback", ClassName);
+                Debug.LogMessage(LogLevel, "{0} Setup, registering PositionFeedback", ClassName);
                 //positionFeedback_.PositionFeedback.OutputChange += PositionFeedback_OutputChange;
                 positionFeedback_.PositionFeedback.LinkInputSig(TriList.UShortInput[PositionPercentJoin]);
             }
@@ -69,7 +71,7 @@ namespace essentials_basic_tp.Drivers
             var openCloseFeedback_ = device as IShadesOpenClosedFeedback;
             if (openCloseFeedback_ != null)
             {
-                Debug.Console(LogLevel, "{0} Setup, registering OpenClosedFeedback", ClassName);
+                Debug.LogMessage(LogLevel, "{0} Setup, registering OpenClosedFeedback", ClassName);
                 openCloseFeedback_.ShadeIsClosedFeedback.OutputChange += IsClosedFeedback_OutputChange;
                 openCloseFeedback_.ShadeIsOpenFeedback.OutputChange += IsOpenFeedback_OutputChange;
             }
@@ -77,23 +79,23 @@ namespace essentials_basic_tp.Drivers
             var stopFeedback_ = device as IShadesStopFeedback;
             if (stopFeedback_ != null)
             {
-                Debug.Console(LogLevel, "{0} Setup, registering StopFeedback", ClassName);
+                Debug.LogMessage(LogLevel, "{0} Setup, registering StopFeedback", ClassName);
                 //stopFeedback_.IsStoppedFeedback.OutputChange += (o, a) =>
-                //    Debug.Console(LogLevel, "{0} IsClosedFeedback {1}", ClassName, (o as IRelayControlledMotor).IsClosedFeedback.BoolValue);
+                //    Debug.LogMessage(LogLevel, "{0} IsClosedFeedback {1}", ClassName, (o as IRelayControlledMotor).IsClosedFeedback.BoolValue);
                 stopFeedback_.IsStoppedFeedback.LinkInputSig(TriList.BooleanInput[StopPressJoin]);
             }
 
             var movingFeedback_ = device as IShadesRaiseLowerFeedback;
             if (movingFeedback_ != null)
             {
-                Debug.Console(LogLevel, "{0} Setup, registering OpeningClosingFeedback", ClassName);
+                Debug.LogMessage(LogLevel, "{0} Setup, registering OpeningClosingFeedback", ClassName);
                 movingFeedback_.ShadeIsLoweringFeedback.OutputChange += IsLoweringFeedback_OutputChange;
                 movingFeedback_.ShadeIsRaisingFeedback.OutputChange += IsRaisingFeedback_OutputChange;
             }
         }
         private void DisconnectDevice(ShadeBase device)
         {
-            Debug.Console(LogLevel, "{0} DisconnectDevice, CurrentDefaultDevice {1}", ClassName, device == null ? "== null" : device.Key);
+            Debug.LogMessage(LogLevel, "{0} DisconnectDevice, CurrentDefaultDevice {1}", ClassName, device == null ? "== null" : device.Key);
 
             var positionFeedback_ = device as IShadesFeedback;
             if (positionFeedback_ != null)
@@ -143,12 +145,12 @@ namespace essentials_basic_tp.Drivers
         }
         private void IsOpenFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
-            Debug.Console(LogLevel, "{0} IsOpenFeedback {1}", ClassName, e.BoolValue);
+            Debug.LogMessage(LogLevel, "{0} IsOpenFeedback {1}", ClassName, e.BoolValue);
             IsOpenClosedFeedback_OutputChange(sender, e);
         }
         private void IsClosedFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
-            Debug.Console(LogLevel, "{0} IsClosedFeedback {1}", ClassName, e.BoolValue);
+            Debug.LogMessage(LogLevel, "{0} IsClosedFeedback {1}", ClassName, e.BoolValue);
             IsOpenClosedFeedback_OutputChange(sender, e);
         }
 
@@ -166,12 +168,12 @@ namespace essentials_basic_tp.Drivers
         }
         private void IsLoweringFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
-            Debug.Console(LogLevel, "{0} IsOpeningFeedback {1}", ClassName, e.BoolValue);
+            Debug.LogMessage(LogLevel, "{0} IsOpeningFeedback {1}", ClassName, e.BoolValue);
             IsMovingFeedback_OutputChange(sender, e);
         }
         private void IsRaisingFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
-            Debug.Console(LogLevel, "{0} IsClosingFeedback {1}", ClassName, e.BoolValue);
+            Debug.LogMessage(LogLevel, "{0} IsClosingFeedback {1}", ClassName, e.BoolValue);
             IsMovingFeedback_OutputChange(sender, e);
         }
 
@@ -182,30 +184,30 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IAdvancedRoom room)
         {
-            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
             //EssentialsRoomPropertiesConfig roomConf = room.PropertiesConfig;
             if (CurrentDefaultDevice != null) // Disconnect current room 
                 DisconnectDevice(CurrentDefaultDevice);
 
             var room_ = room as IHasDisplayFunction;
-            Debug.Console(LogLevel, "{0} Setup, IHasDisplayFunction {1}", ClassName, room_ == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, IHasDisplayFunction {1}", ClassName, room_ == null ? "== null" : room.Key);
             if (room_ != null)
             {
-                Debug.Console(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
+                Debug.LogMessage(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
                 ConnectDevice(room_.Display.DefaultLifter);
             }
-            Debug.Console(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }
 
         private void PositionFeedback_OutputChange(object sender, FeedbackEventArgs a)
         {
-            Debug.Console(LogLevel, "{0} PositionFeedback_OutputChange {1}", ClassName, a.IntValue);
+            Debug.LogMessage(LogLevel, "{0} PositionFeedback_OutputChange {1}", ClassName, a.IntValue);
             //TriList.SetUshort(PositionPercentJoin, (ushort)(a.IntValue));
         }
 
         public void Register()
         {
-            Debug.Console(LogLevel, "{0} Register", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Register", ClassName);
             TriList.SetSigFalseAction(UpPressJoin, Close);
             TriList.SetSigFalseAction(DownPressJoin, Open);
             TriList.SetSigFalseAction(StopPressJoin, Stop);
@@ -213,7 +215,7 @@ namespace essentials_basic_tp.Drivers
         }
         public void Unregister()
         {
-            Debug.Console(LogLevel, "{0} Unregister", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Unregister", ClassName);
             TriList.ClearBoolSigAction(UpPressJoin);
             TriList.ClearBoolSigAction(DownPressJoin);
             TriList.ClearBoolSigAction(StopPressJoin);
@@ -233,12 +235,12 @@ namespace essentials_basic_tp.Drivers
 
         public void Open()
         {
-            Debug.Console(LogLevel, "{0} Open: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
+            Debug.LogMessage(LogLevel, "{0} Open: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
             CurrentDefaultDevice?.Open();
         }
         public void Close()
         {
-            Debug.Console(LogLevel, "{0} Close: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
+            Debug.LogMessage(LogLevel, "{0} Close: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
             CurrentDefaultDevice?.Close();
         }
         public void Stop()
@@ -248,24 +250,24 @@ namespace essentials_basic_tp.Drivers
 
         private void StartSecondTimer(bool enable)
         {
-            Debug.Console(0, "{0} StartSecondTimer: {1}", ClassName, enable);
+            Debug.LogMessage(0, "{0} StartSecondTimer: {1}", ClassName, enable);
             if (!enable)
             {
                 Dispose();
             }
             else if (SecondTimer == null)
             {
-                Debug.Console(0, "{0} StartSecondTimer creating new PowerTimer", ClassName);
+                Debug.LogMessage(0, "{0} StartSecondTimer creating new PowerTimer", ClassName);
                 SecondTimer = new CTimer(SecondTimerExpired, this, 1000, 1000);
             }
-            //Debug.Console(0, "{0} StartSecondTimer end", ClassName);
+            //Debug.LogMessage(0, "{0} StartSecondTimer end", ClassName);
         }
         private void SecondTimerExpired(object userSpecific)
         {
             if (CurrentDefaultDevice != null) // make the button flash when moving
             {
                 var device_ = CurrentDefaultDevice as IShadesRaiseLowerFeedback;
-                Debug.Console(LogLevel, "{0} SecondTimerExpired dispWarmCool {1}", ClassName, device_ == null ? "== null" : (CurrentDefaultDevice as ShadeBase).Key);
+                Debug.LogMessage(LogLevel, "{0} SecondTimerExpired dispWarmCool {1}", ClassName, device_ == null ? "== null" : (CurrentDefaultDevice as ShadeBase).Key);
                 if (device_ != null)
                 {
                     if (device_.ShadeIsRaisingFeedback.BoolValue)

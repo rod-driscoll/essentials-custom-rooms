@@ -5,6 +5,7 @@ using essentials_advanced_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 using System;
 using System.Linq;
 using joins = essentials_advanced_tp.joins;
@@ -14,7 +15,7 @@ namespace essentials_basic_tp.Drivers
     public class DisplayDriver : PanelDriverBase, IAdvancedRoomSetup, IDisposable
     {
         public string ClassName { get { return "DisplayDriver"; } }
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
         CTimer SecondTimer;
 
         /// <summary>
@@ -23,8 +24,8 @@ namespace essentials_basic_tp.Drivers
         private BasicPanelMainInterfaceDriver Parent;
         NotificationRibbonDriver ribbonDriver;
 
-        //private List<IRoutingSinkWithSwitching> CurrentDevices;
-        public IRoutingSinkWithSwitching CurrentDefaultDevice { get; private set; }
+        //private List<IRoutingSink> CurrentDevices;
+        public IRoutingSink CurrentDefaultDevice { get; private set; }
         public PowerStates CurrentDefaultDevicePowerState { get; private set; }
 
         public uint PowerToggleJoin { get; private set; }
@@ -34,7 +35,7 @@ namespace essentials_basic_tp.Drivers
         public DisplayDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
             : base(parent.TriList)
         {
-            LogLevel = 2;
+            LogLevel = LogEventLevel.Information;
             Parent = parent;
 
             PowerToggleJoin = UIBoolJoin.DisplayPowerTogglePress;
@@ -48,7 +49,7 @@ namespace essentials_basic_tp.Drivers
             
             Register(); // the driver is always available so register here rather than on popupinterlock
             
-            Debug.Console(LogLevel, "{0} constructor done", ClassName);
+            Debug.LogMessage(LogLevel, "{0} constructor done", ClassName);
         }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IAdvancedRoom room)
         {
-            Debug.Console(LogLevel, "{0} Setup {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup {1}", ClassName, room == null ? "== null" : room.Key);
             //EssentialsRoomPropertiesConfig roomConf = room.PropertiesConfig;
 
             IHasPowerControlWithFeedback dispTwoWay;
@@ -66,11 +67,11 @@ namespace essentials_basic_tp.Drivers
             {
                 CurrentDefaultDevice.CurrentSourceChange -= this.CurrentDefaultDevice_CurrentSourceChange;
                 dispTwoWay = CurrentDefaultDevice as IHasPowerControlWithFeedback;
-                Debug.Console(LogLevel, "{0} Setup, Disconnect IHasPowerControlWithFeedback {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
+                Debug.LogMessage(LogLevel, "{0} Setup, Disconnect IHasPowerControlWithFeedback {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
                 if (dispTwoWay != null)
                     dispTwoWay.PowerIsOnFeedback.OutputChange -= PowerIsOnFeedback_OutputChange;
                 dispWarmCool = CurrentDefaultDevice as IWarmingCooling;
-                Debug.Console(LogLevel, "{0} Setup, Disconnect IWarmingCooling {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
+                Debug.LogMessage(LogLevel, "{0} Setup, Disconnect IWarmingCooling {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
                 if (dispWarmCool != null)
                 {
                     dispWarmCool.IsWarmingUpFeedback.OutputChange -= IsWarmingUpFeedback_OutputChange;
@@ -79,21 +80,21 @@ namespace essentials_basic_tp.Drivers
             }
 
             var room_ = room as IHasDisplayFunction;
-            Debug.Console(LogLevel, "{0} Setup, IHasDisplayFunction {1}", ClassName, room_ == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, IHasDisplayFunction {1}", ClassName, room_ == null ? "== null" : room.Key);
             if (room_ != null)
             {
-                Debug.Console(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
+                Debug.LogMessage(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
                 CurrentDefaultDevice = room_.Display.DefaultDisplay;
-                Debug.Console(LogLevel, "{0} Setup, Driver.DefaultDisplay {1}", ClassName, room_.Display.DefaultDisplay == null ? "== null" : room_.Display.DefaultDisplay.Key);
+                Debug.LogMessage(LogLevel, "{0} Setup, Driver.DefaultDisplay {1}", ClassName, room_.Display.DefaultDisplay == null ? "== null" : room_.Display.DefaultDisplay.Key);
                 if(CurrentDefaultDevice != null)
                 { 
                     CurrentDefaultDevice.CurrentSourceChange += CurrentDefaultDevice_CurrentSourceChange;
                     dispTwoWay = CurrentDefaultDevice as IHasPowerControlWithFeedback;
-                    Debug.Console(LogLevel, "{0} Setup, IHasPowerControlWithFeedback {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
+                    Debug.LogMessage(LogLevel, "{0} Setup, IHasPowerControlWithFeedback {1}", ClassName, dispTwoWay == null ? "== null" : CurrentDefaultDevice.Key);
                     if (dispTwoWay != null)// Link power, warming, cooling to display
                         dispTwoWay.PowerIsOnFeedback.OutputChange += PowerIsOnFeedback_OutputChange;
                     dispWarmCool = CurrentDefaultDevice as IWarmingCooling;
-                    Debug.Console(LogLevel, "{0} Setup, IWarmingCooling {1}", ClassName, dispWarmCool == null ? "== null" : CurrentDefaultDevice.Key);
+                    Debug.LogMessage(LogLevel, "{0} Setup, IWarmingCooling {1}", ClassName, dispWarmCool == null ? "== null" : CurrentDefaultDevice.Key);
                     if (dispWarmCool != null)
                     {
                         dispWarmCool.IsWarmingUpFeedback.OutputChange += IsWarmingUpFeedback_OutputChange; ;
@@ -101,13 +102,13 @@ namespace essentials_basic_tp.Drivers
                     }
                 }
             }
-            Debug.Console(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }
         private void IsCoolingDownFeedback_OutputChange(object sender, FeedbackEventArgs e) // sender is a BoolFeedback Key 'IsCoolingDown'
         {
             var device_ = sender as IKeyed;
             if (device_ != null)
-                Debug.Console(LogLevel, "{0} IsCoolingDownFeedback_OutputChange Key: {1}", ClassName, device_.Key);
+                Debug.LogMessage(LogLevel, "{0} IsCoolingDownFeedback_OutputChange Key: {1}", ClassName, device_.Key);
             //var display_ = sender as IWarmingCooling;  // this is always null
             if (e.BoolValue)
                 CurrentDefaultDevicePowerState = PowerStates.cooling;
@@ -119,11 +120,11 @@ namespace essentials_basic_tp.Drivers
             var display_ = CurrentDefaultDevice as IWarmingCooling;
             if (display_ != null)
             {
-                Debug.Console(LogLevel, "{0} IsCoolingDownFeedback_OutputChange: {1}", ClassName, display_.IsCoolingDownFeedback.BoolValue);
+                Debug.LogMessage(LogLevel, "{0} IsCoolingDownFeedback_OutputChange: {1}", ClassName, display_.IsCoolingDownFeedback.BoolValue);
                 StartSecondTimer(display_.IsCoolingDownFeedback.BoolValue || display_.IsWarmingUpFeedback.BoolValue);
             }
             else
-                Debug.Console(LogLevel, "{0} IsCoolingDownFeedback_OutputChange {1}", ClassName, e.BoolValue);
+                Debug.LogMessage(LogLevel, "{0} IsCoolingDownFeedback_OutputChange {1}", ClassName, e.BoolValue);
         }
         private void IsWarmingUpFeedback_OutputChange(object sender, FeedbackEventArgs e) // sender is a BoolFeedback Key 'IsWarmingUp'
         {
@@ -136,57 +137,57 @@ namespace essentials_basic_tp.Drivers
             }
             var device_ = sender as IKeyed; 
             if (device_ != null)
-                Debug.Console(LogLevel, "{0} IsWarmingUpFeedback_OutputChange Key: {1}", ClassName, device_.Key);
+                Debug.LogMessage(LogLevel, "{0} IsWarmingUpFeedback_OutputChange Key: {1}", ClassName, device_.Key);
             //var display_ = sender as IWarmingCooling; // this is always null
             var display_ = CurrentDefaultDevice as IWarmingCooling;
             if (display_ != null)
             {
-                Debug.Console(LogLevel, "{0} IsWarmingUpFeedback_OutputChange: {1}", ClassName, display_.IsWarmingUpFeedback.BoolValue);
+                Debug.LogMessage(LogLevel, "{0} IsWarmingUpFeedback_OutputChange: {1}", ClassName, display_.IsWarmingUpFeedback.BoolValue);
                 StartSecondTimer(display_.IsCoolingDownFeedback.BoolValue || display_.IsWarmingUpFeedback.BoolValue);
             }
             else
-                Debug.Console(LogLevel, "{0} IsWarmingUpFeedback_OutputChange {1}", ClassName, e.BoolValue);
+                Debug.LogMessage(LogLevel, "{0} IsWarmingUpFeedback_OutputChange {1}", ClassName, e.BoolValue);
         }
         private void PowerIsOnFeedback_OutputChange(object sender, FeedbackEventArgs e)
         {
             var display_ = sender as IHasPowerControlWithFeedback;
             if (display_ != null)
-                Debug.Console(LogLevel, "{0} PowerIsOnFeedback_OutputChange: {1}", ClassName, display_.PowerIsOnFeedback.BoolValue);
+                Debug.LogMessage(LogLevel, "{0} PowerIsOnFeedback_OutputChange: {1}", ClassName, display_.PowerIsOnFeedback.BoolValue);
             else
-                Debug.Console(LogLevel, "{0} PowerIsOnFeedback_OutputChange {1}", ClassName, e.BoolValue);
+                Debug.LogMessage(LogLevel, "{0} PowerIsOnFeedback_OutputChange {1}", ClassName, e.BoolValue);
             UpdateCurrentDisplayFeedback();
        }
 
         private void CurrentDefaultDevice_CurrentSourceChange(SourceListItem info, ChangeType type)
         {
-            Debug.Console(LogLevel, "{0} CurrentDefaultDevice_CurrentSourceChange", ClassName);
+            Debug.LogMessage(LogLevel, "{0} CurrentDefaultDevice_CurrentSourceChange", ClassName);
         }
 
         public void Register()
         {
-            Debug.Console(LogLevel, "{0} Register", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Register", ClassName);
             TriList.SetSigFalseAction(PowerToggleJoin, () =>
             {
                 var currentDisplay_ = CurrentDefaultDevice as IHasPowerControlWithFeedback;
-                Debug.Console(LogLevel, "{0} PowerToggleJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
+                Debug.LogMessage(LogLevel, "{0} PowerToggleJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
                 currentDisplay_?.PowerToggle();
             });
             TriList.SetSigFalseAction(PowerOnJoin, () =>
             {
                 var currentDisplay_ = CurrentDefaultDevice as IHasPowerControlWithFeedback;
-                Debug.Console(LogLevel, "{0} PowerOnJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
+                Debug.LogMessage(LogLevel, "{0} PowerOnJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
                 currentDisplay_?.PowerOn();
             });
             TriList.SetSigFalseAction(PowerOffJoin, () =>
             {
                 var currentDisplay_ = CurrentDefaultDevice as IHasPowerControlWithFeedback;
-                Debug.Console(LogLevel, "{0} PowerOffJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
+                Debug.LogMessage(LogLevel, "{0} PowerOffJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
                 currentDisplay_?.PowerOff();
             });
         }
         public void Unregister()
         {
-            Debug.Console(LogLevel, "{0} Unregister", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Unregister", ClassName);
             TriList.ClearBoolSigAction(PowerToggleJoin);
             TriList.ClearBoolSigAction(PowerOnJoin);
             TriList.ClearBoolSigAction(PowerOffJoin);
@@ -206,7 +207,7 @@ namespace essentials_basic_tp.Drivers
                         //TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin)); // can't use GetBool because it gets BooleanOutput
                         TriList.SetBool(PowerToggleJoin, !TriList.BooleanInput[PowerToggleJoin].BoolValue);
                         TriList.SetBool(PowerOnJoin, !TriList.BooleanInput[PowerOnJoin].BoolValue);
-                        //Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, warming", ClassName);
+                        //Debug.LogMessage(LogLevel, "{0} UpdateCurrentDisplayFeedback, warming", ClassName);
                     }
                     else if (dispWarmCool.IsCoolingDownFeedback.BoolValue)
                     {
@@ -214,7 +215,7 @@ namespace essentials_basic_tp.Drivers
                         //TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin)); // can't use GetBool because it gets BooleanOutput
                         TriList.SetBool(PowerToggleJoin, !TriList.BooleanInput[PowerToggleJoin].BoolValue);
                         TriList.SetBool(PowerOffJoin, !TriList.BooleanInput[PowerOffJoin].BoolValue);
-                        //Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, cooling", ClassName);
+                        //Debug.LogMessage(LogLevel, "{0} UpdateCurrentDisplayFeedback, cooling", ClassName);
                     }
                 }
                 else if (dispTwoWay != null)
@@ -230,40 +231,40 @@ namespace essentials_basic_tp.Drivers
                 TriList.SetBool(PowerToggleJoin, true);
                 TriList.SetBool(PowerOnJoin, true);
                 TriList.SetBool(PowerOffJoin, false);
-                Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, setting", ClassName);
+                Debug.LogMessage(LogLevel, "{0} UpdateCurrentDisplayFeedback, setting", ClassName);
             }
             else if (CurrentDefaultDevicePowerState == PowerStates.off || CurrentDefaultDevicePowerState == PowerStates.standby)
             {
                 TriList.SetBool(PowerToggleJoin, false);
                 TriList.SetBool(PowerOnJoin, false);
                 TriList.SetBool(PowerOffJoin, true);
-                Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, clearing", ClassName);
+                Debug.LogMessage(LogLevel, "{0} UpdateCurrentDisplayFeedback, clearing", ClassName);
             }
             TriList.SetString(PowerToggleText, CurrentDefaultDevicePowerState.ToString());
 
-            Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback: {1}", ClassName, CurrentDefaultDevicePowerState.ToString());
+            Debug.LogMessage(LogLevel, "{0} UpdateCurrentDisplayFeedback: {1}", ClassName, CurrentDefaultDevicePowerState.ToString());
         }
         private void StartSecondTimer(bool enable)
         {
-            Debug.Console(0, "{0} StartSecondTimer: {1}", ClassName, enable);
+            Debug.LogMessage(0, "{0} StartSecondTimer: {1}", ClassName, enable);
             if (!enable)
             {
                 Dispose();
             }
             else if (SecondTimer == null)
             {
-                Debug.Console(0, "{0} StartSecondTimer creating new PowerTimer", ClassName);
+                Debug.LogMessage(0, "{0} StartSecondTimer creating new PowerTimer", ClassName);
                 SecondTimer = new CTimer(SecondTimerExpired, this, 1000, 1000);
             }
             UpdateCurrentDisplayFeedback();
-            //Debug.Console(0, "{0} StartSecondTimer end", ClassName);
+            //Debug.LogMessage(0, "{0} StartSecondTimer end", ClassName);
         }
         private void SecondTimerExpired(object userSpecific)
         {
             if (CurrentDefaultDevice != null) // make the button flash when warming or cooling
             {
                 var dispWarmCool = CurrentDefaultDevice as IWarmingCooling;
-                Debug.Console(LogLevel, "{0} SecondTimerExpired dispWarmCool {1}", ClassName, dispWarmCool == null ? "== null" : CurrentDefaultDevice.Key);
+                Debug.LogMessage(LogLevel, "{0} SecondTimerExpired dispWarmCool {1}", ClassName, dispWarmCool == null ? "== null" : CurrentDefaultDevice.Key);
                 if (dispWarmCool != null)
                     if (!dispWarmCool.IsWarmingUpFeedback.BoolValue && !dispWarmCool.IsCoolingDownFeedback.BoolValue)
                         Dispose();

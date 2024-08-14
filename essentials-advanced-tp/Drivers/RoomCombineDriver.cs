@@ -13,13 +13,14 @@ using PepperDash.Essentials.Room.Config;
 using System.Runtime.Remoting.Messaging;
 using PepperDash.Essentials.Core.Config;
 using PepperDash.Essentials.Core.DeviceTypeInterfaces;
+using Serilog.Events;
 
 namespace essentials_basic_tp.Drivers
 {
     internal class RoomCombineDriver : PanelDriverBase, IAdvancedRoomSetup
     {
         public string ClassName { get { return "RoomCombineDriver"; } }
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
 
         public uint TogglePageJoin { get; private set; }
         public uint PageJoin { get; private set; }
@@ -45,7 +46,7 @@ namespace essentials_basic_tp.Drivers
         public RoomCombineDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
             : base(parent.TriList)
         {
-            LogLevel = 2;
+            LogLevel = LogEventLevel.Information;
             Parent = parent;
 
             TogglePageJoin = joins.UIBoolJoin.CombinePagePress;
@@ -86,7 +87,7 @@ namespace essentials_basic_tp.Drivers
             TriList.SetSigFalseAction(ConfirmJoin, () => TriggerCombineMode(selectedJoinMode));
             
             Register();
-            Debug.Console(LogLevel, "{0} constructor done", ClassName);
+            Debug.LogMessage(LogLevel, "{0} constructor done", ClassName);
         }
         /// <summary>
         /// This is called for each change so no need to iterate
@@ -97,7 +98,7 @@ namespace essentials_basic_tp.Drivers
         {
             if (TriList.BooleanInput[e.NewJoin].BoolValue) // only need to see this once per change
             {
-                Debug.Console(LogLevel, "{0} CombineModeJoinInterlock_StatusChanged, e.NewJoin: {1}, e.PreviousJoin: {2}", ClassName, e.NewJoin, e.PreviousJoin);
+                Debug.LogMessage(LogLevel, "{0} CombineModeJoinInterlock_StatusChanged, e.NewJoin: {1}, e.PreviousJoin: {2}", ClassName, e.NewJoin, e.PreviousJoin);
                 selectedJoinMode = (int)e.NewJoin;
 
                 for (var i=0; i<CombineModePressJoin.Length; i++)
@@ -116,7 +117,7 @@ namespace essentials_basic_tp.Drivers
 
         private void PopupInterlock_StatusChanged(object sender, StatusChangedEventArgs e)
         {
-            Debug.Console(LogLevel, "{0} PopupInterlock_StatusChanged, e.NewJoin: {1}, e.PreviousJoin: {2}", ClassName, e.NewJoin, e.PreviousJoin);
+            Debug.LogMessage(LogLevel, "{0} PopupInterlock_StatusChanged, e.NewJoin: {1}, e.PreviousJoin: {2}", ClassName, e.NewJoin, e.PreviousJoin);
             if (e.PreviousJoin == PageJoin)
                 Unregister();
             if (e.NewJoin == PageJoin)
@@ -128,20 +129,20 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IAdvancedRoom room)
         {
-            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
             EssentialsRoomPropertiesConfig roomConf = room.PropertiesConfig;
             //Unregister();
-            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
         }
 
         public void Register()
         {
-            Debug.Console(LogLevel, "{0} Register", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Register", ClassName);
             //foreach (var devConf in ConfigReader.ConfigObject.Devices) { }
             var roomCombinerList = DeviceManager.AllDevices.OfType<IEssentialsRoomCombiner>().ToList();
             if (roomCombinerList.Count > 0)
             {
-                Debug.Console(LogLevel, "{0} Found {1} RoomCombiners, assingong {2} =  ", ClassName, roomCombinerList.Count, roomCombinerList[0].Key);
+                Debug.LogMessage(LogLevel, "{0} Found {1} RoomCombiners, assingong {2} =  ", ClassName, roomCombinerList.Count, roomCombinerList[0].Key);
                 CurrentDefaultDevice = roomCombinerList[0];
                 CurrentDefaultDevice.RoomCombinationScenarioChanged += CurrentDefaultDevice_RoomCombinationScenarioChanged;
             }
@@ -149,14 +150,14 @@ namespace essentials_basic_tp.Drivers
 
         private void CurrentDefaultDevice_RoomCombinationScenarioChanged(object sender, EventArgs e)
         {
-            Debug.Console(LogLevel, "{0} RoomCombinationScenarioChanged: {1}", ClassName, CurrentDefaultDevice.CurrentScenario.Key);
-            Debug.Console(LogLevel, "{0} Name: {1}", ClassName, CurrentDefaultDevice.CurrentScenario.Name);
-            //Debug.Console(LogLevel, "{0} Name: {1}", ClassName, CurrentDefaultDevice.CurrentScenario.IsActiveFeedback.);
+            Debug.LogMessage(LogLevel, "{0} RoomCombinationScenarioChanged: {1}", ClassName, CurrentDefaultDevice.CurrentScenario.Key);
+            Debug.LogMessage(LogLevel, "{0} Name: {1}", ClassName, CurrentDefaultDevice.CurrentScenario.Name);
+            //Debug.LogMessage(LogLevel, "{0} Name: {1}", ClassName, CurrentDefaultDevice.CurrentScenario.IsActiveFeedback.);
         }
 
         public void Unregister()
         {
-            Debug.Console(LogLevel, "{0} Unregister", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Unregister", ClassName);
             if(CurrentDefaultDevice != null)
             {
                 CurrentDefaultDevice.RoomCombinationScenarioChanged -= CurrentDefaultDevice_RoomCombinationScenarioChanged;
@@ -166,7 +167,7 @@ namespace essentials_basic_tp.Drivers
 
         public void TriggerCombineMode(int mode)
         {
-            Debug.Console(LogLevel, "{0} TriggerCombineMode, CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? "== null" : CurrentDefaultDevice.Key);
+            Debug.LogMessage(LogLevel, "{0} TriggerCombineMode, CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? "== null" : CurrentDefaultDevice.Key);
             if (CurrentDefaultDevice != null)
             {
 

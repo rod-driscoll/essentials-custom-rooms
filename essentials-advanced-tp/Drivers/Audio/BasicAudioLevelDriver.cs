@@ -5,6 +5,7 @@ using essentials_advanced_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 using System;
 
 namespace essentials_basic_tp.Drivers
@@ -12,7 +13,7 @@ namespace essentials_basic_tp.Drivers
     public class BasicAudioLevelDriver: PanelDriverBase, IAdvancedRoomSetup
     {
         public string ClassName { get { return String.Format("[AudioLevelDriver-{0}]", controls.Key); } }
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
 
         /// <summary>
         /// The parent driver for this
@@ -49,7 +50,7 @@ namespace essentials_basic_tp.Drivers
         public BasicAudioLevelDriver(BasicPanelMainInterfaceDriver parent, BasicAudioDriverControls controls)
                     : base(parent.TriList)
         {
-            LogLevel = 2;
+            LogLevel = LogEventLevel.Information;
             this.controls = controls;
             Parent = parent;
             ShowVolumeGauge = true;
@@ -60,7 +61,7 @@ namespace essentials_basic_tp.Drivers
                 VolumeGaugeFeedback.Feedback
                     .LinkInputSig(controls.Sigs.GaugeVisible);
             }
-            //Debug.Console(LogLevel, "{0} constructor done", ClassName);
+            //Debug.LogMessage(LogLevel, "{0} constructor done", ClassName);
         }
 
         /// <summary>
@@ -69,14 +70,14 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IAdvancedRoom room)
         {
-            //Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            //Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
 
             if (CurrentVolumeDevice != null) // Disconnect current room 
             {
                 CurrentVolumeDevice.CurrentVolumeDeviceChange -= this.CurrentRoom_CurrentAudioDeviceChange;
                 ClearAudioDeviceConnections();
             }
-           // Debug.Console(LogLevel, "{0} ClearAudioDeviceConnections done", ClassName);
+           // Debug.LogMessage(LogLevel, "{0} ClearAudioDeviceConnections done", ClassName);
 
             var CurrentRoom_ = room as IHasAudioDevice; // implements this class
             if (CurrentRoom_ != null)
@@ -85,14 +86,14 @@ namespace essentials_basic_tp.Drivers
                 if (CurrentRoom_.Audio.Levels.ContainsKey(controls.Key))
                 {
                     CurrentVolumeDevice = CurrentRoom_.Audio.Levels[controls.Key];
-                    Debug.Console(LogLevel, "{0} CurrentRoom_.Audio.Levels.ContainsKey: {1}", ClassName, controls.Key);
+                    Debug.LogMessage(LogLevel, "{0} CurrentRoom_.Audio.Levels.ContainsKey: {1}", ClassName, controls.Key);
                 }
                 else
                 { 
                     //foreach(var item_ in CurrentRoom_.Audio.Levels)
-                    //    Debug.Console(LogLevel, "{0} CurrentRoom_.Audio.Levels[{1}] exists", ClassName, item_.Key);
+                    //    Debug.LogMessage(LogLevel, "{0} CurrentRoom_.Audio.Levels[{1}] exists", ClassName, item_.Key);
                 }
-                //Debug.Console(LogLevel, "{0} RefreshCurrentRoom, CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
+                //Debug.LogMessage(LogLevel, "{0} RefreshCurrentRoom, CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
                 if (CurrentVolumeDevice != null) // Connect current room 
                 {
                     CurrentVolumeDevice.CurrentVolumeDeviceChange += CurrentRoom_CurrentAudioDeviceChange;
@@ -100,7 +101,7 @@ namespace essentials_basic_tp.Drivers
                 }
             }
 
-            //Debug.Console(LogLevel, "{0} RefreshAudioDeviceConnections done", ClassName);
+            //Debug.LogMessage(LogLevel, "{0} RefreshAudioDeviceConnections done", ClassName);
 
             if (controls.Key == VolumeKey.Volume.ToString())
             {
@@ -108,7 +109,7 @@ namespace essentials_basic_tp.Drivers
                 {
                     var tsw = TriList as TswFt5ButtonSystem;
                     // Wire up hard keys
-                    Debug.Console(0, "{0} Wire up hard keys", ClassName);
+                    Debug.LogMessage(0, "{0} Wire up hard keys", ClassName);
                     tsw.Up.UserObject = new Action<bool>(VolumeUpPress);
                     tsw.Down.UserObject = new Action<bool>(VolumeDownPress);
                 }
@@ -116,16 +117,16 @@ namespace essentials_basic_tp.Drivers
 
             if (controls.Sigs.ButtonPopupPress != null)
                 controls.Sigs.ButtonPopupPress.SetSigFalseAction(() => TriggerVolumePopup(true));
-            Debug.Console(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }
 
         public void Register()
         {
-            Debug.Console(LogLevel, "{0} Register", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Register", ClassName);
         }
         public void Unregister()
         {
-            Debug.Console(LogLevel, "{0} Unregister", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Unregister", ClassName);
         }
 
         private void TriggerVolumePopup(bool state)
@@ -135,16 +136,16 @@ namespace essentials_basic_tp.Drivers
         }
         public void VolumeUpPress(bool state)
         {
-            Debug.Console(1, "{0} UpPress({1})", ClassName, state);
+            Debug.LogMessage(LogEventLevel.Debug, "{0} UpPress({1})", ClassName, state);
             TriggerVolumePopup(state);
-            Debug.Console(LogLevel, "{0} UpPress CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
-            Debug.Console(LogLevel, "{0} UpPress CurrentVolumeControls {1}", ClassName, CurrentVolumeDevice.CurrentVolumeControls == null ? "== null" : "exists");
+            Debug.LogMessage(LogLevel, "{0} UpPress CurrentDevice {1}", ClassName, CurrentVolumeDevice == null ? "== null" : "exists");
+            Debug.LogMessage(LogLevel, "{0} UpPress CurrentVolumeControls {1}", ClassName, CurrentVolumeDevice.CurrentVolumeControls == null ? "== null" : "exists");
             if (CurrentVolumeDevice?.CurrentVolumeControls != null)
                 CurrentVolumeDevice.CurrentVolumeControls.VolumeUp(state);
         }
         public void VolumeDownPress(bool state)
         {
-            Debug.Console(1, "{0} DownPress({1})", ClassName, state);
+            Debug.LogMessage(LogEventLevel.Debug, "{0} DownPress({1})", ClassName, state);
             TriggerVolumePopup(state);
             if (CurrentVolumeDevice?.CurrentVolumeControls != null)
                 CurrentVolumeDevice.CurrentVolumeControls.VolumeDown(state);
@@ -156,21 +157,21 @@ namespace essentials_basic_tp.Drivers
         /// </summary>
         void RefreshAudioDeviceConnections()
         {
-            Debug.Console(LogLevel, "{0} RefreshAudioDeviceConnections", ClassName);
+            Debug.LogMessage(LogLevel, "{0} RefreshAudioDeviceConnections", ClassName);
 
             // Volume control
             var dev = CurrentVolumeDevice?.CurrentVolumeControls;
-            Debug.Console(LogLevel, "{0} RefreshAudioDeviceConnections CurrentDevice {1}", ClassName, dev == null ? "== null" : "exists");
+            Debug.LogMessage(LogLevel, "{0} RefreshAudioDeviceConnections CurrentDevice {1}", ClassName, dev == null ? "== null" : "exists");
             if (dev != null) // connect buttons
             {
                 if(controls.Sigs.UpPress != null)
                     controls.Sigs.UpPress.SetBoolSigAction(VolumeUpPress);
-                //Debug.Console(LogLevel, "{0} UpPress registered on join {1}", ClassName, controls.Joins.UpPress);
+                //Debug.LogMessage(LogLevel, "{0} UpPress registered on join {1}", ClassName, controls.Joins.UpPress);
                 if (controls.Sigs.DownPress != null)
                     controls.Sigs.DownPress.SetBoolSigAction(VolumeDownPress);
                 if (controls.Sigs.MutePress != null)
                     controls.Sigs.MutePress.SetSigFalseAction(() => {
-                        Debug.Console(1, "{0} MutePress", ClassName);
+                        Debug.LogMessage(LogEventLevel.Debug, "{0} MutePress", ClassName);
                         dev.MuteToggle();
                         TriggerVolumePopup(true);
                         TriggerVolumePopup(false);
@@ -186,7 +187,7 @@ namespace essentials_basic_tp.Drivers
             {
                 if (controls.Sigs.Slider1Fb != null)
                     controls.Sigs.Slider1Fb.SetUShortSigAction((a) => {
-                        Debug.Console(1, "{0} SetVolume({1})", ClassName, a);
+                        Debug.LogMessage(LogEventLevel.Debug, "{0} SetVolume({1})", ClassName, a);
                         fbDev.SetVolume(a);
                         TriggerVolumePopup(true);
                         TriggerVolumePopup(false);
@@ -200,12 +201,12 @@ namespace essentials_basic_tp.Drivers
             if (controls.Sigs.Label != null)
             {
                 var roomVol_ = CurrentVolumeDevice as RoomVolumeLevel;
-                Debug.Console(LogLevel, "{0} RefreshAudioDeviceConnections roomVol_ {1}", ClassName, roomVol_ == null ? "== null" : roomVol_.Label);
+                Debug.LogMessage(LogLevel, "{0} RefreshAudioDeviceConnections roomVol_ {1}", ClassName, roomVol_ == null ? "== null" : roomVol_.Label);
                 if(roomVol_ != null)
                     controls.Sigs.Label.StringValue = roomVol_.Label;
 
                 //foreach(var item_ in CurrentRoom_.Audio.Levels)
-                //    Debug.Console(LogLevel, "{0} CurrentRoom_.Audio.Levels[{1}] exists", ClassName, item_.Key);
+                //    Debug.LogMessage(LogLevel, "{0} CurrentRoom_.Audio.Levels[{1}] exists", ClassName, item_.Key);
 
            }
         }
@@ -246,7 +247,7 @@ namespace essentials_basic_tp.Drivers
 
         public void SetDefaultLevels()
         {
-            Debug.Console(LogLevel, "{0} SetDefaultLevels notimplemented", ClassName);
+            Debug.LogMessage(LogLevel, "{0} SetDefaultLevels notimplemented", ClassName);
         }
     }
 }

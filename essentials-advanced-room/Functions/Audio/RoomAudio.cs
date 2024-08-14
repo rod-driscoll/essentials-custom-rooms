@@ -108,7 +108,7 @@ namespace essentials_advanced_room.Functions.Audio
                 //if (!String.IsNullOrEmpty(config.DefaultAudioKey) && Levels.ContainsKey(config.DefaultAudioKey))
                 //{
                 //    var level_ = Levels[config.DefaultAudioKey].CurrentDevice as IBasicVolumeWithFeedback;
-                //    Debug.LogMessage(1, "{0} default level as IBasicVolumeWithFeedback {1}", ClassName, level_ == null ? "== null" : "exists");
+                //    Debug.LogMessage(LogEventLevel.Debug, "{0} default level as IBasicVolumeWithFeedback {1}", ClassName, level_ == null ? "== null" : "exists");
                 //    if (level_ != null)
                 //        level_.MuteOff();
                 //}

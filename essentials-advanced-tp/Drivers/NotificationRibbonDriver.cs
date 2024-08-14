@@ -4,13 +4,14 @@ using essentials_advanced_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 
 namespace essentials_basic_tp.Drivers
 {
     internal class NotificationRibbonDriver : PanelDriverBase, IAdvancedRoomSetup
     {
         public string ClassName { get { return "NotificationRibbonDriver"; } }
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
 
         /// <summary>
         /// Controls timeout of notification ribbon timer
@@ -24,9 +25,9 @@ namespace essentials_basic_tp.Drivers
         public NotificationRibbonDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
             : base(parent.TriList)
         {
-            LogLevel = 2;
+            LogLevel = LogEventLevel.Information;
             Parent = parent;
-            Debug.Console(LogLevel, "{0} constructor done", ClassName);
+            Debug.LogMessage(LogLevel, "{0} constructor done", ClassName);
         }
 
 
@@ -66,8 +67,8 @@ namespace essentials_basic_tp.Drivers
 
         public void Setup(IAdvancedRoom room)
         {
-            //Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
-            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            //Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
         }
     }
 }

@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Config;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 
@@ -54,14 +55,14 @@ namespace essentials_advanced_tp
         /// <seealso cref="PepperDash.Core.eControlMethod"/>
         public override EssentialsDevice BuildDevice(DeviceConfig dc)
         {
-            Debug.Console(1, "[{0}] Factory Attempting to create new device from type: {1}", dc.Key, dc.Type);
+            Debug.LogMessage(LogEventLevel.Debug, "[{0}] Factory Attempting to create new device from type: {1}", dc.Key, dc.Type);
             var comm = CommFactory.GetControlPropertiesConfig(dc);
             var props = JsonConvert.DeserializeObject<Config>(dc.Properties.ToString());
 
             var panel = GetPanelForType(props.Type, comm.IpIdInt, String.Empty);
             if (panel == null)
             {
-                Debug.Console(0, "Unable to create Touchpanel for type {0}. Touchpanel Controller WILL NOT function correctly", dc.Type);
+                Debug.LogMessage(0, "Unable to create Touchpanel for type {0}. Touchpanel Controller WILL NOT function correctly", dc.Type);
             }
             var panelController = new Device(dc.Key, dc.Name, panel, props);
 
@@ -70,7 +71,7 @@ namespace essentials_advanced_tp
 
         private BasicTriListWithSmartObject GetPanelForType(string type, uint id, string projectName)
         {
-            Debug.Console(1, "[{0}] Factory Attempting to GetPanelForType: {1}", "basic-tp-controller", type);
+            Debug.LogMessage(LogEventLevel.Debug, "[{0}] Factory Attempting to GetPanelForType: {1}", "basic-tp-controller", type);
             type = type.ToLower();
             try
             {
@@ -112,13 +113,13 @@ namespace essentials_advanced_tp
                     return new Ts1070(id, Global.ControlSystem);
                 else
                 {
-                    Debug.Console(0, Debug.ErrorLogLevel.Notice, "WARNING: Cannot create TSW controller with type '{0}'", type);
+                    Debug.LogMessage(LogEventLevel.Verbose, "WARNING: Cannot create TSW controller with type '{0}'", type);
                     return null;
                 }
             }
             catch (Exception e)
             {
-                Debug.Console(0, Debug.ErrorLogLevel.Notice, "WARNING: Cannot create TSW base class. Panel will not function: {0}", e.Message);
+                Debug.LogMessage(LogEventLevel.Verbose, "WARNING: Cannot create TSW base class. Panel will not function: {0}", e.Message);
                 return null;
             }
         }

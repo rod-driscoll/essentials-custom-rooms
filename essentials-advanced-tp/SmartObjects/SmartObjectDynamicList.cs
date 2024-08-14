@@ -2,6 +2,7 @@
 using Crestron.SimplSharpPro.DeviceSupport;
 using PepperDash.Core;
 using PepperDash.Essentials.Core.SmartObjects;
+using Serilog.Events;
 using System;
 using System.Linq;
 
@@ -45,12 +46,12 @@ namespace essentials_basic_tp.Drivers
                 var c = Count;
                 NameSigOffset = nameSigOffset;
                 MaxCount = SmartObject.BooleanOutput.Count(s => s.Name.EndsWith("Pressed"));
-                //Debug.Console(LogLevel, "Smart object {0} has {1} max", so.ID, MaxCount);
+                //Debug.LogMessage(LogLevel, "Smart object {0} has {1} max", so.ID, MaxCount);
             }
             catch
             {
                 var msg = string.Format("SmartObjectDynamicList: Smart Object {0:X2}-{1} is not a dynamic list. Ignoring", so.Device.ID, so.ID);
-                Debug.Console(0, Debug.ErrorLogLevel.Error, msg);
+                Debug.LogMessage(LogEventLevel.Error, msg);
             }
         }
 
@@ -70,7 +71,7 @@ namespace essentials_basic_tp.Drivers
             //}
             //catch(Exception e)
             //{
-            //    Debug.Console(1, "Cannot set Dynamic List item {0} on smart object {1}", index, SmartObject.ID);
+            //    Debug.LogMessage(LogEventLevel.Debug, "Cannot set Dynamic List item {0} on smart object {1}", index, SmartObject.ID);
             //    ErrorLog.Warn(e.ToString());
             //}
         }
@@ -127,7 +128,7 @@ namespace essentials_basic_tp.Drivers
         /// </summary>
         public void ClearActions()
         {
-            Debug.Console(2, "SO CLEAR");
+            Debug.LogMessage(LogEventLevel.Information, "SO CLEAR");
             for (ushort i = 1; i <= MaxCount; i++)
                 SmartObject.BooleanOutput[string.Format("Item {0} Pressed", i)].UserObject = null;
         }

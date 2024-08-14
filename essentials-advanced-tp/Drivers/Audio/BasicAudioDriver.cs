@@ -5,6 +5,7 @@ using essentials_advanced_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 
@@ -35,27 +36,27 @@ namespace essentials_basic_tp.Drivers
     public class BasicAudioDriver : PanelDriverBase, IAdvancedRoomSetup
     {
         public string ClassName { get { return "AudioDriver"; } }
-        private uint _logLevel;
-        public uint LogLevel { 
+        private LogEventLevel _logLevel;
+        public LogEventLevel LogLevel { 
             get { return _logLevel; } 
             set {
                 try
                 {
                     _logLevel = value;
-                    //Debug.Console(2, "{0} Setting LogLevel {1}", ClassName, _logLevel);
-                    //Debug.Console(2, "{0} Setting LogLevel ChildDrivers {1}", ClassName, ChildDrivers == null ? " = null" : "exists");
+                    //Debug.LogMessage(2, "{0} Setting LogLevel {1}", ClassName, _logLevel);
+                    //Debug.LogMessage(2, "{0} Setting LogLevel ChildDrivers {1}", ClassName, ChildDrivers == null ? " = null" : "exists");
                     foreach (var driver in ChildDrivers)
                     {
                         var driver_ = driver as ILogClassDetails;
-                        Debug.Console(2, "{0} Setting driver standard LogLevel {1}, {2} {3}", ClassName, _logLevel, driver.GetType().Name, driver_ == null ? " = null" : "exists");
+                        Debug.LogMessage(LogEventLevel.Information, "{0} Setting driver standard LogLevel {1}, {2} {3}", ClassName, _logLevel, driver.GetType().Name, driver_ == null ? " = null" : "exists");
                         if (driver_ != null)
                             driver_.LogLevel = _logLevel;
                     }
-                    Debug.Console(2, "{0} Setting LogLevel {1} done", ClassName, _logLevel);
+                    Debug.LogMessage(LogEventLevel.Information, "{0} Setting LogLevel {1} done", ClassName, _logLevel);
                 }
                 catch (Exception e)
                 {
-                    Debug.Console(0, "{0} Setting LogLevel ERROR: {1}", ClassName, e.Message);
+                    Debug.LogMessage(0, "{0} Setting LogLevel ERROR: {1}", ClassName, e.Message);
                 }
             } 
         }
@@ -69,8 +70,8 @@ namespace essentials_basic_tp.Drivers
         public BasicAudioDriver(BasicPanelMainInterfaceDriver parent)
             : base(parent.TriList)
         {
-            LogLevel = 2;
-            Debug.Console(0, "{0} loading ", ClassName);
+            LogLevel = LogEventLevel.Information;
+            Debug.LogMessage(LogEventLevel.Verbose, "{0} loading ", ClassName);
             Parent = parent;
             // main volume driver
             ChildDrivers.Add(new BasicAudioLevelDriver(parent,
@@ -86,7 +87,7 @@ namespace essentials_basic_tp.Drivers
                         Slider1Fb         = TriList.UShortOutput [UIUshortJoin.VolumeSlider1Value],
                     })
             ));
-            Debug.Console(0, "{0} {1} loaded ", ClassName, VolumeKey.Volume.ToString());
+            Debug.LogMessage(0, "{0} {1} loaded ", ClassName, VolumeKey.Volume.ToString());
             // mic level driver
             ChildDrivers.Add(new BasicAudioLevelDriver(parent,
                 new BasicAudioDriverControls(VolumeKey.MicLevel.ToString(),
@@ -95,7 +96,7 @@ namespace essentials_basic_tp.Drivers
                         MuteFb            = TriList.BooleanInput [UIBoolJoin.Volume1SpeechMutePressAndFB],
                    })
             ));
-            Debug.Console(0, "{0} {1} loaded ", ClassName, VolumeKey.MicLevel.ToString());
+            Debug.LogMessage(0, "{0} {1} loaded ", ClassName, VolumeKey.MicLevel.ToString());
             // Load faders on SRL
             ChildDrivers.Add(new AudioListDriver(parent));
             // Load presets in SmartObject DynamicList
@@ -105,7 +106,7 @@ namespace essentials_basic_tp.Drivers
                 parent.PopupInterlock.ShowInterlockedWithToggle(UIBoolJoin.VolumeButtonPopupPress));
 
             //Register();
-            Debug.Console(LogLevel, "{0} constructor done", ClassName);
+            Debug.LogMessage(LogLevel, "{0} constructor done", ClassName);
         }
 
         /// <summary>
@@ -114,23 +115,23 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IAdvancedRoom room)
         {
-            Debug.Console(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
             foreach (var driver in ChildDrivers)
             {
-                //Debug.Console(LogLevel, "{0} Setup {1}", ClassName, driver.GetType().Name);
+                //Debug.LogMessage(LogLevel, "{0} Setup {1}", ClassName, driver.GetType().Name);
                 var roomDriver_ = driver as IAdvancedRoomSetup;
-                Debug.Console(LogLevel, "{0} Setup {1}, driver {2}", ClassName, driver.GetType().Name, roomDriver_==null?"== null":"exists");
+                Debug.LogMessage(LogLevel, "{0} Setup {1}, driver {2}", ClassName, driver.GetType().Name, roomDriver_==null?"== null":"exists");
                 roomDriver_?.Setup(room);
             }
-            Debug.Console(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }
         public void Register()
         {
-            Debug.Console(LogLevel, "{0} Register", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Register", ClassName);
         }
         public void Unregister()
         {
-            Debug.Console(LogLevel, "{0} Unregister", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Unregister", ClassName);
         }
     }
 }
