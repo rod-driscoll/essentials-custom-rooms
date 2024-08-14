@@ -1,17 +1,16 @@
 ﻿using essentials_advanced_room;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 using System;
-using static PepperDash.Essentials.Devices.Common.VideoCodec.Cisco.CiscoCodecConfiguration;
-using static PepperDash.Essentials.Devices.Common.VideoCodec.CiscoCodecBookings;
+using WebSocketSharp;
 
 namespace essentials_advanced_room.Functions.Audio
 {
     public class RoomVolumeLevel : IHasCurrentVolumeControls, ILogClassDetails
     {
         public string ClassName { get { return String.Format("[RoomVolumeLevel-{0}]", CurrentDevice.Key); } }
-
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
         /// <summary>
         /// Current audio device shouldn't change for a room in most scenarios, but code is here in case
         /// </summary>
@@ -59,14 +58,14 @@ namespace essentials_advanced_room.Functions.Audio
 
         public RoomVolumeLevel(IKeyed device, string label)
         {
-            Debug.Console(2, "RoomVolumeLevel constructor [{0}] {1}", label, device == null ? "== null" : device.Key);
-            LogLevel = 2;
+            Debug.LogMessage(LogEventLevel.Debug, "RoomVolumeLevel constructor [{0}] {1}", label, device == null ? "== null" : device.Key);
+            LogLevel = LogEventLevel.Information;
             Label = label;
             CurrentDevice = device;
             DefaultControls = CurrentDevice as IBasicVolumeControls;
-            Debug.Console(LogLevel, "{0} CurrentDevice {1}", ClassName, CurrentDevice == null ? "== null" : CurrentDevice.Key);
+            Debug.LogMessage(LogLevel, "{0} CurrentDevice {1}", ClassName, CurrentDevice == null ? "== null" : CurrentDevice.Key);
             if(device == null)
-                Debug.Console(LogLevel, "{0} device {1}", ClassName, device == null ? "== null" : device.Key);
+                Debug.LogMessage(LogLevel, "{0} device {1}", ClassName, device == null ? "== null" : device.Key);
             else
             {
                 Initialize();
@@ -76,18 +75,18 @@ namespace essentials_advanced_room.Functions.Audio
 
         void Initialize()
         {
-            Debug.Console(LogLevel, CurrentDevice, "{0} Initialize", ClassName);
+            Debug.LogMessage(LogLevel, CurrentDevice, "{0} Initialize", ClassName);
             CurrentVolumeControls = DefaultControls;
         }
 
         public void CustomActivate()
         {
-            Debug.Console(LogLevel, CurrentDevice, "{0} CustomActivate", ClassName);
+            Debug.LogMessage(LogLevel, CurrentDevice, "{0} CustomActivate", ClassName);
         }
 
         public void SetDefaultLevels()
         {
-            Debug.Console(1, CurrentDevice, "Restoring default levels");
+            Debug.LogMessage(LogEventLevel.Debug, CurrentDevice, "Restoring default levels");
             var vol_ = CurrentVolumeControls as IBasicVolumeWithFeedback;
             if (vol_ != null && hasDefaultVolume)
                 vol_.SetVolume(DefaultVolume);

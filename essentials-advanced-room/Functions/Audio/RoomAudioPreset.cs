@@ -1,13 +1,14 @@
 ﻿using essentials_advanced_room;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace essentials_advanced_room.Functions.Audio
 {
-    public interface IAudioPreset : IDspPreset // IDspPreset is just 'Name'
+    public interface IAudioPreset : IKeyName // IKeyName changed from IDspPreset for v2.0 (it's just 'Name')
     {
         void RunPresetNumber(uint presetNumber); // Essentials DSP presets uses this
         void RunPreset(string id);               // Essentials DSP presets uses this
@@ -41,7 +42,7 @@ namespace essentials_advanced_room.Functions.Audio
     public class RoomAudioPreset : IHasCurrentAudioPresetControls, ILogClassDetails
     {
         public string ClassName { get { return "RoomAudioPreset"; } }
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
         /// <summary>
         /// Current audio device shouldn't change for a room in most scenarios, but code is here in case
         /// </summary>
@@ -84,7 +85,7 @@ namespace essentials_advanced_room.Functions.Audio
 
         public RoomAudioPreset(BasicAudioPresetConfig config)
         {
-            LogLevel = 2;
+            LogLevel = LogEventLevel.Information;
             Name = config.Label;
             Key = config.DeviceKey;
             Function = config.Function; // e.g. "system-on", the room device looks for Function="system-on" to call on system power
@@ -99,17 +100,17 @@ namespace essentials_advanced_room.Functions.Audio
                 {
                     CurrentDevice = device;
                     DefaultControls = CurrentDevice as IAudioPreset;
-                    Debug.Console(LogLevel, "{0} CurrentDevice {1}", ClassName, CurrentDevice == null ? "== null" : CurrentDevice.Key);
+                    Debug.LogMessage(LogLevel, "{0} CurrentDevice {1}", ClassName, CurrentDevice == null ? "== null" : CurrentDevice.Key);
 
                     var presetKey_ = match.Groups[2].Value; // e.g. "preset-1"
-                    //Debug.Console(LogLevel, "{0} presetKey_: {1}", ClassName, presetKey_);
+                    //Debug.LogMessage(LogLevel, "{0} presetKey_: {1}", ClassName, presetKey_);
                     var m1_ = Regex.Match(presetKey_, @"(\d)"); // e.g. "1"
                     if (m1_.Success)
                     {
-                        //Debug.Console(LogLevel, "{0} preset Index: {1}", ClassName, m1_.Groups[1].Value);
+                        //Debug.LogMessage(LogLevel, "{0} preset Index: {1}", ClassName, m1_.Groups[1].Value);
                         presetNumber = Convert.ToUInt16(m1_.Groups[1].Value);
                         if (presetNumber > 0) presetNumber--; // 0 indexed array
-                        Debug.Console(LogLevel, "{0} presetNumber: {1}", ClassName, presetNumber);
+                        Debug.LogMessage(LogLevel, "{0} presetNumber: {1}", ClassName, presetNumber);
                     }
                     Initialize();
                     CustomActivate();
@@ -117,7 +118,7 @@ namespace essentials_advanced_room.Functions.Audio
                 // add device defined in config device "levelControlBlocks", this gets feedback, but must be defined in qsys as a NamedControl
                 var levelDevKey = match.Groups[1].Value + "-" + match.Groups[2].Value; // e.g. "dsp-1-preset-1]"
                 var levelDevice_ = (DeviceManager.GetDeviceForKey(levelDevKey));
-                Debug.Console(LogLevel, "{0} levelDevice {1}", ClassName, levelDevice_ == null ? "== null" : levelDevice_.Key);
+                Debug.LogMessage(LogLevel, "{0} levelDevice {1}", ClassName, levelDevice_ == null ? "== null" : levelDevice_.Key);
                 if (levelDevice_ != null)
                     Level = new RoomVolumeLevel(levelDevice_, Name);
             }
@@ -125,13 +126,13 @@ namespace essentials_advanced_room.Functions.Audio
 
         void Initialize()
         {
-            Debug.Console(LogLevel, CurrentDevice, "{0} Initialize", ClassName);
+            Debug.LogMessage(LogLevel, CurrentDevice, "{0} Initialize", ClassName);
             CurrentControls = DefaultControls;
         }
 
         public void CustomActivate()
         {
-            Debug.Console(LogLevel, CurrentDevice, "{0} CustomActivate", ClassName);
+            Debug.LogMessage(LogLevel, CurrentDevice, "{0} CustomActivate", ClassName);
         }
 
         /// <summary>
@@ -140,25 +141,25 @@ namespace essentials_advanced_room.Functions.Audio
         /// </summary>
         public void RecallPreset()
         {
-            Debug.Console(LogLevel, CurrentDevice, "{0} RecallPreset: {1}", ClassName, presetNumber);
-            //Debug.Console(LogLevel, CurrentDevice, "{0} RunPresetNumber CurrentDevice {1}", ClassName, CurrentDevice == null ? "== null" : "exists");
+            Debug.LogMessage(LogLevel, CurrentDevice, "{0} RecallPreset: {1}", ClassName, presetNumber);
+            //Debug.LogMessage(LogLevel, CurrentDevice, "{0} RunPresetNumber CurrentDevice {1}", ClassName, CurrentDevice == null ? "== null" : "exists");
             var method = CurrentDevice.GetType().GetMethod("RunPresetNumber",
                                                     BindingFlags.Public | BindingFlags.Instance,
                                                     null,
                                                     CallingConventions.Any,
                                                     new Type[] { typeof(ushort) },
                                                     null);
-            //Debug.Console(LogLevel, CurrentDevice, "{0} RunPresetNumber method {1}", ClassName, method == null ? "== null" : "exists");
+            //Debug.LogMessage(LogLevel, CurrentDevice, "{0} RunPresetNumber method {1}", ClassName, method == null ? "== null" : "exists");
             if (method != null)
             {
-                Debug.Console(LogLevel, CurrentDevice, "{0} Invoke RunPresetNumber({1}): {2}", ClassName, presetNumber, Key);
+                Debug.LogMessage(LogLevel, CurrentDevice, "{0} Invoke RunPresetNumber({1}): {2}", ClassName, presetNumber, Key);
                 try
                 {
                     method.Invoke(CurrentDevice, new object[] { presetNumber }); //setdevicestreamdebug dsp-1-tcp both                    
                 }
                 catch (Exception e)
                 {
-                    Debug.Console(LogLevel, CurrentDevice, "{0} RecallPreset({1}) ERROR: {2}", ClassName, presetNumber, e.Message);
+                    Debug.LogMessage(LogLevel, CurrentDevice, "{0} RecallPreset({1}) ERROR: {2}", ClassName, presetNumber, e.Message);
                 }
             }
         }

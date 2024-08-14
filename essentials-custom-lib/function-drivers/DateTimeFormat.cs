@@ -43,7 +43,7 @@ namespace avit_essentials_common.function_drivers
                 : now.Day % 10 == 3 && now.Day % 100 != 13 ? "'rd'"
                 : "th");
 
-                //Debug.Console(2, this, $"TimeDateFeedback: {result_}");
+                //Debug.LogMessage(2, this, $"TimeDateFeedback: {result_}");
                 return result_;
             }); 
         }

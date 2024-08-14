@@ -2,6 +2,7 @@
 using essentials_advanced_room.Functions.Audio;
 using Newtonsoft.Json;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 
 namespace essentials_advanced_room
 {
@@ -12,7 +13,7 @@ namespace essentials_advanced_room
     }
     public interface ILogClassDetails
     {
-        uint LogLevel { set; }
+        LogEventLevel LogLevel { set; }
         string ClassName { get; }
     }
     /// <summary>

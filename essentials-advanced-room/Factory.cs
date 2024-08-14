@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
+using Serilog.Events;
 
 namespace essentials_advanced_room
 {
@@ -13,7 +14,7 @@ namespace essentials_advanced_room
         }
         public override EssentialsDevice BuildDevice(PepperDash.Essentials.Core.Config.DeviceConfig dc)
         {
-            Debug.Console(1, "[{0}] Factory Attempting to create new device from type: {1}", dc.Key, dc.Type);
+            Debug.LogMessage(LogEventLevel.Debug, "[{0}] Factory Attempting to create new device from type: {1}", dc.Key, dc.Type);
             return new Device(dc);
         }
     }

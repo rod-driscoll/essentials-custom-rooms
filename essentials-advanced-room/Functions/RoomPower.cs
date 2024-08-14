@@ -1,6 +1,7 @@
 ﻿using Crestron.SimplSharp;
 using essentials_advanced_room;
 using PepperDash.Core;
+using Serilog.Events;
 using System;
 using Device = essentials_advanced_room.Device;
 
@@ -36,7 +37,7 @@ namespace essentials_advanced_room.Functions
     public class RoomPower: IDisposable, ILogClassDetails
     {
         public string ClassName { get { return "RoomPower"; } }
-        public uint LogLevel { get; set; }
+        public LogEventLevel LogLevel { get; set; }
         public Config config { get; private set; }
         public Device parent { get; private set; }
 
@@ -52,8 +53,8 @@ namespace essentials_advanced_room.Functions
 
         public RoomPower(Config config)
         {
-            LogLevel = 2;
-            Debug.Console(LogLevel, "{0} constructor", ClassName);
+            LogLevel = LogEventLevel.Information;
+            Debug.LogMessage(LogLevel, "{0} constructor", ClassName);
             this.config = config;
             this.parent = parent;
             if (WarmSeconds < 1) WarmSeconds = 5;
@@ -63,12 +64,12 @@ namespace essentials_advanced_room.Functions
         }
         public void CustomActivate()
         {
-            //Debug.Console(LogLevel, "{0} CustomActivate", ClassName);
+            //Debug.LogMessage(LogLevel, "{0} CustomActivate", ClassName);
         }
 
         public void Dispose()
         {
-            Debug.Console(LogLevel, "{0} Dispose", ClassName);
+            Debug.LogMessage(LogLevel, "{0} Dispose", ClassName);
             if (PowerTimer != null)
             {
                 PowerTimer.Stop();
@@ -78,21 +79,21 @@ namespace essentials_advanced_room.Functions
         }
         private void OnPower(PowerEventArgs args)
         {
-            Debug.Console(LogLevel, "{0} OnPower start", ClassName);
+            Debug.LogMessage(LogLevel, "{0} OnPower start", ClassName);
             if (PowerChange != null)
                 PowerChange(this, args);
-            Debug.Console(0, "{0} OnPower done", ClassName);
+            Debug.LogMessage(0, "{0} OnPower done", ClassName);
         }
         public void SetPowerOn()
         {
-            Debug.Console(LogLevel, "{0} SetPowerOn, current: {1}, {2} seconds remaining", ClassName, PowerStatus.ToString(), CurrentSeconds.ToString());
+            Debug.LogMessage(LogLevel, "{0} SetPowerOn, current: {1}, {2} seconds remaining", ClassName, PowerStatus.ToString(), CurrentSeconds.ToString());
             PendingPowerStatus = PowerStates.on;
             if (PowerStatus != PowerStates.on
                 && PowerStatus != PowerStates.warming
                 && PowerStatus != PowerStates.cooling)
             {
                 if (CurrentSeconds > 0)
-                    Debug.Console(LogLevel, "{0} WARMING already running", ClassName);
+                    Debug.LogMessage(LogLevel, "{0} WARMING already running", ClassName);
                 else
                 {
                     CurrentSeconds = WarmSeconds;
@@ -105,7 +106,7 @@ namespace essentials_advanced_room.Functions
 
         public virtual void SetPowerOff()
         {
-            Debug.Console(LogLevel, "{0} SetPowerOff, current: {1}, {2} seconds remaining, pending: {3}", ClassName, PowerStatus.ToString(), CurrentSeconds.ToString(), PendingPowerStatus.ToString());
+            Debug.LogMessage(LogLevel, "{0} SetPowerOff, current: {1}, {2} seconds remaining, pending: {3}", ClassName, PowerStatus.ToString(), CurrentSeconds.ToString(), PendingPowerStatus.ToString());
             PendingPowerStatus = PowerStates.standby;
             if (PowerStatus != PowerStates.off
                 && PowerStatus != PowerStates.standby
@@ -113,10 +114,10 @@ namespace essentials_advanced_room.Functions
                 && PowerStatus != PowerStates.cooling)
             {
                 if (CurrentSeconds > 0)
-                    Debug.Console(LogLevel, "{0} SetPowerOff {1} already running", ClassName, PendingPowerStatus);
+                    Debug.LogMessage(LogLevel, "{0} SetPowerOff {1} already running", ClassName, PendingPowerStatus);
                 else
                 {
-                    Debug.Console(LogLevel, "{0} SetPowerOff starting", ClassName);
+                    Debug.LogMessage(LogLevel, "{0} SetPowerOff starting", ClassName);
                     CurrentSeconds = CoolSeconds;
                     PowerStatus = PowerStates.cooling;
                     StartPowerTimer();
@@ -130,7 +131,7 @@ namespace essentials_advanced_room.Functions
         }
         public virtual void SetPower(PowerStates state)
         {
-            Debug.Console(LogLevel, "{0} SetPower {1}", ClassName, state);
+            Debug.LogMessage(LogLevel, "{0} SetPower {1}", ClassName, state);
             switch (state)
             {
                 case PowerStates.off:
@@ -151,14 +152,14 @@ namespace essentials_advanced_room.Functions
         }
         public void ForcePowerOff()
         {
-            Debug.Console(LogLevel, "{0} ForcePowerOff {1}", ClassName, PowerStatus);
+            Debug.LogMessage(LogLevel, "{0} ForcePowerOff {1}", ClassName, PowerStatus);
             PowerStatus = PowerStates.on;
             SetPowerOff();
         }
 
         public virtual void SetPowerFeedback(PowerStates state)
         {
-            //Debug.Console(LogLevel, "{0} SetPowerFeedback {1}", ClassName, state);
+            //Debug.LogMessage(LogLevel, "{0} SetPowerFeedback {1}", ClassName, state);
             if (PowerStatus != state || CurrentSeconds > 0)
             {
                 PowerStatus = state;
@@ -167,15 +168,15 @@ namespace essentials_advanced_room.Functions
         }
         void PowerTimerExpired(object obj)
         {
-            Debug.Console(LogLevel, "{0} PowerTimerExpired, pending: {1}, {2} seconds remaining", ClassName, PendingPowerStatus.ToString(), CurrentSeconds.ToString());
+            Debug.LogMessage(LogLevel, "{0} PowerTimerExpired, pending: {1}, {2} seconds remaining", ClassName, PendingPowerStatus.ToString(), CurrentSeconds.ToString());
             try
             {
                 if (PowerTimer != null)
                 {
-                    Debug.Console(LogLevel, "{0} PowerTimerExpired {1}", ClassName, CurrentSeconds);
+                    Debug.LogMessage(LogLevel, "{0} PowerTimerExpired {1}", ClassName, CurrentSeconds);
                     if (CurrentSeconds < 1)
                     {
-                        Debug.Console(LogLevel, "{0} PowerTimerExpired, unsubscribing", ClassName);
+                        Debug.LogMessage(LogLevel, "{0} PowerTimerExpired, unsubscribing", ClassName);
                         CurrentSeconds = 0;
                         if (PowerStatus == PowerStates.cooling)
                         {
@@ -187,7 +188,7 @@ namespace essentials_advanced_room.Functions
 
                         if (PowerStatus == PendingPowerStatus)
                         {
-                            Debug.Console(LogLevel, "{0} PowerTimerExpired, PowerStatus == PendingPowerStatus", ClassName);
+                            Debug.LogMessage(LogLevel, "{0} PowerTimerExpired, PowerStatus == PendingPowerStatus", ClassName);
                             Dispose();
                         }
                         else
@@ -198,21 +199,21 @@ namespace essentials_advanced_room.Functions
                         CurrentSeconds--;
                         if (PowerStatus == PowerStates.cooling)
                         {
-                            Debug.Console(LogLevel, "{0} {1} resend {2} {3}", ClassName, PowerStatus.ToString(), PendingPowerStatus.ToString(), CurrentSeconds.ToString());
+                            Debug.LogMessage(LogLevel, "{0} {1} resend {2} {3}", ClassName, PowerStatus.ToString(), PendingPowerStatus.ToString(), CurrentSeconds.ToString());
                             SetPower(PendingPowerStatus);
                         }
                     }
                     OnPower(new PowerEventArgs(PowerStatus, PendingPowerStatus, CurrentSeconds));
-                    Debug.Console(0, "{0} PowerTimerExpired, OnPower done", ClassName);
+                    Debug.LogMessage(0, "{0} PowerTimerExpired, OnPower done", ClassName);
                 }
                 else
-                    Debug.Console(0, "{0} PowerTimerExpired, PowerTimer == null", ClassName);
+                    Debug.LogMessage(0, "{0} PowerTimerExpired, PowerTimer == null", ClassName);
 
-                //Debug.Console(0, "{0} PowerTimerExpired done", ClassName);
+                //Debug.LogMessage(0, "{0} PowerTimerExpired done", ClassName);
             }
             catch (Exception e)
             {
-                Debug.Console(LogLevel, "{0} PowerTimer ERROR: {1}", ClassName, e.Message);
+                Debug.LogMessage(LogLevel, "{0} PowerTimer ERROR: {1}", ClassName, e.Message);
             }
         }
 
@@ -220,15 +221,15 @@ namespace essentials_advanced_room.Functions
         {
             if (PowerTimer != null)
             {
-                Debug.Console(0, "{0} StartPowerTimer resetting", ClassName);
+                Debug.LogMessage(0, "{0} StartPowerTimer resetting", ClassName);
                 PowerTimer.Reset(1000, 1000);
             }
             else
             {
-                Debug.Console(0, "{0} StartPowerTimer creating new PowerTimer", ClassName);
+                Debug.LogMessage(0, "{0} StartPowerTimer creating new PowerTimer", ClassName);
                 PowerTimer = new CTimer(PowerTimerExpired, this, 1000, 1000);
             }
-            Debug.Console(0, "{0} StartPowerTimer end", ClassName);
+            Debug.LogMessage(0, "{0} StartPowerTimer end", ClassName);
         }
     }
 }
