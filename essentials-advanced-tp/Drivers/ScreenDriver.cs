@@ -1,4 +1,5 @@
-﻿using Crestron.SimplSharp;
+﻿using avit_essentials_common.interfaces;
+using Crestron.SimplSharp;
 using essentials_advanced_room;
 using essentials_advanced_room.Functions;
 using essentials_advanced_tp.Drivers;
@@ -66,6 +67,13 @@ namespace essentials_basic_tp.Drivers
                 positionFeedback_.PositionFeedback.LinkInputSig(TriList.UShortInput[PositionPercentJoin]);
             }
 
+            var remainingFeedback_ = device as ITimerFeedback;
+            if (remainingFeedback_ != null)
+            {
+                Debug.Console(LogLevel, "{0} Setup, registering SecondsRemainingFeedback", ClassName);
+                remainingFeedback_.SecondsRemainingFeedback.LinkInputSig(TriList.UShortInput[SecondsRemainingJoin]);
+            }
+
             var openCloseFeedback_ = device as IShadesOpenClosedFeedback;
             if (openCloseFeedback_ != null)
             {
@@ -91,6 +99,7 @@ namespace essentials_basic_tp.Drivers
                 movingFeedback_.ShadeIsRaisingFeedback.OutputChange += IsRaisingFeedback_OutputChange;
             }
         }
+
         private void DisconnectDevice(ShadeBase device)
         {
             Debug.Console(LogLevel, "{0} DisconnectDevice, CurrentDefaultDevice {1}", ClassName, device == null ? "== null" : device.Key);
@@ -175,7 +184,6 @@ namespace essentials_basic_tp.Drivers
             IsMovingFeedback_OutputChange(sender, e);
         }
 
-        
         /// <summary>
         /// Called when room changes
         /// </summary>
@@ -234,16 +242,16 @@ namespace essentials_basic_tp.Drivers
         public void Open()
         {
             Debug.Console(LogLevel, "{0} Open: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
-            CurrentDefaultDevice.Open();
+            CurrentDefaultDevice?.Open();
         }
         public void Close()
         {
             Debug.Console(LogLevel, "{0} Close: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
-            CurrentDefaultDevice.Close();
+            CurrentDefaultDevice?.Close();
         }
         public void Stop()
         {
-            CurrentDefaultDevice.Stop();
+            CurrentDefaultDevice?.Stop();
         }
 
         private void StartSecondTimer(bool enable)

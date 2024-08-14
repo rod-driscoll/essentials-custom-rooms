@@ -158,6 +158,7 @@
     <Compile Include="interfaces\IRPorts\IIROutputPort.cs" />
     <Compile Include="interfaces\IRPorts\IIrOutputPortController.cs" />
     <Compile Include="interfaces\IRPorts\IIROutputPortsAdvanced.cs" />
+    <Compile Include="interfaces\ITimerFeedback.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

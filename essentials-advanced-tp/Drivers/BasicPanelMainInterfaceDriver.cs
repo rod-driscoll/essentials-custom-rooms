@@ -5,6 +5,7 @@ using essentials_basic_tp.Drivers;
 using PepperDash.Core;
 using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
+using PepperDash.Essentials.Core.Config;
 using System;
 using System.Collections.Generic;
 
@@ -22,6 +23,15 @@ namespace essentials_advanced_tp.Drivers
         public JoinedSigInterlock PopupInterlock { get; private set; }
         public List<PanelDriverBase> PopupInterlockDrivers = new List<PanelDriverBase>();
 
+        bool loadDisplay;
+        bool loadScreen;
+        bool loadLifter;
+        bool loadAudio;
+        bool loadRoomCombiner;
+        bool loadSetTopBox;
+        bool loadHelp;
+        bool loadInfo;
+
         public BasicPanelMainInterfaceDriver(BasicTriListWithSmartObject trilist,
             Config config)
             : base(trilist)
@@ -32,18 +42,81 @@ namespace essentials_advanced_tp.Drivers
             this.Config = config;
             AddReservedSigs(trilist);
             PopupInterlock = new JoinedSigInterlock(TriList);
-            //ChildDrivers.Add(new NotificationRibbonDriver(this, config));
-            //ChildDrivers.Add(new PowerDriver(this, config));
-            //ChildDrivers.Add(new PinDriver(this, config));
-            //ChildDrivers.Add(new DisplayDriver(this, config));
-            //ChildDrivers.Add(new ScreenDriver(this, config));
-            //ChildDrivers.Add(new LifterDriver(this, config));
-            ChildDrivers.Add(new RoomCombineDriver(this, config));
+            ChildDrivers.Add(new NotificationRibbonDriver(this, config));
+            ChildDrivers.Add(new PowerDriver(this, config));
 
-            //PopupInterlockDrivers.Add(new BasicAudioDriver(this));
-            //PopupInterlockDrivers.Add(new HelpButtonDriver(this, config));
-            //PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
-            //PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
+            // load drivers only if associated devices or config exists
+            if (!String.IsNullOrEmpty(config.Password))
+                ChildDrivers.Add(new PinDriver(this, config));
+            // because neither method is always accurate so picking the best for each
+            /* I could use this at some point to get the config from a device
+            * var config_ = ConfigReader.ConfigObject.Devices.Find(x => x.Key == device_.Key);
+            * var config_ = ConfigReader.ConfigObject.Devices.Find(x => x.Group.StartsWith("audio"));
+            */
+            foreach (var dev in DeviceManager.GetDevices())
+            {
+                //if (dev.Group.Equals("dipslays") && !loadDisplay)
+                if (dev is DisplayBase && !loadDisplay)
+                {
+                    Debug.Console(0, "{0} Loading DisplayDriver", ClassName);
+                    ChildDrivers.Add(new DisplayDriver(this, config));
+                    loadDisplay = true;
+                }
+                else if (dev is IEssentialsRoomCombiner && !loadRoomCombiner)
+                //else if (dev.Group.Equals("room-combiner") && !loadDisplay)
+                {
+                    Debug.Console(0, "{0} Loading RoomCombineDriver", ClassName);
+                    ChildDrivers.Add(new RoomCombineDriver(this, config));
+                    loadRoomCombiner = true;
+                }
+                //else if (dev.Group.StartsWith("settopbox") && !loadSetTopBox)
+                else if (dev is ISetTopBoxControls && !loadSetTopBox)
+                {
+                    Debug.Console(0, "{0} Loading SetTopBoxDriver", ClassName);
+                    PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
+                    loadSetTopBox = true;
+                }
+            }
+            foreach (var dev in ConfigReader.ConfigObject.Devices)
+            {
+                //if (dev is ShadeBase && !loadScreen)
+                if (dev.Group.StartsWith("screen") && !loadScreen)
+                {
+                    Debug.Console(0, "{0} Loading ScreenDriver", ClassName);
+                    ChildDrivers.Add(new ScreenDriver(this, config));
+                    loadScreen = true;
+                }
+                //if (dev is ShadeBase && !loadLifter)
+                if (dev.Group.StartsWith("lifter") && !loadLifter)
+                {
+                    Debug.Console(0, "{0} Loading LifterDriver", ClassName);
+                    ChildDrivers.Add(new LifterDriver(this, config));
+                    loadLifter = true;
+                }
+                //else if (dev is IAdvancedRoomSetup && !loadAudio)
+                else if (dev.Group.StartsWith("audio") && !loadAudio)
+                {
+                    Debug.Console(0, "{0} Loading BasicAudioDriver", ClassName);
+                    PopupInterlockDrivers.Add(new BasicAudioDriver(this));
+                    loadAudio = true;
+                }
+                else if (dev.Group.Equals("room"))
+                //else if (dev is EssentialsRoomBase)
+                {
+                    if (!loadHelp && (dev as IAdvancedRoom)?.PropertiesConfig?.Help?.Message != null)
+                    {
+                        Debug.Console(0, "{0} Loading HelpButtonDriver", ClassName);
+                        PopupInterlockDrivers.Add(new HelpButtonDriver(this, config)); // roomConf.Help.Message
+                        loadHelp = true;
+                    }
+                    if (!loadInfo && (dev as IAdvancedRoom)?.PropertiesConfig?.Addresses != null)
+                    {
+                        Debug.Console(0, "{0} Loading InfoButtonDriver", ClassName);
+                        PopupInterlockDrivers.Add(new InfoButtonDriver(this, config));
+                        loadInfo = true;
+                    }
+                }
+            }
 
             // suppress excess logging on classes
             //Debug.Console(2, "{0} suppressing excess logging on drivers, ChildDrivers {1}", ClassName, ChildDrivers == null ? "== null" : "exists");
@@ -52,7 +125,8 @@ namespace essentials_advanced_tp.Drivers
                 var driver_ = driver as ILogClassDetails;
                 if (driver_ != null)
                     //driver_.LogLevel = 255; // 255 means they won't log
-                    driver_.LogLevel = (uint)(driver_ is RoomCombineDriver ? 1 : 255); // 255 means they won't log
+                    //driver_.LogLevel = (uint)(driver_ is RoomCombineDriver ? 1 : 255); // 255 means they won't log
+                    driver_.LogLevel = (uint)(driver_ is DisplayDriver ? 1 : 255); // 255 means they won't log
             }
             //Debug.Console(2, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
             foreach (var driver in PopupInterlockDrivers)

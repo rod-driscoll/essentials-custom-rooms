@@ -18,10 +18,14 @@ namespace essentials_advanced_room
         public Config PropertiesConfig { get; private set; }
 
         // Room drivers
-        public RoomPower Power { get; set; }
+        public RoomPower Power { get; set; }    
         public RoomAudio Audio { get; set; }
         public RoomDisplay Display { get; set; }
         public RoomSetTopBox SetTopBox { get; set; }
+
+        bool loadAudio;
+        bool loadDisplay;
+        bool loadSetTopBox;
 
         public Device(DeviceConfig config)
             : base(config)
@@ -33,11 +37,38 @@ namespace essentials_advanced_room
                 PropertiesConfig = JsonConvert.DeserializeObject<Config> (config.Properties.ToString());
                 //Debug.Console(LogLevel, this, "{0} PropertiesConfig {1}", ClassName, PropertiesConfig == null ? "==null" : "exists");
  
-                //Power = new RoomPower(PropertiesConfig);
-                //Power.PowerChange += Power_PowerChange;
-                //Audio = new RoomAudio(PropertiesConfig);
-                //Display = new RoomDisplay(PropertiesConfig);
-                //SetTopBox = new RoomSetTopBox(PropertiesConfig);
+                Power = new RoomPower(PropertiesConfig);
+                Power.PowerChange += Power_PowerChange;
+
+                // load drivers only if associated devices or config exists
+                foreach (var dev in DeviceManager.GetDevices())
+                {
+                    //if (dev.Group.Equals("dipslays") && !loadDisplay)
+                    if (dev is DisplayBase && !loadDisplay)
+                    {
+                        Debug.Console(0, "{0} Loading RoomDisplay", ClassName);
+                        Display = new RoomDisplay(PropertiesConfig);
+                        loadDisplay = true;
+                    }
+                    //else if (dev.Group.StartsWith("settopbox") && !loadSetTopBox)
+                    else if (dev is ISetTopBoxControls && !loadSetTopBox)
+                    {
+                        Debug.Console(0, "{0} Loading SetTopBoxDriver", ClassName);
+                        SetTopBox = new RoomSetTopBox(PropertiesConfig);
+                        loadSetTopBox = true;
+                    }
+                }
+                foreach (var dev in ConfigReader.ConfigObject.Devices)
+                {
+                    //if (dev is IAdvancedRoomSetup && !loadAudio)
+                    if (dev.Group.StartsWith("audio") && !loadAudio)
+                    {
+                        Debug.Console(0, "{0} Loading BasicAudioDriver", ClassName);
+                        Audio = new RoomAudio(PropertiesConfig);
+                        loadAudio = true;
+                    }
+                }
+
                 InitializeRoom();
                 Debug.Console(LogLevel, this, "constructor complete");
             }

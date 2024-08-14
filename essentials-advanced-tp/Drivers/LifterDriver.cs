@@ -234,16 +234,16 @@ namespace essentials_basic_tp.Drivers
         public void Open()
         {
             Debug.Console(LogLevel, "{0} Open: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
-            CurrentDefaultDevice.Open();
+            CurrentDefaultDevice?.Open();
         }
         public void Close()
         {
             Debug.Console(LogLevel, "{0} Close: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
-            CurrentDefaultDevice.Close();
+            CurrentDefaultDevice?.Close();
         }
         public void Stop()
         {
-            CurrentDefaultDevice.Stop();
+            CurrentDefaultDevice?.Stop();
         }
 
         private void StartSecondTimer(bool enable)

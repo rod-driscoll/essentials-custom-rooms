@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0B54F5EA-CAFE-40BD-B9D0-F6A836D9889D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>essentials_advanced_tp</RootNamespace>
     <AssemblyName>essentials-advanced-tp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -33,6 +33,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Crestron.SimplSharpPro.AudioDistribution, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1099c178b3b54c3b, processorArchitecture=MSIL">
@@ -188,6 +191,10 @@
     <ProjectReference Include="..\essentials-advanced-room\essentials-advanced-room.csproj">
       <Project>{37929000-6b13-4a39-9f45-5ee98cc51c79}</Project>
       <Name>essentials-advanced-room</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\essentials-custom-lib\avit-essentials-common.csproj">
+      <Project>{8711e421-9039-4879-995b-54c4f845a628}</Project>
+      <Name>avit-essentials-common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

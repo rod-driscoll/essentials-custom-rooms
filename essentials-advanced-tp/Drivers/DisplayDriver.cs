@@ -28,6 +28,8 @@ namespace essentials_basic_tp.Drivers
         public PowerStates CurrentDefaultDevicePowerState { get; private set; }
 
         public uint PowerToggleJoin { get; private set; }
+        public uint PowerOnJoin { get; private set; }
+        public uint PowerOffJoin { get; private set; }
         public uint PowerToggleText { get; private set; }
         public DisplayDriver(BasicPanelMainInterfaceDriver parent, CrestronTouchpanelPropertiesConfig config)
             : base(parent.TriList)
@@ -36,6 +38,8 @@ namespace essentials_basic_tp.Drivers
             Parent = parent;
 
             PowerToggleJoin = UIBoolJoin.DisplayPowerTogglePress;
+            PowerOnJoin = joins.UIBoolJoin.DisplayPowerOnPress;
+            PowerOffJoin = joins.UIBoolJoin.DisplayPowerOffPress;
             PowerToggleText = joins.UIStringJoin.DisplayPowerStatus;
 
             var ribbon = Parent.ChildDrivers.First(x => x is NotificationRibbonDriver);
@@ -167,11 +171,25 @@ namespace essentials_basic_tp.Drivers
                 Debug.Console(LogLevel, "{0} PowerToggleJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
                 currentDisplay_?.PowerToggle();
             });
+            TriList.SetSigFalseAction(PowerOnJoin, () =>
+            {
+                var currentDisplay_ = CurrentDefaultDevice as IHasPowerControlWithFeedback;
+                Debug.Console(LogLevel, "{0} PowerOnJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
+                currentDisplay_?.PowerOn();
+            });
+            TriList.SetSigFalseAction(PowerOffJoin, () =>
+            {
+                var currentDisplay_ = CurrentDefaultDevice as IHasPowerControlWithFeedback;
+                Debug.Console(LogLevel, "{0} PowerOffJoin pressed {1}", ClassName, currentDisplay_ == null ? "== null" : CurrentDefaultDevice.Key);
+                currentDisplay_?.PowerOff();
+            });
         }
         public void Unregister()
         {
             Debug.Console(LogLevel, "{0} Unregister", ClassName);
             TriList.ClearBoolSigAction(PowerToggleJoin);
+            TriList.ClearBoolSigAction(PowerOnJoin);
+            TriList.ClearBoolSigAction(PowerOffJoin);
         }
 
         public void UpdateCurrentDisplayFeedback()
@@ -187,6 +205,7 @@ namespace essentials_basic_tp.Drivers
                         CurrentDefaultDevicePowerState = PowerStates.warming;
                         //TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin)); // can't use GetBool because it gets BooleanOutput
                         TriList.SetBool(PowerToggleJoin, !TriList.BooleanInput[PowerToggleJoin].BoolValue);
+                        TriList.SetBool(PowerOnJoin, !TriList.BooleanInput[PowerOnJoin].BoolValue);
                         //Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, warming", ClassName);
                     }
                     else if (dispWarmCool.IsCoolingDownFeedback.BoolValue)
@@ -194,6 +213,7 @@ namespace essentials_basic_tp.Drivers
                         CurrentDefaultDevicePowerState = PowerStates.cooling;
                         //TriList.SetBool(PowerToggleJoin, !TriList.GetBool(PowerToggleJoin)); // can't use GetBool because it gets BooleanOutput
                         TriList.SetBool(PowerToggleJoin, !TriList.BooleanInput[PowerToggleJoin].BoolValue);
+                        TriList.SetBool(PowerOffJoin, !TriList.BooleanInput[PowerOffJoin].BoolValue);
                         //Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, cooling", ClassName);
                     }
                 }
@@ -208,11 +228,15 @@ namespace essentials_basic_tp.Drivers
             if (CurrentDefaultDevicePowerState == PowerStates.on)
             {
                 TriList.SetBool(PowerToggleJoin, true);
+                TriList.SetBool(PowerOnJoin, true);
+                TriList.SetBool(PowerOffJoin, false);
                 Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, setting", ClassName);
             }
             else if (CurrentDefaultDevicePowerState == PowerStates.off || CurrentDefaultDevicePowerState == PowerStates.standby)
             {
-                TriList.SetBool(PowerToggleJoin, false); 
+                TriList.SetBool(PowerToggleJoin, false);
+                TriList.SetBool(PowerOnJoin, false);
+                TriList.SetBool(PowerOffJoin, true);
                 Debug.Console(LogLevel, "{0} UpdateCurrentDisplayFeedback, clearing", ClassName);
             }
             TriList.SetString(PowerToggleText, CurrentDefaultDevicePowerState.ToString());
