@@ -23,17 +23,17 @@ namespace essentials_advanced_tp.Drivers
             : base(parent.TriList)
         {
             LogLevel = LogEventLevel.Information;
-            Debug.LogMessage(0, "{0} loading", ClassName);
+            Debug.LogMessage(LogLevel, "{0} loading", ClassName);
             //this.Parent = parent;
             var so = parent.TriList.SmartObjects[SmartObjectId];
             sol = new SmartObjectDynamicList(so, true, nameSigOffset); // sol.Count = 0
-            Debug.LogMessage(0, "{0} sol.MaxCount: {1}", ClassName, sol.MaxCount);
+            Debug.LogMessage(LogLevel, "{0} sol.MaxCount: {1}", ClassName, sol.MaxCount);
             //Debug.LogMessage(LogLevel, "{0} constructor done", ClassName);
         }
 
         public void Setup(IAdvancedRoom room)
         {
-            Debug.LogMessage(0, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
             // need to get list of room presets
             var CurrentRoom_ = room as IHasAudioDevice; // implements this class
             //Debug.LogMessage(LogLevel, "{0} Setup CurrentRoom_ {1}", ClassName, CurrentRoom_ == null ? " = null":"exists");

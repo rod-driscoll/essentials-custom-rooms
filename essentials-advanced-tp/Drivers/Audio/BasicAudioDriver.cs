@@ -56,7 +56,7 @@ namespace essentials_basic_tp.Drivers
                 }
                 catch (Exception e)
                 {
-                    Debug.LogMessage(0, "{0} Setting LogLevel ERROR: {1}", ClassName, e.Message);
+                    Debug.LogMessage(LogLevel, "{0} Setting LogLevel ERROR: {1}", ClassName, e.Message);
                 }
             } 
         }
@@ -87,7 +87,7 @@ namespace essentials_basic_tp.Drivers
                         Slider1Fb         = TriList.UShortOutput [UIUshortJoin.VolumeSlider1Value],
                     })
             ));
-            Debug.LogMessage(0, "{0} {1} loaded ", ClassName, VolumeKey.Volume.ToString());
+            Debug.LogMessage(LogLevel, "{0} {1} loaded ", ClassName, VolumeKey.Volume.ToString());
             // mic level driver
             ChildDrivers.Add(new BasicAudioLevelDriver(parent,
                 new BasicAudioDriverControls(VolumeKey.MicLevel.ToString(),
@@ -96,7 +96,7 @@ namespace essentials_basic_tp.Drivers
                         MuteFb            = TriList.BooleanInput [UIBoolJoin.Volume1SpeechMutePressAndFB],
                    })
             ));
-            Debug.LogMessage(0, "{0} {1} loaded ", ClassName, VolumeKey.MicLevel.ToString());
+            Debug.LogMessage(LogLevel, "{0} {1} loaded ", ClassName, VolumeKey.MicLevel.ToString());
             // Load faders on SRL
             ChildDrivers.Add(new AudioListDriver(parent));
             // Load presets in SmartObject DynamicList

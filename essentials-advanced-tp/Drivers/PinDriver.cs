@@ -143,7 +143,7 @@ namespace essentials_advanced_tp.Drivers
 
             if (args.Sig.BoolValue)
             {
-                Debug.LogMessage(0, "{0} ManageInactivityTimer DeviceExtenderSigChange", ClassName);
+                Debug.LogMessage(LogLevel, "{0} ManageInactivityTimer DeviceExtenderSigChange", ClassName);
                 ManageInactivityTimer();
             }
         }
@@ -152,26 +152,26 @@ namespace essentials_advanced_tp.Drivers
         {
             if (InactivityTimer != null)
             {
-                Debug.LogMessage(0, "{0} ManageInactivityTimer resetting", ClassName);
+                Debug.LogMessage(LogLevel, "{0} ManageInactivityTimer resetting", ClassName);
                 InactivityTimer.Reset(_timeoutMs);
             }
             else
             {
-                Debug.LogMessage(0, "{0} ManageInactivityTimer creating new timer: {1}ms", ClassName, _timeoutMs);
+                Debug.LogMessage(LogLevel, "{0} ManageInactivityTimer creating new timer: {1}ms", ClassName, _timeoutMs);
                 InactivityTimer = new CTimer((o) => InactivityTimerExpired(), _timeoutMs);
             }
-            //Debug.LogMessage(0, "{0} ManageInactivityTimer end", ClassName);
+            //Debug.LogMessage(LogLevel, "{0} ManageInactivityTimer end", ClassName);
         }
 
         void InactivityTimerExpired()
         {
-            Debug.LogMessage(0, "{0} InactivityTimerExpired", ClassName);
+            Debug.LogMessage(LogLevel, "{0} InactivityTimerExpired", ClassName);
             InactivityTimer.Stop();
             InactivityTimer.Dispose();
             InactivityTimer = null;
 
             IsAuthorized = false;
-            Debug.LogMessage(0, "{0} InactivityTimerExpired done", ClassName);
+            Debug.LogMessage(LogLevel, "{0} InactivityTimerExpired done", ClassName);
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace essentials_advanced_tp.Drivers
         /// </summary>
         void SetupPinModal()
         {
-            Debug.LogMessage(0, "{0} SetupPinModal", ClassName);
+            Debug.LogMessage(LogLevel, "{0} SetupPinModal", ClassName);
             TriList.SetSigFalseAction(UIBoolJoin.PinDialogCancelPress, CancelPinDialog);
             try
             {
@@ -196,10 +196,10 @@ namespace essentials_advanced_tp.Drivers
             }
             catch (Exception e)
             {
-                Debug.LogMessage(0, "{0} SetupPinModal ERROR: {1}", ClassName, e.Message);
+                Debug.LogMessage(LogLevel, "{0} SetupPinModal ERROR: {1}", ClassName, e.Message);
                 foreach (var out_ in PinKeypad.SmartObject.BooleanOutput)
                 {
-                    Debug.LogMessage(0, "{0} SetupPinModal PinKeypad.BooleanOutput: {1}", ClassName, out_.Name);
+                    Debug.LogMessage(LogLevel, "{0} SetupPinModal PinKeypad.BooleanOutput: {1}", ClassName, out_.Name);
                 }
             }
         }

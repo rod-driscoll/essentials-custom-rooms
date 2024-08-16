@@ -7,6 +7,7 @@ using PepperDash.Essentials.Core.Config;
 using Serilog.Events;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace essentials_advanced_tp
 {
@@ -39,7 +40,7 @@ namespace essentials_advanced_tp
         /// </example>
         public Factory()
         {
-            MinimumEssentialsFrameworkVersion = "1.6.4";
+            MinimumEssentialsFrameworkVersion = "1.6.0";
             TypeNames = new List<string>() { "advanced-tp" };
         }
 
@@ -55,35 +56,36 @@ namespace essentials_advanced_tp
         /// <seealso cref="PepperDash.Core.eControlMethod"/>
         public override EssentialsDevice BuildDevice(DeviceConfig dc)
         {
-            Debug.LogMessage(LogEventLevel.Debug, "[{0}] Factory Attempting to create new device from type: {1}", dc.Key, dc.Type);
-            var comm = CommFactory.GetControlPropertiesConfig(dc);
-            var props = JsonConvert.DeserializeObject<Config>(dc.Properties.ToString());
-
-            var panel = GetPanelForType(props.Type, comm.IpIdInt, String.Empty);
-            if (panel == null)
-            {
-                Debug.LogMessage(0, "Unable to create Touchpanel for type {0}. Touchpanel Controller WILL NOT function correctly", dc.Type);
-            }
-            var panelController = new Device(dc.Key, dc.Name, panel, props);
-
-            return panelController;
-        }
-
-        private BasicTriListWithSmartObject GetPanelForType(string type, uint id, string projectName)
-        {
-            Debug.LogMessage(LogEventLevel.Debug, "[{0}] Factory Attempting to GetPanelForType: {1}", "basic-tp-controller", type);
-            type = type.ToLower();
             try
             {
-                if (type == "crestronapp")
-                {
-                    var app = new CrestronApp(id, Global.ControlSystem);
-                    app.ParameterProjectName.Value = projectName;
-                    return app;
-                }
-                else if (type == "xpanel")
-                    return new XpanelForSmartGraphics(id, Global.ControlSystem);
-                else if (type == "tsw550")
+                Debug.LogMessage(LogEventLevel.Warning, "[{0}] Factory Attempting to create new device from type: {1}", dc.Key, dc.Type);
+                var comm = CommFactory.GetControlPropertiesConfig(dc);
+                var props = JsonConvert.DeserializeObject<Config>(dc.Properties.ToString());
+
+                var panel = GetPanelForType(props.Type, comm.IpIdInt, String.Empty);
+                Debug.LogMessage(LogEventLevel.Information, "[{0}] Factory, panel {1}", dc.Key, panel == null ? "== null" : "exists");
+                if (panel == null)
+                    Debug.LogMessage(LogEventLevel.Information, "Unable to create Touchpanel for type {0}. Touchpanel Controller WILL NOT function correctly", dc.Type);
+
+                var panelController = new Device(dc.Key, dc.Name, panel, props);
+                Debug.LogMessage(LogEventLevel.Information, "[{0}] Factory, panelController {1}", dc.Key, panelController == null ? "== null" : "exists");
+
+                return panelController;
+            }
+            catch (Exception e)
+            {
+                Debug.LogMessage(LogEventLevel.Error, "{0} BuildDevice ERROR: {1} ", TypeNames[0], e.Message);
+                throw new Exception(e.Message);
+            }
+        }
+        private BasicTriListWithSmartObject GetPanelForType(string panelType, uint id, string projectName)
+        {
+            try
+            {
+                var type = Regex.Replace(panelType, @"[^a-zA-Z0-9]", string.Empty).ToLower();
+                Debug.LogMessage(LogEventLevel.Information, "[{0}] Factory Attempting to GetPanelForType: {1}", TypeNames[0], type);
+                Debug.LogMessage(LogEventLevel.Information, "[{0}] Factory, {1} {2}", TypeNames[0], type, Global.ControlSystem == null ? "== null" : String.Format("exists p:{0}", Global.ControlSystem.ProgramNumber));
+                if (type == "tsw550")
                     return new Tsw550(id, Global.ControlSystem);
                 else if (type == "tsw552")
                     return new Tsw552(id, Global.ControlSystem);
@@ -106,11 +108,26 @@ namespace essentials_advanced_tp
                 else if (type == "tsw1060")
                     return new Tsw1060(id, Global.ControlSystem);
                 else if (type == "tsw1070")
-                    return new Tsw1070(id, Global.ControlSystem);
+                {
+                    var dev_ = new Tsw1070(id, Global.ControlSystem); 
+                    Debug.LogMessage(LogEventLevel.Information, "[{0}] Factory, {1} {2}", TypeNames[0], type, dev_ == null ? "== null" : "exists");
+                    return dev_;
+                }                  
+                    //return new Tsw1070(id, Global.ControlSystem);
                 else if (type == "ts770")
                     return new Ts770(id, Global.ControlSystem);
                 else if (type == "ts1070")
                     return new Ts1070(id, Global.ControlSystem);
+                else if (type == "xpanel")
+                    return new XpanelForSmartGraphics(id, Global.ControlSystem);
+                /*
+                else if (type == "crestronapp") // this throws an assembly error because Crestron can't manage their own libraries
+                {
+                    var app = new CrestronApp(id, Global.ControlSystem);
+                    app.ParameterProjectName.Value = projectName;
+                    return app;
+                }
+                */
                 else
                 {
                     Debug.LogMessage(LogEventLevel.Verbose, "WARNING: Cannot create TSW controller with type '{0}'", type);

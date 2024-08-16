@@ -258,17 +258,17 @@ namespace essentials_basic_tp.Drivers
 
         private void StartSecondTimer(bool enable)
         {
-            Debug.LogMessage(0, "{0} StartSecondTimer: {1}", ClassName, enable);
+            Debug.LogMessage(LogLevel, "{0} StartSecondTimer: {1}", ClassName, enable);
             if (!enable)
             {
                 Dispose();
             }
             else if (SecondTimer == null)
             {
-                Debug.LogMessage(0, "{0} StartSecondTimer creating new PowerTimer", ClassName);
+                Debug.LogMessage(LogLevel, "{0} StartSecondTimer creating new PowerTimer", ClassName);
                 SecondTimer = new CTimer(SecondTimerExpired, this, 1000, 1000);
             }
-            //Debug.LogMessage(0, "{0} StartSecondTimer end", ClassName);
+            //Debug.LogMessage(LogLevel, "{0} StartSecondTimer end", ClassName);
         }
         private void SecondTimerExpired(object userSpecific)
         {

@@ -107,7 +107,7 @@
 //                    var actualSource = DeviceManager.GetDeviceForKey(sourceKey) as Device;
 //                    if (actualSource == null)
 //                    {
-//                        Debug.LogMessage(0, "Cannot assign missing source '{0}' to source UI list",
+//                        Debug.LogMessage(LogLevel, "Cannot assign missing source '{0}' to source UI list",
 //                            srcConfig.SourceKey);
 //                        continue;
 //                    }

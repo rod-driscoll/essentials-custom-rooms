@@ -51,7 +51,7 @@ namespace essentials_basic_tp.Drivers
             // Fail cleanly if not defined
             if (triList.SmartObjects == null || triList.SmartObjects.Count == 0)
             {
-                Debug.LogMessage(0, "TriList {0:X2} Smart objects have not been loaded", triList.ID, smartObjectId);
+                Debug.LogMessage(LogEventLevel.Information, "TriList {0:X2} Smart objects have not been loaded", triList.ID, smartObjectId);
                 return;
             }
             if (triList.SmartObjects.TryGetValue(smartObjectId, out obj))
@@ -72,7 +72,7 @@ namespace essentials_basic_tp.Drivers
                 SRL.SigChange += new SmartObjectSigChangeEventHandler(SRL_SigChange);
             }
             else
-                Debug.LogMessage(0, "ERROR: TriList 0x{0:X2} Cannot load smart object {1}. Verify correct SGD file is loaded",
+                Debug.LogMessage(LogEventLevel.Error, "ERROR: TriList 0x{0:X2} Cannot load smart object {1}. Verify correct SGD file is loaded",
                     triList.ID, smartObjectId);
         }
 

@@ -33,7 +33,7 @@ namespace essentials_advanced_tp.Drivers
                 }
                 catch (Exception e)
                 {
-                    Debug.LogMessage(0, "{0} Setting LogLevel ERROR: {1}", ClassName, e.Message);
+                    Debug.LogMessage(LogLevel, "{0} Setting LogLevel ERROR: {1}", ClassName, e.Message);
                 }
             }
         }
@@ -52,12 +52,12 @@ namespace essentials_advanced_tp.Drivers
             : base(parent.TriList)
         {
             LogLevel = LogEventLevel.Information;
-            Debug.LogMessage(0, "{0} loading", ClassName);
+            Debug.LogMessage(LogLevel, "{0} loading", ClassName);
             this.Parent = parent;
 
             srl = new SubpageReferenceList(parent.TriList, SmartObjectId, dig_offset, ana_offset, ser_offset);
 
-            Debug.LogMessage(0, "{0} srl.Count: {1}", ClassName, srl.Count);
+            Debug.LogMessage(LogLevel, "{0} srl.Count: {1}", ClassName, srl.Count);
             
             for (uint i = 1;i <= srl.MaxDefinedItems; i++) {
                 ChildDrivers.Add(new BasicAudioLevelDriver(Parent,

@@ -3,12 +3,11 @@ using essentials_advanced_room.Functions;
 using essentials_advanced_room.Functions.Audio;
 using Newtonsoft.Json;
 using PepperDash.Core;
-using PepperDash.Essentials;
 using PepperDash.Essentials.Core;
-using DisplayBase = PepperDash.Essentials.Devices.Common.Displays.DisplayBase;
 using PepperDash.Essentials.Core.Config;
 using Serilog.Events;
 using System;
+using DisplayBase = PepperDash.Essentials.Devices.Common.Displays.DisplayBase;
 
 namespace essentials_advanced_room
 {
@@ -29,6 +28,8 @@ namespace essentials_advanced_room
         bool loadDisplay;
         bool loadSetTopBox;
 
+        //HttpLogoServer LogoServer; // no need for this, just define "logo":{"type":"system"} in a room properties config
+
         public Device(DeviceConfig config)
             : base(config)
         {
@@ -48,14 +49,14 @@ namespace essentials_advanced_room
                     //if (dev.Group.Equals("dipslays") && !loadDisplay)
                     if (dev is DisplayBase && !loadDisplay)
                     {
-                        Debug.LogMessage(0, "{0} Loading RoomDisplay", ClassName);
+                        Debug.LogMessage(LogLevel, "{0} Loading RoomDisplay", ClassName);
                         Display = new RoomDisplay(PropertiesConfig);
                         loadDisplay = true;
                     }
                     //else if (dev.Group.StartsWith("settopbox") && !loadSetTopBox)
                     else if (dev is ISetTopBoxControls && !loadSetTopBox)
                     {
-                        Debug.LogMessage(0, "{0} Loading SetTopBoxDriver", ClassName);
+                        Debug.LogMessage(LogLevel, "{0} Loading SetTopBoxDriver", ClassName);
                         SetTopBox = new RoomSetTopBox(PropertiesConfig);
                         loadSetTopBox = true;
                     }
@@ -65,7 +66,7 @@ namespace essentials_advanced_room
                     //if (dev is IAdvancedRoomSetup && !loadAudio)
                     if (dev.Group.StartsWith("audio") && !loadAudio)
                     {
-                        Debug.LogMessage(0, "{0} Loading BasicAudioDriver", ClassName);
+                        Debug.LogMessage(LogLevel, "{0} Loading BasicAudioDriver", ClassName);
                         Audio = new RoomAudio(PropertiesConfig);
                         loadAudio = true;
                     }
@@ -80,13 +81,12 @@ namespace essentials_advanced_room
             }
         }
 
-        HttpLogoServer LogoServer;
         void InitializeRoom()
         {
             Debug.LogMessage(LogLevel, this, "InitializeRoom");
             try
             {
-                LogoServer = new HttpLogoServer(8080, Global.DirectorySeparator + "html" + Global.DirectorySeparator);
+                //LogoServer = new HttpLogoServer(8080, Global.DirectorySeparator + "html" + Global.DirectorySeparator);
             }
             catch (Exception)
             {

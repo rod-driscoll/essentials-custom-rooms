@@ -82,7 +82,7 @@ namespace essentials_advanced_room.Functions
             Debug.LogMessage(LogLevel, "{0} OnPower start", ClassName);
             if (PowerChange != null)
                 PowerChange(this, args);
-            Debug.LogMessage(0, "{0} OnPower done", ClassName);
+            Debug.LogMessage(LogLevel, "{0} OnPower done", ClassName);
         }
         public void SetPowerOn()
         {
@@ -204,12 +204,12 @@ namespace essentials_advanced_room.Functions
                         }
                     }
                     OnPower(new PowerEventArgs(PowerStatus, PendingPowerStatus, CurrentSeconds));
-                    Debug.LogMessage(0, "{0} PowerTimerExpired, OnPower done", ClassName);
+                    Debug.LogMessage(LogLevel, "{0} PowerTimerExpired, OnPower done", ClassName);
                 }
                 else
-                    Debug.LogMessage(0, "{0} PowerTimerExpired, PowerTimer == null", ClassName);
+                    Debug.LogMessage(LogLevel, "{0} PowerTimerExpired, PowerTimer == null", ClassName);
 
-                //Debug.LogMessage(0, "{0} PowerTimerExpired done", ClassName);
+                //Debug.LogMessage(LogLevel, "{0} PowerTimerExpired done", ClassName);
             }
             catch (Exception e)
             {
@@ -221,15 +221,15 @@ namespace essentials_advanced_room.Functions
         {
             if (PowerTimer != null)
             {
-                Debug.LogMessage(0, "{0} StartPowerTimer resetting", ClassName);
+                Debug.LogMessage(LogLevel, "{0} StartPowerTimer resetting", ClassName);
                 PowerTimer.Reset(1000, 1000);
             }
             else
             {
-                Debug.LogMessage(0, "{0} StartPowerTimer creating new PowerTimer", ClassName);
+                Debug.LogMessage(LogLevel, "{0} StartPowerTimer creating new PowerTimer", ClassName);
                 PowerTimer = new CTimer(PowerTimerExpired, this, 1000, 1000);
             }
-            Debug.LogMessage(0, "{0} StartPowerTimer end", ClassName);
+            Debug.LogMessage(LogLevel, "{0} StartPowerTimer end", ClassName);
         }
     }
 }

@@ -85,7 +85,8 @@
       <HintPath>..\packages\Crestron.SimplSharp.SDK.ProgramLibrary.2.20.66\lib\net47\Crestron.SimplSharpPro.UC.dll</HintPath>
     </Reference>
     <Reference Include="Crestron.SimplSharpPro.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1099c178b3b54c3b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Crestron.SimplSharp.SDK.ProgramLibrary.2.20.66\lib\net47\Crestron.SimplSharpPro.UI.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Essentials-v2.0\src\PepperDash.Essentials\bin\Debug\net472\Crestron.SimplSharpPro.UI.dll</HintPath>
     </Reference>
     <Reference Include="Essentials Devices Common, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PepperDash.Essentials.Devices.Common.2.0.0-beta-2559\lib\net472\Essentials Devices Common.dll</HintPath>
@@ -185,7 +186,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ControlSystem.cs" />
     <Compile Include="function-drivers\DateTimeFormat.cs" />
     <Compile Include="interfaces\ILogClassDetails.cs" />
     <Compile Include="interfaces\IRPorts\IHasIrOutputPortController.cs" />

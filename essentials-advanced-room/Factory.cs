@@ -9,7 +9,7 @@ namespace essentials_advanced_room
     {
         public Factory()
         {
-            MinimumEssentialsFrameworkVersion = "1.6.4";
+            MinimumEssentialsFrameworkVersion = "2.0.0";
             TypeNames = new List<string>() { "advanced-room" };
         }
         public override EssentialsDevice BuildDevice(PepperDash.Essentials.Core.Config.DeviceConfig dc)

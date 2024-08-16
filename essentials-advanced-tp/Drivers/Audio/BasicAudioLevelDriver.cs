@@ -109,7 +109,7 @@ namespace essentials_basic_tp.Drivers
                 {
                     var tsw = TriList as TswFt5ButtonSystem;
                     // Wire up hard keys
-                    Debug.LogMessage(0, "{0} Wire up hard keys", ClassName);
+                    Debug.LogMessage(LogLevel, "{0} Wire up hard keys", ClassName);
                     tsw.Up.UserObject = new Action<bool>(VolumeUpPress);
                     tsw.Down.UserObject = new Action<bool>(VolumeDownPress);
                 }
