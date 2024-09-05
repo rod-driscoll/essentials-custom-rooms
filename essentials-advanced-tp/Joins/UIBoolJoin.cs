@@ -13,6 +13,7 @@
         public const uint CombinePagePress = 151;
         public const uint CombinePageVisible = 151;
         public const uint CombineCancelPress = 154;
+
         public const uint UnCombinePress = 301;
         public const uint CombineMode1Press = 302;
         public const uint CombineMode2Press = 303;
@@ -23,8 +24,12 @@
         public const uint CombineMode2Feedback = 323;
         public const uint CombineMode3Feedback = 324;
 
+        public const uint VideoMatrixVisible = 499;
+        public const uint VideoMatrixBase = 500;
+
+
         public const uint TvTunerButtonPress = 3333;
-        public const uint ToggleButtonPress = 3334;
+        public const uint ToggleButtonPress = 3334; // this is just a test of a toggling button, nothing more
 
         public const uint PowerTogglePress = 15009;
 

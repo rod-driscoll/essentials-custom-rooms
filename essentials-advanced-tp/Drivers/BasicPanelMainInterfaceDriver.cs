@@ -26,6 +26,7 @@ namespace essentials_advanced_tp.Drivers
         public List<PanelDriverBase> PopupInterlockDrivers = new List<PanelDriverBase>();
 
         bool loadDisplay;
+        bool loadVideoMatrix;
         bool loadScreen;
         bool loadLifter;
         bool loadAudio;
@@ -78,6 +79,13 @@ namespace essentials_advanced_tp.Drivers
                     PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
                     loadSetTopBox = true;
                 }
+                //else if (dev.Group.StartsWith("encoders") && !loadVideoMatrix)
+                else if (dev is IRoutingOutputs && !loadVideoMatrix)
+                {
+                    Debug.LogMessage(LogLevel, "{0} Loading VideoMatrixDriver", ClassName);
+                    PopupInterlockDrivers.Add(new VideoMatrixDriver(this, config));
+                    loadVideoMatrix = true;
+                }
             }
             foreach (var dev in ConfigReader.ConfigObject.Devices)
             {
@@ -127,7 +135,7 @@ namespace essentials_advanced_tp.Drivers
                 var driver_ = driver as ILogClassDetails;
                 if (driver_ != null)
                     //driver_.LogLevel = LogEventLevel.Debug;
-                    driver_.LogLevel = driver_ is DisplayDriver ? LogEventLevel.Verbose : LogEventLevel.Debug;
+                    driver_.LogLevel = driver_ is DisplayDriver ? LogEventLevel.Information : LogEventLevel.Debug;
             }
             //Debug.LogMessage(2, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
             foreach (var driver in PopupInterlockDrivers)
