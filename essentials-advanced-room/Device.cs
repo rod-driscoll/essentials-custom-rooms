@@ -13,7 +13,7 @@ namespace essentials_advanced_room
 {
     public class Device : EssentialsRoomBase, IAdvancedRoom, IHasAudioDevice, IHasPowerFunction, IHasDisplayFunction, IHasSetTopBoxFunction
     {
-        public string ClassName { get { return "IntermediateRoom-Device"; } }
+        public string ClassName { get { return "AdvancedRoom-Device"; } }
         public LogEventLevel LogLevel { get; set; }
 
         public Config PropertiesConfig { get; private set; }
@@ -35,7 +35,7 @@ namespace essentials_advanced_room
         {
             try
             {
-                LogLevel = LogEventLevel.Verbose;
+                LogLevel = LogEventLevel.Information;
                 Debug.LogMessage(LogLevel, this, "constructor starting");
                 PropertiesConfig = JsonConvert.DeserializeObject<Config> (config.Properties.ToString());
                 //Debug.LogMessage(LogLevel, this, "{0} PropertiesConfig {1}", ClassName, PropertiesConfig == null ? "==null" : "exists");
@@ -46,17 +46,19 @@ namespace essentials_advanced_room
                 // load drivers only if associated devices or config exists
                 foreach (var dev in DeviceManager.GetDevices())
                 {
+                    Debug.LogMessage(LogLevel, this, "Checking DeviceDriver: {0}", dev.Key);
+
                     //if (dev.Group.Equals("dipslays") && !loadDisplay)
-                    if (dev is DisplayBase && !loadDisplay)
+                    if (!loadDisplay && dev is DisplayBase)
                     {
-                        Debug.LogMessage(LogLevel, "{0} Loading RoomDisplay", ClassName);
+                        Debug.LogMessage(LogLevel, this, "Loading RoomDisplay");
                         Display = new RoomDisplay(PropertiesConfig);
                         loadDisplay = true;
                     }
                     //else if (dev.Group.StartsWith("settopbox") && !loadSetTopBox)
-                    else if (dev is ISetTopBoxControls && !loadSetTopBox)
+                    else if (!loadSetTopBox && dev is ISetTopBoxControls)
                     {
-                        Debug.LogMessage(LogLevel, "{0} Loading SetTopBoxDriver", ClassName);
+                        Debug.LogMessage(LogLevel, this, "Loading SetTopBoxConfrols");
                         SetTopBox = new RoomSetTopBox(PropertiesConfig);
                         loadSetTopBox = true;
                     }
@@ -64,11 +66,17 @@ namespace essentials_advanced_room
                 foreach (var dev in ConfigReader.ConfigObject.Devices)
                 {
                     //if (dev is IAdvancedRoomSetup && !loadAudio)
-                    if (dev.Group.StartsWith("audio") && !loadAudio)
+                    if (!loadAudio && dev.Group.StartsWith("audio"))
                     {
-                        Debug.LogMessage(LogLevel, "{0} Loading BasicAudioDriver", ClassName);
+                        Debug.LogMessage(LogLevel, this, "Loading BasicAudioControls");
                         Audio = new RoomAudio(PropertiesConfig);
                         loadAudio = true;
+                    }
+                    else if (!loadDisplay && (dev.Group.StartsWith("display") || dev.Group.StartsWith("display"))) // it could start with proj
+                    {
+                        Debug.LogMessage(LogLevel, this, "Loading RoomDisplay");
+                        Display = new RoomDisplay(PropertiesConfig);
+                        loadDisplay = true;
                     }
                 }
 

@@ -192,7 +192,7 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IAdvancedRoom room)
         {
-            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, room {1}", ClassName, room == null ? "== null" : room.Key);
             //EssentialsRoomPropertiesConfig roomConf = room.PropertiesConfig;
             if (CurrentDefaultDevice != null) // Disconnect current room 
                 DisconnectDevice(CurrentDefaultDevice);
@@ -202,7 +202,8 @@ namespace essentials_basic_tp.Drivers
             if (room_ != null)
             {
                 Debug.LogMessage(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
-                ConnectDevice(room_.Display.DefaultScreen);
+                if(room_.Display?.DefaultScreen != null)
+                    ConnectDevice(room_.Display.DefaultScreen);
             }
             Debug.LogMessage(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }

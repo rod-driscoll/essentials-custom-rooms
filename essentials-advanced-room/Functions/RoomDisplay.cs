@@ -29,7 +29,7 @@ namespace essentials_advanced_room.Functions
 
         public RoomDisplay(Config config)
         {
-            LogLevel = 0; // 0 == log everything
+            LogLevel = LogEventLevel.Information;
             Debug.LogMessage(LogLevel, "{0} constructor", ClassName);
             this.config = config;
             Displays = new List<IRoutingSink>();

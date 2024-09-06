@@ -65,10 +65,11 @@ namespace essentials_basic_tp.Drivers
         /// <param name="room"></param>
         public void Setup(IAdvancedRoom room)
         {
-            Debug.LogMessage(LogLevel, "{0} Setup, disconnect, room {1}", ClassName, CurrentRoom == null ? "== null" : CurrentRoom.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, room {1}", ClassName, room == null ? "== null" : room.Key);
 
             if (CurrentRoom != null)// Disconnect current room
             {
+                Debug.LogMessage(LogLevel, "{0} Setup, disconnect, CurrentRoom {1}", ClassName, CurrentRoom == null ? "== null" : CurrentRoom.Key);
                 CurrentRoom.ShutdownPromptTimer.HasStarted -= ShutdownPromptTimer_HasStarted;
                 CurrentRoom.ShutdownPromptTimer.HasFinished -= ShutdownPromptTimer_HasFinished;
                 CurrentRoom.ShutdownPromptTimer.WasCancelled -= ShutdownPromptTimer_WasCancelled;

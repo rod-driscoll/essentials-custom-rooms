@@ -184,7 +184,7 @@ namespace essentials_basic_tp.Drivers
         /// <param name="roomConf"></param>
         public void Setup(IAdvancedRoom room)
         {
-            Debug.LogMessage(LogLevel, "{0} Setup, {1}", ClassName, room == null ? "== null" : room.Key);
+            Debug.LogMessage(LogLevel, "{0} Setup, room {1}", ClassName, room == null ? "== null" : room.Key);
             //EssentialsRoomPropertiesConfig roomConf = room.PropertiesConfig;
             if (CurrentDefaultDevice != null) // Disconnect current room 
                 DisconnectDevice(CurrentDefaultDevice);
@@ -194,7 +194,8 @@ namespace essentials_basic_tp.Drivers
             if (room_ != null)
             {
                 Debug.LogMessage(LogLevel, "{0} Setup, Driver {1}", ClassName, room_.Display == null ? "== null" : "exists");
-                ConnectDevice(room_.Display.DefaultLifter);
+                if(room_.Display?.DefaultLifter != null)
+                    ConnectDevice(room_.Display.DefaultLifter);
             }
             Debug.LogMessage(LogLevel, "{0} Setup done, {1}", ClassName, room == null ? "== null" : room.Key);
         }
@@ -235,7 +236,7 @@ namespace essentials_basic_tp.Drivers
 
         public void Open()
         {
-            Debug.LogMessage(LogLevel, "{0} Open: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : "exists");
+            Debug.LogMessage(LogLevel, "{0} Open: CurrentDefaultDevice {1}", ClassName, CurrentDefaultDevice == null ? " == null" : CurrentDefaultDevice.Key);
             CurrentDefaultDevice?.Open();
         }
         public void Close()

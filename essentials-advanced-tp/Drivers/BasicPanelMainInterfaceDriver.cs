@@ -10,6 +10,7 @@ using DisplayBase = PepperDash.Essentials.Devices.Common.Displays.DisplayBase;
 using Serilog.Events;
 using System;
 using System.Collections.Generic;
+using PepperDash.Essentials.Core.Routing;
 
 namespace essentials_advanced_tp.Drivers
 {
@@ -59,13 +60,13 @@ namespace essentials_advanced_tp.Drivers
             foreach (var dev in DeviceManager.GetDevices())
             {
                 //if (dev.Group.Equals("dipslays") && !loadDisplay)
-                if (dev is DisplayBase && !loadDisplay)
+                if (!loadDisplay && dev is DisplayBase)
                 {
                     Debug.LogMessage(LogLevel, "{0} Loading DisplayDriver", ClassName);
                     ChildDrivers.Add(new DisplayDriver(this, config));
                     loadDisplay = true;
                 }
-                else if (dev is IEssentialsRoomCombiner && !loadRoomCombiner)
+                else if (!loadRoomCombiner && dev is IEssentialsRoomCombiner)
                 //else if (dev.Group.Equals("room-combiner") && !loadDisplay)
                 {
                     Debug.LogMessage(LogLevel, "{0} Loading RoomCombineDriver", ClassName);
@@ -73,38 +74,47 @@ namespace essentials_advanced_tp.Drivers
                     loadRoomCombiner = true;
                 }
                 //else if (dev.Group.StartsWith("settopbox") && !loadSetTopBox)
-                else if (dev is ISetTopBoxControls && !loadSetTopBox)
+                else if (!loadSetTopBox && dev is ISetTopBoxControls)
                 {
                     Debug.LogMessage(LogLevel, "{0} Loading SetTopBoxDriver", ClassName);
                     PopupInterlockDrivers.Add(new SetTopBoxDriver(this, config));
                     loadSetTopBox = true;
                 }
                 //else if (dev.Group.StartsWith("encoders") && !loadVideoMatrix)
-                else if (dev is IRoutingOutputs && !loadVideoMatrix)
+                //else if (dev is IRoutingOutputs && !loadVideoMatrix)
+                else if (!loadVideoMatrix && dev is IMatrixRouting)
                 {
-                    Debug.LogMessage(LogLevel, "{0} Loading VideoMatrixDriver", ClassName);
-                    PopupInterlockDrivers.Add(new VideoMatrixDriver(this, config));
-                    loadVideoMatrix = true;
+                    if (String.IsNullOrEmpty(dev.Key))
+                    {
+                        Debug.LogMessage(LogLevel, "{0} NOT Loading VideoMatrixDriver with no device key", ClassName);
+                    }
+                    else
+                    {
+                        Debug.LogMessage(LogLevel, "{0} Loading VideoMatrixDriver {1}", ClassName, dev.Key);
+                        PopupInterlockDrivers.Add(new VideoMatrixDriver(this, config));
+                        loadVideoMatrix = true;
+                    }
                 }
             }
+            // some devices share a common base so use the config device group name instead to determine they exist
             foreach (var dev in ConfigReader.ConfigObject.Devices)
             {
                 //if (dev is ShadeBase && !loadScreen)
-                if (dev.Group.StartsWith("screen") && !loadScreen)
+                if (!loadScreen && dev.Group.StartsWith("screen"))
                 {
                     Debug.LogMessage(LogLevel, "{0} Loading ScreenDriver", ClassName);
                     ChildDrivers.Add(new ScreenDriver(this, config));
                     loadScreen = true;
                 }
                 //if (dev is ShadeBase && !loadLifter)
-                if (dev.Group.StartsWith("lifter") && !loadLifter)
+                if (!loadLifter && dev.Group.StartsWith("lifter"))
                 {
                     Debug.LogMessage(LogLevel, "{0} Loading LifterDriver", ClassName);
                     ChildDrivers.Add(new LifterDriver(this, config));
                     loadLifter = true;
                 }
                 //else if (dev is IAdvancedRoomSetup && !loadAudio)
-                else if (dev.Group.StartsWith("audio") && !loadAudio)
+                else if (!loadAudio && dev.Group.StartsWith("audio"))
                 {
                     Debug.LogMessage(LogLevel, "{0} Loading BasicAudioDriver", ClassName);
                     PopupInterlockDrivers.Add(new BasicAudioDriver(this));
@@ -135,7 +145,8 @@ namespace essentials_advanced_tp.Drivers
                 var driver_ = driver as ILogClassDetails;
                 if (driver_ != null)
                     //driver_.LogLevel = LogEventLevel.Debug;
-                    driver_.LogLevel = driver_ is DisplayDriver ? LogEventLevel.Information : LogEventLevel.Debug;
+                    //driver_.LogLevel = driver_ is DisplayDriver ? LogEventLevel.Information : LogEventLevel.Debug;
+                    driver_.LogLevel = driver_ is LifterDriver ? LogEventLevel.Information : LogEventLevel.Debug;
             }
             //Debug.LogMessage(2, "{0} suppressing excess logging on drivers, PopupInterlockDrivers {1}", ClassName, PopupInterlockDrivers == null ? "== null" : "exists");
             foreach (var driver in PopupInterlockDrivers)

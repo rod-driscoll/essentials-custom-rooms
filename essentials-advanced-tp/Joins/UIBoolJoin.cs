@@ -7,8 +7,14 @@
         public const uint ScreenDownPress = 43;
         public const uint ScreenStopPress = 44;
         public const uint ScreenTogglePress = 45;
+
         public const uint DisplayPowerOnPress = 46;
         public const uint DisplayPowerOffPress = 47;
+
+        public const uint LifterUpPress = 52;
+        public const uint LifterDownPress = 53;
+        public const uint LifterStopPress = 54;
+        public const uint LifterTogglePress = 55;
 
         public const uint CombinePagePress = 151;
         public const uint CombinePageVisible = 151;
@@ -37,9 +43,5 @@
         public const uint PinDialogShowPress = 15221;
 
         // join numbers assiigned below are fillers, not actually used in prod yet
-        public const uint LifterUpPress = 10001;
-        public const uint LifterDownPress = 10002;
-        public const uint LifterStopPress = 10003;
-        public const uint LifterTogglePress = 10004;
     }
 }

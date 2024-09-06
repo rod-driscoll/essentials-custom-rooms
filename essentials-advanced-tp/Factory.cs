@@ -40,7 +40,7 @@ namespace essentials_advanced_tp
         /// </example>
         public Factory()
         {
-            MinimumEssentialsFrameworkVersion = "1.6.0";
+            MinimumEssentialsFrameworkVersion = "2.0.0";
             TypeNames = new List<string>() { "advanced-tp" };
         }
 
